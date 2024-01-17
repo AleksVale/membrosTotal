@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  name        String?
+  phone       String?
+  document    String?       @unique
+  birthDate   DateTime      @db.Date
+  instagram   String?
+  pixKey      String?
+  photoKey    String?
+  password    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  profileId   Int
+  Profile     Profile       @relation(fields: [profileId], references: [id])
+  UserMeeting UserMeeting[]
+  TimeRecord  TimeRecord[]
+
+  @@map("users")
+}
+
+model Profile {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  label String
+  User  User[]
+
+  @@map("profiles")
+}
+
+model Meeting {
+  id          Int           @id @default(autoincrement())
+  title       String
+  date        DateTime
+  link        String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  UserMeeting UserMeeting[]
+
+  @@map("meetings")
+}
+
+model UserMeeting {
+  userId    Int
+  meetingId Int
+  User      User    @relation(fields: [userId], references: [id])
+  Meeting   Meeting @relation(fields: [meetingId], references: [id])
+
+  @@id([userId, meetingId])
+  @@map("user_meetings")
+}
+
+model TimeRecord {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  startTime DateTime
+  endTime   DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  User      User      @relation(fields: [userId], references: [id])
+
+  @@map("time_records")
+}

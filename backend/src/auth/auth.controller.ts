@@ -10,7 +10,6 @@ export class AuthController {
 
   @Post()
   async authenticate(@Body() body: AuthenticateDTO) {
-    console.log(body);
     const token = await this.authService.authenticate(body);
     return { token };
   }

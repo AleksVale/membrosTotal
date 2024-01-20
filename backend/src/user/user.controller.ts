@@ -19,11 +19,13 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
   @Post()
   create(@Body() createUserDto: CreateUserDTO) {
     return this.userService.create(createUserDto);
   }
 
+  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
   @Patch(':id')
   update(
     @Body() updateUserDTO: UpdateUserDto,
@@ -32,11 +34,13 @@ export class UserController {
     return this.userService.update(id, updateUserDTO);
   }
 
+  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.userService.findOne(id);
   }
 
+  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
   @Get()
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,

@@ -8,6 +8,7 @@ import { AuthService } from './auth.service';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
+  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
   @Post()
   authenticate(@Body() body: AuthenticateDTO) {
     return this.authService.authenticate(body);

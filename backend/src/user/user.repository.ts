@@ -13,6 +13,25 @@ export class UserRepository {
   async find(condition: Prisma.UserWhereInput) {
     return await this.prisma.user.findFirst({
       where: condition,
+      include: {
+        Profile: true,
+      },
+    });
+  }
+
+  async update(
+    user: Prisma.UserUpdateInput,
+    where: Prisma.UserWhereUniqueInput,
+  ) {
+    return await this.prisma.user.update({
+      data: user,
+      where: where,
+    });
+  }
+
+  async findAll(options: Prisma.UserFindManyArgs) {
+    return await this.prisma.user.findMany({
+      ...options,
     });
   }
 }

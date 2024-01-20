@@ -3,9 +3,12 @@ import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { patchNestJsSwagger } from 'nestjs-zod';
+import { ConfigService } from '@nestjs/config';
+import { Env } from './env';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get<ConfigService<Env, true>>(ConfigService);
   patchNestJsSwagger();
 
   app.enableCors();
@@ -20,7 +23,7 @@ async function bootstrap() {
   SwaggerModule.setup('api-docs', app, document);
 
   app.setGlobalPrefix('api');
-  const port = process.env.PORT || 5005;
+  const port = configService.get('PORT', { infer: true });
   await app.listen(port);
   Logger.log(`Server running on http://localhost:${port}`, 'Bootstrap');
 }

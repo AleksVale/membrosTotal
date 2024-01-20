@@ -1,7 +1,7 @@
 import React from 'react'
 import { z } from 'nestjs-zod/z'
 import { useForm, Controller } from 'react-hook-form'
-import { TextField, Button, Box } from '@mui/material'
+import { TextField, Button, Box, Grid } from '@mui/material'
 import { zodResolver } from '@hookform/resolvers/zod'
 
 const CreateUserSchema = z.object({
@@ -49,28 +49,61 @@ export default function CreateUser() {
       width={'100%'}
       p={6}
     >
-      <Controller
-        name="password"
-        control={control}
-        defaultValue=""
-        render={({ field }) => <TextField {...field} label="Username" />}
-      />
-      <Controller
-        name="email"
-        control={control}
-        defaultValue=""
-        render={({ field }) => (
-          <TextField
-            {...field}
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            label="Email"
+      <Grid container spacing={2} sx={{ marginTop: -5 }}>
+        <Grid item lg={6}>
+          <Controller
+            name="password"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={!!errors.password}
+                fullWidth
+                helperText={errors.password?.message}
+                label="Senha"
+              />
+            )}
           />
-        )}
-      />
-      <Button type="submit" variant="contained" color="primary">
-        Submit
-      </Button>
+        </Grid>
+        <Grid item lg={6}>
+          <Controller
+            name="email"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={!!errors.email}
+                fullWidth
+                helperText={errors.email?.message}
+                label="Email"
+              />
+            )}
+          />
+        </Grid>
+        <Grid item lg={4}>
+          <Controller
+            name="document"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                error={!!errors.document}
+                fullWidth
+                helperText={errors.document?.message}
+                label="Documento"
+              />
+            )}
+          />
+        </Grid>
+      </Grid>
+      <Box display={'flex'} justifyContent={'flex-end'} mt={2}>
+        <Button type="submit" variant="contained" color="success">
+          Submit
+        </Button>
+      </Box>
     </Box>
   )
 }

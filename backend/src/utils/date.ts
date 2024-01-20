@@ -25,7 +25,7 @@ export class DateUtils {
     return dayjs(birthDate).isBefore(eighteenYearsAgo);
   }
 
-  static stringToDate(dateString: string): Date {
+  static stringToDate(dateString: string | Date): Date {
     return dayjs(dateString).toDate();
   }
 }

@@ -17,7 +17,7 @@ export class AuthService {
     if (!user || !(await bcrypt.compare(password, user.password))) {
       throw new UnauthorizedException('Credenciais inválidas');
     }
-    return this.jwt.sign({
+    const token = this.jwt.sign({
       id: user.id,
       sub: {
         name: user.name,
@@ -25,5 +25,12 @@ export class AuthService {
         profile: user.Profile.name,
       },
     });
+    return {
+      token,
+      id: user.id,
+      profile: user.Profile.name,
+      name: user.name,
+      email: user.email,
+    };
   }
 }

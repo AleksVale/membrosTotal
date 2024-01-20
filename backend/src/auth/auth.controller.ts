@@ -9,8 +9,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post()
-  async authenticate(@Body() body: AuthenticateDTO) {
-    const token = await this.authService.authenticate(body);
-    return { token };
+  authenticate(@Body() body: AuthenticateDTO) {
+    return this.authService.authenticate(body);
   }
 }

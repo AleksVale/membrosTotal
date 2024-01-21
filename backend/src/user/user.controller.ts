@@ -12,11 +12,12 @@ import {
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role/role.guard';
 import { Roles } from '../auth/roles/roles.decorator';
+import { UserResponseDTO } from './dto/user-response.dto';
 
 @Controller('user')
 @Roles(['admin'])
@@ -40,13 +41,21 @@ export class UserController {
     return this.userService.update(id, updateUserDTO);
   }
 
-  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
+  @ApiResponse({
+    status: 200,
+    description: 'The user has been successfully returned.',
+    type: UserResponseDTO,
+  })
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.userService.findOne(id);
   }
 
-  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
+  @ApiResponse({
+    status: 200,
+    description: 'The users has been successfully returned.',
+    type: [UserResponseDTO],
+  })
   @Get()
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,

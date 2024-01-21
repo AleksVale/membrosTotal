@@ -4,7 +4,8 @@ import { useMediaQuery } from '@mui/material'
 
 interface ColorModeContextProps {
   colorMode: string
-  setColorMode: (value: string) => string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setColorMode: any
 }
 
 interface ColorModeProviderProps {

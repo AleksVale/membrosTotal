@@ -12,6 +12,10 @@ export class DateUtils {
     return dayjs(date1).isAfter(dayjs(date2));
   }
 
+  static isEqual(date1: string | Date, date2: string | Date): boolean {
+    return dayjs(date1).isSame(dayjs(date2));
+  }
+
   static addDays(date: string | Date, days: number): string {
     return dayjs(date).add(days, 'day').format('YYYY-MM-DD');
   }

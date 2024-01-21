@@ -8,6 +8,8 @@ import { ProfileModule } from './profile/profile.module';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
 import { AuthModule } from './auth/auth.module';
+import { MeetingsModule } from './meetings/meetings.module';
+import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { AuthModule } from './auth/auth.module';
       validate: (env) => envSchema.parse(env),
       isGlobal: true,
     }),
+    MeetingsModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [

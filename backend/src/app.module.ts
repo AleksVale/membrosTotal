@@ -28,8 +28,8 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
       transport: {
         host: 'smtp.gmail.com',
         auth: {
-          user: 'aleksanderribeirovale@gmail.com',
-          pass: 'Alexalexx0',
+          user: 'undefined',
+          pass: 'undefined',
         },
       },
       template: {

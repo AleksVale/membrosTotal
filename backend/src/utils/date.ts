@@ -32,4 +32,12 @@ export class DateUtils {
   static stringToDate(dateString: string | Date): Date {
     return dayjs(dateString).toDate();
   }
+
+  static startOfDay(date: string | Date): string {
+    return dayjs(date).startOf('day').toISOString();
+  }
+
+  static endOfDay(date: string | Date): string {
+    return dayjs(date).endOf('day').toISOString();
+  }
 }

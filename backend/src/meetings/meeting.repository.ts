@@ -1,6 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { PrismaService } from '../prisma/prisma.service';
+import { Prisma, StatusMeeting } from '@prisma/client';
+import { DateUtils } from '../utils/date';
+
+interface IFilterMeetings {
+  status?: string;
+  date?: string;
+  user?: number;
+}
 
 @Injectable()
 export class MeetingRepository {
@@ -26,9 +33,33 @@ export class MeetingRepository {
     });
   }
 
-  async findAll(options: Prisma.MeetingFindManyArgs) {
+  async findAll({ date, status, user }: IFilterMeetings) {
+    const where: Prisma.MeetingWhereInput = {};
+    where.UserMeeting = {};
+    where.UserMeeting.some = {};
+    if (date)
+      where.date = {
+        lte: DateUtils.endOfDay(date),
+        gte: DateUtils.startOfDay(date),
+      };
+    if (status) where.status = StatusMeeting[status];
+    if (user) {
+      where.UserMeeting = {
+        some: {
+          userId: user,
+        },
+      };
+    }
+
     return await this.prisma.meeting.findMany({
-      ...options,
+      where,
+      include: {
+        UserMeeting: {
+          include: {
+            User: true,
+          },
+        },
+      },
     });
   }
 
@@ -40,6 +71,14 @@ export class MeetingRepository {
       include: {
         User: true,
         Meeting: true,
+      },
+    });
+  }
+
+  deleteMeetingUsers(meetingId: number) {
+    return this.prisma.userMeeting.deleteMany({
+      where: {
+        meetingId: meetingId,
       },
     });
   }

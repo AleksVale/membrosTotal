@@ -18,6 +18,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role/role.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { UserResponseDTO } from './dto/user-response.dto';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 
 @Controller('user')
 @Roles(['admin'])
@@ -26,19 +27,33 @@ import { UserResponseDTO } from './dto/user-response.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
+  @ApiResponse({
+    type: SuccessResponse,
+    status: 201,
+    description: 'The user has been successfully created.',
+  })
   @Post()
-  create(@Body() createUserDto: CreateUserDTO) {
-    return this.userService.create(createUserDto);
+  async create(@Body() createUserDto: CreateUserDTO): Promise<SuccessResponse> {
+    await this.userService.create(createUserDto);
+    return {
+      success: true,
+    };
   }
 
-  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
+  @ApiResponse({
+    type: SuccessResponse,
+    status: 201,
+    description: 'The user has been successfully updated.',
+  })
   @Patch(':id')
-  update(
+  async update(
     @Body() updateUserDTO: UpdateUserDto,
     @Param('id', ParseIntPipe) id: number,
-  ) {
-    return this.userService.update(id, updateUserDTO);
+  ): Promise<SuccessResponse> {
+    await this.userService.update(id, updateUserDTO);
+    return {
+      success: true,
+    };
   }
 
   @ApiResponse({

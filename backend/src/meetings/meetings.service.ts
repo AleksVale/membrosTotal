@@ -4,10 +4,16 @@ import {
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateMeetingDTO } from './dto/create-meeting.dto';
-import { UpdateMeetingDto } from './dto/update-meeting.dto';
+import { UpdateMeetingDTO } from './dto/update-meeting.dto';
 import { MeetingRepository } from './meeting.repository';
 import { DateUtils } from 'src/utils/date';
-import { Prisma } from '@prisma/client';
+import { Prisma, StatusMeeting } from '@prisma/client';
+
+interface IMeetingFilters {
+  status?: string;
+  date?: string;
+  user?: number;
+}
 
 @Injectable()
 export class MeetingsService {
@@ -55,7 +61,6 @@ export class MeetingsService {
         ) {
           const userName = `${userMeeting.User.firstName} ${userMeeting.User.lastName}`;
           const meetingTitle = userMeeting.Meeting.title;
-          console.log('aqui');
           return {
             userId: userMeeting.userId,
             meetingId: userMeeting.meetingId,
@@ -77,20 +82,40 @@ export class MeetingsService {
     }
   }
 
-  findAll() {
-    return `This action returns all meetings`;
+  findAll({ date, status, user }: IMeetingFilters) {
+    return this.meetingRepository.findAll({
+      date,
+      status,
+      user,
+    });
   }
 
   findOne(id: number) {
     return `This action returns a #${id} meeting`;
   }
 
-  update(id: number, updateMeetingDto: UpdateMeetingDto) {
-    console.log(updateMeetingDto);
-    return `This action updates a #${id} meeting`;
-  }
+  async update(id: number, updateMeetingDto: UpdateMeetingDTO) {
+    const meeting = await this.meetingRepository.find({ id });
+    if (!meeting) throw new BadRequestException('Reunião não encontrada');
+    if (updateMeetingDto.users) {
+      await this.meetingRepository.deleteMeetingUsers(id);
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} meeting`;
+    const entity: Prisma.MeetingUpdateInput = {
+      title: updateMeetingDto.title,
+      link: updateMeetingDto.link,
+      date: updateMeetingDto.meetingDate
+        ? DateUtils.stringToDate(updateMeetingDto.meetingDate)
+        : undefined,
+      status: StatusMeeting[updateMeetingDto.status ?? 'PENDING'],
+      UserMeeting: updateMeetingDto.users
+        ? {
+            createMany: {
+              data: updateMeetingDto.users?.map((user) => ({ userId: user })),
+            },
+          }
+        : undefined,
+    };
+    await this.meetingRepository.update(entity, { id });
   }
 }

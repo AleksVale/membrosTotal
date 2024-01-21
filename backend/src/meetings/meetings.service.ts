@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateMeetingDTO } from './dto/create-meeting.dto';
 import { UpdateMeetingDTO } from './dto/update-meeting.dto';
@@ -90,8 +91,10 @@ export class MeetingsService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} meeting`;
+  async findOne(id: number) {
+    const meeting = await this.meetingRepository.findOneWithUsers({ id });
+    if (!meeting) throw new NotFoundException('Reunião não encontrada');
+    return meeting;
   }
 
   async update(id: number, updateMeetingDto: UpdateMeetingDTO) {

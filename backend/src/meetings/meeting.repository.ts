@@ -23,6 +23,19 @@ export class MeetingRepository {
     });
   }
 
+  async findOneWithUsers(condition: Prisma.MeetingWhereUniqueInput) {
+    return await this.prisma.meeting.findUnique({
+      where: condition,
+      include: {
+        UserMeeting: {
+          include: {
+            User: true,
+          },
+        },
+      },
+    });
+  }
+
   async update(
     meeting: Prisma.MeetingUpdateInput,
     where: Prisma.MeetingWhereUniqueInput,

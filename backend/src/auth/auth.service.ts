@@ -20,7 +20,7 @@ export class AuthService {
     const token = this.jwt.sign({
       id: user.id,
       sub: {
-        name: user.name,
+        name: `${user.firstName} ${user.lastName}`,
         email: user.email,
         profile: user.Profile.name,
       },
@@ -29,7 +29,7 @@ export class AuthService {
       token,
       id: user.id,
       profile: user.Profile.name,
-      name: user.name,
+      name: `${user.firstName} ${user.lastName}`,
       email: user.email,
     };
   }

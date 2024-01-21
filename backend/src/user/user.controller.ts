@@ -8,13 +8,19 @@ import {
   Get,
   Query,
   DefaultValuePipe,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RoleGuard } from '../auth/role/role.guard';
+import { Roles } from '../auth/roles/roles.decorator';
 
 @Controller('user')
+@Roles(['admin'])
+@UseGuards(JwtAuthGuard, RoleGuard)
 @ApiTags('User')
 export class UserController {
   constructor(private readonly userService: UserService) {}

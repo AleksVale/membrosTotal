@@ -3,6 +3,12 @@ import { z } from 'nestjs-zod/z';
 import { DateUtils } from '../../utils/date';
 
 const CreateUserSchema = z.object({
+  firstName: z.string({
+    required_error: 'Nome é obrigatório',
+  }),
+  lastName: z.string({
+    required_error: 'Sobrenome é obrigatório',
+  }),
   password: z
     .string({
       required_error: 'Senha é obrigatória',

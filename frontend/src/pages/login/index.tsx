@@ -1,85 +1,96 @@
-import { useForm, Controller } from 'react-hook-form'
-import { TextField, Button, Paper } from '@mui/material'
+import React from 'react'
+import { Helmet } from 'react-helmet-async'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LoginFormSchema, LoginFormValues } from './schema'
-import { useAuth } from '../../hooks/useAuth'
-import { useNavigate } from 'react-router-dom'
+import { useForm } from 'react-hook-form'
+import { LoginForm, LoginSchema } from './validation'
+import { Loader2 } from 'lucide-react'
 
-export const Login = () => {
-  const navigate = useNavigate()
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(LoginFormSchema),
+import { Button } from '@/components/ui/button'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { Link } from 'react-router-dom'
+
+export function Login() {
+  const form = useForm<LoginForm>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      email: '',
+      password: '',
+    },
   })
 
-  const { login } = useAuth()
-  const onSubmit = async (data: LoginFormValues) => {
-    try {
-      const profile = await login(data.email, data.password)
-      switch (profile) {
-        case 'admin':
-          navigate('/executive')
-          break
-        case 'employee':
-          navigate('/employee')
-          break
-        case 'expert':
-          navigate('/expert')
-          break
-      }
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  const { isSubmitting } = form.formState
 
+  async function onSubmit(values: LoginForm) {
+    // Do something with the form values.
+    // ✅ This will be type-safe and validated.
+    await new Promise((resolve) => {
+      setTimeout(() => {
+        console.log(values)
+        resolve(null)
+      }, 5000)
+    })
+  }
   return (
-    <Paper
-      elevation={5}
-      sx={{
-        padding: 4,
-      }}
-    >
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <Controller
-          name="email"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.email}
-              helperText={errors.email?.message}
-              label="Email"
-              variant="outlined"
-              margin="normal"
-              fullWidth
+    <>
+      <Helmet title="Login" />
+      <section className="flex justify-center items-center p-4 col-span-2">
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-4 w-3/4"
+          >
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>E-mail</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira seu email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-        />
-        <Controller
-          name="password"
-          control={control}
-          defaultValue=""
-          render={({ field }) => (
-            <TextField
-              {...field}
-              error={!!errors.password}
-              helperText={errors.password?.message}
-              label="Password"
-              type="password"
-              variant="outlined"
-              margin="normal"
-              fullWidth
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira sua senha" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-          )}
-        />
-        <Button type="submit" variant="contained" color="primary" fullWidth>
-          Login
-        </Button>
-      </form>
-    </Paper>
+            <div className="flex justify-end gap-3">
+              <Button type="button" variant="outline" size={'lg'} asChild>
+                <Link to="/register">Registrar</Link>
+              </Button>
+              <Button type="submit" size={'lg'}>
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Carregando
+                  </>
+                ) : (
+                  <span>Entrar</span>
+                )}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </section>
+    </>
   )
 }

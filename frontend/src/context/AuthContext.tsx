@@ -1,51 +1,65 @@
-import { createContext, useState, ReactNode, useEffect } from 'react'
-import AuthService from '../services/auth.service'
-import { useLocalStorageState } from '../hooks/useLocalStorage'
+import useLocalStorage from '@/hooks/useLocalStorage'
+import AuthService from '@/services/auth.service'
+import {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react'
 
 interface AuthContextType {
   token: string | null
-  profile: string | null
-  name: string | null
-  id: string | null
-  login: (email: string, senha: string) => Promise<string>
+  login: (email: string, senha: string) => Promise<boolean>
   logout: () => void
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
-  const [token, setToken] = useLocalStorageState('token', null)
-  const [profile, setProfile] = useLocalStorageState('profile', null)
-  const [name, setName] = useLocalStorageState('name', null)
-  const [id, setId] = useLocalStorageState('id', null)
+  const [token, setToken] = useLocalStorage<string | null>('token', null)
   const [loading, setLoading] = useState<boolean>(true)
 
   useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token && token !== 'undefined') {
+      setToken(JSON.parse(token))
+    } else {
+      setToken(null)
+    }
     setLoading(false)
-  }, [])
+  }, [setToken])
 
-  const login = async (email: string, senha: string) => {
-    const response = await AuthService.login(email, senha)
-    setToken(response.data.token)
-    setProfile(response.data.profile)
-    setName(response.data.name)
-    setId(response.data.id)
-    return response.data.profile
-  }
+  const login = useCallback(
+    async (email: string, senha: string) => {
+      try {
+        const token = await AuthService.login(email, senha)
 
-  const logout = () => {
+        // Update state and local storage with the new token
+        setToken(token.data.access_token)
+
+        return !!token.data
+      } catch (error) {
+        console.error(error)
+        return false
+      }
+    },
+    [setToken],
+  )
+
+  const logout = useCallback(() => {
     setToken(null)
-    setProfile(null)
-    setId(null)
-    setName(null)
-  }
+  }, [setToken])
+
+  const value = useMemo(
+    () => ({ token, login, logout }),
+    [token, login, logout],
+  )
+
   if (loading) {
     return <div>Loading...</div>
   }
 
-  return (
-    <AuthContext.Provider value={{ token, profile, id, name, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }

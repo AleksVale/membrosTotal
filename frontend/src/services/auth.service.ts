@@ -1,15 +1,11 @@
-import http from '../utils/http.common'
+import http from '@/lib/http'
 
-interface loginResponse {
-  token: string
-  id: string
-  profile: string
-  name: string
-  email: string
+interface LoginResponse {
+  access_token: string
 }
 
 const login = async (email: string, password: string) => {
-  return http.post<loginResponse>('/auth', { email, password })
+  return http.post<LoginResponse>('/auth/signin', { email, password })
 }
 
 const AuthService = {

@@ -19,6 +19,7 @@ import { RoleGuard } from '../auth/role/role.guard';
 import { Roles } from '../auth/roles/roles.decorator';
 import { UserResponseDTO } from './dto/user-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 
 @Controller('user')
 @Roles(['admin'])
@@ -66,20 +67,15 @@ export class UserController {
     return this.userService.findOne(id);
   }
 
-  @ApiResponse({
-    status: 200,
-    description: 'The users has been successfully returned.',
-    type: [UserResponseDTO],
-  })
   @Get()
+  @ApiOkResponsePaginated(UserResponseDTO)
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
   ) {
-    limit = limit > 100 ? 100 : limit;
     return this.userService.findAll({
-      skip: (page - 1) * limit,
-      take: limit,
+      page,
+      per_page,
     });
   }
 }

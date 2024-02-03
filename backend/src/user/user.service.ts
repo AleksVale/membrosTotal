@@ -96,15 +96,7 @@ export class UserService {
     return user;
   }
 
-  async findAll(options: { skip: number; take: number }) {
-    return await this.userRepository.findAll({
-      skip: options.skip,
-      take: options.take,
-      orderBy: { email: 'asc' },
-      include: {
-        Profile: true,
-        UserMeeting: true,
-      },
-    });
+  async findAll(options: { page: number; per_page: number }) {
+    return await this.userRepository.findAll(options);
   }
 }

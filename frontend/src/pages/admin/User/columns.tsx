@@ -36,6 +36,12 @@ export const columns: ColumnDef<User>[] = [
     ),
   },
   {
+    accessorKey: 'Profile.label',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Perfil" />
+    ),
+  },
+  {
     accessorKey: 'phone',
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="Telefone" />
@@ -88,8 +94,9 @@ export const columns: ColumnDef<User>[] = [
               Copy payment ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
             <DropdownMenuItem>Editar usuário</DropdownMenuItem>
+            <DropdownMenuItem>Enviar um zap</DropdownMenuItem>
+            <DropdownMenuItem>Enviar uma notificação</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       )

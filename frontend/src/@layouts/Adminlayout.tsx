@@ -43,17 +43,17 @@ export function AdminLayout() {
             <nav className="grid items-start px-4 text-sm font-medium">
               <MenuLink
                 to={ADMIN_PAGES.home}
-                icon={<HomeIcon className="h-4 w-4" />}
+                icon={<HomeIcon className="h-6 w-6" />}
                 label="Home"
               />
               <MenuLink
                 to={ADMIN_PAGES.listUsers}
-                icon={<UsersIcon className="h-4 w-4" />}
-                label="Users"
+                icon={<UsersIcon className="h-6 w-6" />}
+                label="Usuários"
               />
               <MenuLink
                 to={ADMIN_PAGES.settings}
-                icon={<SettingsIcon className="h-4 w-4" />}
+                icon={<SettingsIcon className="h-6 w-6" />}
                 label="Settings"
               />
             </nav>

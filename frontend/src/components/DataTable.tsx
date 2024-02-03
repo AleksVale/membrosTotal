@@ -3,7 +3,6 @@ import {
   SortingState,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
 } from '@tanstack/react-table'
@@ -58,7 +57,6 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
     pageCount: Math.ceil(data.length / pageSize),
-    getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {

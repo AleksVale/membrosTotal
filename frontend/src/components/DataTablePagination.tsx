@@ -36,10 +36,11 @@ export function DataTablePagination<TData>({
             value={`${table.getState().pagination.pageSize}`}
             onValueChange={(value) => {
               table.setPageSize(Number(value))
-              setSearchParams((prevSearchParams) => ({
-                ...prevSearchParams,
-                per_page: value,
-              }))
+              setSearchParams((prevSearchParams) => {
+                const newSearchparams = new URLSearchParams(prevSearchParams)
+                newSearchparams.set('per_page', value)
+                return newSearchparams
+              })
             }}
           >
             <SelectTrigger className="h-8 w-[70px]">

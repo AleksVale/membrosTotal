@@ -1,9 +1,8 @@
-import React from 'react'
 import { Helmet } from 'react-helmet-async'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { LoginForm, LoginSchema } from './validation'
-import { Loader2 } from 'lucide-react'
+import { Loader2, Eye, EyeOff } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import {
@@ -15,9 +14,12 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useAuth } from '@/hooks/useAuth'
 
 export function Login() {
+  const navigate = useNavigate()
   const form = useForm<LoginForm>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -26,17 +28,23 @@ export function Login() {
     },
   })
 
+  const { login } = useAuth()
+
+  const [showPassword, setShowPassword] = useState(false)
+
   const { isSubmitting } = form.formState
 
   async function onSubmit(values: LoginForm) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    await new Promise((resolve) => {
-      setTimeout(() => {
-        console.log(values)
-        resolve(null)
-      }, 5000)
-    })
+    try {
+      await login(values.email, values.password)
+      navigate('/admin/home')
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const toggleShowPassword = () => {
+    setShowPassword((prev) => !prev)
   }
   return (
     <>
@@ -67,17 +75,40 @@ export function Login() {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <Input placeholder="Insira sua senha" {...field} />
+                    <div className="flex relative">
+                      <Input
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Insira sua senha"
+                        {...field}
+                      />
+                      {showPassword ? (
+                        <EyeOff
+                          className="absolute right-3 top-2 text-primary cursor-pointer"
+                          onClick={toggleShowPassword}
+                        />
+                      ) : (
+                        <Eye
+                          className="absolute right-3 top-2 text-primary cursor-pointer"
+                          onClick={toggleShowPassword}
+                        />
+                      )}
+                    </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex justify-end gap-3">
-              <Button type="button" variant="outline" size={'lg'} asChild>
+              <Button
+                type="button"
+                variant="outline"
+                size={'lg'}
+                asChild
+                disabled={isSubmitting}
+              >
                 <Link to="/register">Registrar</Link>
               </Button>
-              <Button type="submit" size={'lg'}>
+              <Button type="submit" size={'lg'} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />

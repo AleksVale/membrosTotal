@@ -14,9 +14,16 @@ export type User = {
 
 export const createUserSchema = z.object({
   email: z.string().email({ message: 'E-mail inválido' }),
-  firstName: z.string({ required_error: 'O nome é obrigatório' }),
-  lastName: z.string({ required_error: 'O sobrenome é obrigatório' }),
-  phone: z.string({ required_error: 'O telefone é obrigatório' }),
+  firstName: z
+    .string({ required_error: 'O nome é obrigatório' })
+    .min(3, { message: 'O nome deve ter pelo menos 3 caracteres' }),
+  lastName: z
+    .string({ required_error: 'O sobrenome é obrigatório' })
+    .min(3, { message: 'O sobrenome deve ter pelo menos 3 caracteres' }),
+  phone: z
+    .string({ required_error: 'O telefone é obrigatório' })
+    .min(11, { message: 'O telefone deve ter pelo menos 3 caracteres' }),
+
   document: z.string().optional(),
   birthDate: z.string({ required_error: 'A data de nascimento é obrigatória' }),
   instagram: z.string().optional(),
@@ -24,7 +31,7 @@ export const createUserSchema = z.object({
   password: z
     .string()
     .min(8, { message: 'A senha deve ter pelo menos 8 caracteres' }),
-  profileId: z.number(),
+  profileId: z.coerce.number(),
 })
 
 export type CreateUserForm = z.infer<typeof createUserSchema>

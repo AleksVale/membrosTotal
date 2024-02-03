@@ -13,7 +13,14 @@ import { Loader2 } from 'lucide-react'
 import { HeaderUser } from '@/components/HeaderUser'
 import type { MaskitoOptions } from '@maskito/core'
 import { useMaskito } from '@maskito/react'
-const digitsOnlyMask: MaskitoOptions = {
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+const doocumentMask: MaskitoOptions = {
   mask: [
     /\d/,
     /\d/,
@@ -31,10 +38,33 @@ const digitsOnlyMask: MaskitoOptions = {
     /\d/,
   ],
 }
+
+const phoneMask: MaskitoOptions = {
+  mask: [
+    '(',
+    /\d/,
+    /\d/,
+    ')',
+    ' ',
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+    '-',
+    /\d/,
+    /\d/,
+    /\d/,
+    /\d/,
+  ],
+}
+
 export function CreateUser() {
   const { form, isSubmitting, profileOptions, handleSubmitForm } = useNewUser()
 
-  const documentRef = useMaskito({ options: digitsOnlyMask })
+  const documentRef = useMaskito({ options: doocumentMask })
+
+  const phoneRef = useMaskito({ options: phoneMask })
 
   return (
     <div>
@@ -52,7 +82,7 @@ export function CreateUser() {
                 <FormItem>
                   <FormLabel>Nome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Insira seu nome" {...field} />
+                    <Input placeholder="Insira o nome" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -65,7 +95,7 @@ export function CreateUser() {
                 <FormItem>
                   <FormLabel>Sobrenome</FormLabel>
                   <FormControl>
-                    <Input placeholder="Insira seu sobrenome" {...field} />
+                    <Input placeholder="Insira o sobrenome" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -78,7 +108,7 @@ export function CreateUser() {
                 <FormItem>
                   <FormLabel>E-mail</FormLabel>
                   <FormControl>
-                    <Input placeholder="Insira seu email" {...field} />
+                    <Input placeholder="Insira o email" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -92,7 +122,7 @@ export function CreateUser() {
                   <FormLabel>Documento</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="Insira seu documento"
+                      placeholder="Insira o documento"
                       {...field}
                       ref={documentRef}
                       onInput={(evt) => {
@@ -122,12 +152,91 @@ export function CreateUser() {
             />
             <FormField
               control={form.control}
-              name="email"
+              name="instagram"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>E-mail</FormLabel>
+                  <FormLabel>Instagram</FormLabel>
                   <FormControl>
-                    <Input placeholder="Insira seu email" {...field} />
+                    <Input placeholder="Insira o instagram" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pixKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Pix</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira o pix" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Insira o telefone"
+                      {...field}
+                      ref={phoneRef}
+                      onInput={(evt) => {
+                        form.setValue('phone', evt.currentTarget.value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="profileId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Perfil</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select a verified email to display" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {profileOptions.map((profile) => (
+                          <SelectItem key={profile.id} value={`${profile.id}`}>
+                            {profile.label}
+                          </SelectItem>
+                        ))}
+                        <SelectItem value={'1'}>m@example.com</SelectItem>
+                        <SelectItem value="m@google.com">
+                          m@google.com
+                        </SelectItem>
+                        <SelectItem value="m@support.com">
+                          m@support.com
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira a senha" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

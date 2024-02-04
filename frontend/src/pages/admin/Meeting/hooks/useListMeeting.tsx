@@ -1,7 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
 
-import { User } from './interfaces'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -24,72 +22,55 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { DialogClose } from '@radix-ui/react-dialog'
-import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
+import { Meeting } from '../interfaces'
 
-const handleConfirmDeleteUser = (id: string) => {
+const handleConfirmDeleteUser = (id: number) => {
   console.log('deleting user', id)
 }
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Meeting>[] = [
   {
-    id: 'name',
+    accessorKey: 'title',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Nome" />
-    ),
-    cell: ({ row }) => {
-      return (
-        <span>
-          {row.original.firstName} {row.original.lastName}
-        </span>
-      )
-    },
-  },
-  {
-    accessorKey: 'email',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Email" />
+      <DataTableColumnHeader column={column} title="Title" />
     ),
   },
   {
-    accessorKey: 'Profile.label',
+    accessorKey: 'description',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Perfil" />
+      <DataTableColumnHeader column={column} title="Descrição" />
     ),
   },
   {
-    accessorKey: 'phone',
+    accessorKey: 'date',
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Telefone" />
-    ),
-    accessorFn: (row) => formatToPhoneNumber(row.phone) || '--',
-  },
-  {
-    accessorKey: 'document',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Documento" />
-    ),
-    accessorFn: (row) => formatToDocument(row.document) || '--',
-  },
-  {
-    accessorKey: 'birthDate',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Data de nascimento" />
-    ),
-    accessorFn: (row) => dayjs(row.birthDate).format('DD/MM/YYYY'),
-  },
-  {
-    accessorKey: 'instagram',
-    header: ({ column }) => {
-      return <DataTableColumnHeader column={column} title="Instagram" />
-    },
-  },
-  {
-    accessorKey: 'pixKey',
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Chave pix" />
+      <DataTableColumnHeader column={column} title="Data" />
     ),
   },
-
+  {
+    accessorKey: 'link',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Link" />
+    ),
+  },
+  {
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Status" />
+    ),
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Criado em" />
+    ),
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="Atualizada em" />
+    ),
+  },
   {
     id: 'actions',
     cell: ({ row }) => {

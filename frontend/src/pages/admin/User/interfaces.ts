@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 import { z } from 'zod'
 
 export type User = {
@@ -25,7 +26,9 @@ export const createUserSchema = z.object({
     .min(11, { message: 'O telefone deve ter pelo menos 3 caracteres' }),
 
   document: z.string().optional(),
-  birthDate: z.date({ required_error: 'A data de nascimento é obrigatória' }),
+  birthDate: z
+    .date({ required_error: 'A data de nascimento é obrigatória' })
+    .transform((date) => dayjs(date, 'YYYY-DD-MM').format('YYYY-MM-DD')),
   instagram: z.string().optional(),
   pixKey: z.string().optional(),
   password: z
@@ -38,3 +41,16 @@ export const createUserSchema = z.object({
 })
 
 export type CreateUserForm = z.infer<typeof createUserSchema>
+
+export const filterUserSchema = z.object({
+  email: z.string().optional(),
+  name: z.string().optional().optional(),
+  phone: z.string().optional(),
+  document: z.string().optional(),
+  birthDate: z.string().optional(),
+  instagram: z.string().optional(),
+  pixKey: z.string().optional(),
+  profileId: z.string().optional(),
+})
+
+export type FilterUserForm = z.infer<typeof filterUserSchema>

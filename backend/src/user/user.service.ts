@@ -23,6 +23,10 @@ export class UserService {
     return hashedPassword;
   }
 
+  private normalize(value?: string) {
+    return value?.replace(/\D/g, '');
+  }
+
   async create(createUserDTO: CreateUserDTO) {
     createUserDTO.document &&
       (await this.checkDuplicatedDocument(createUserDTO.document));
@@ -34,6 +38,8 @@ export class UserService {
       ...createUserDTO,
       birthDate,
       password,
+      document: this.normalize(createUserDTO.document),
+      phone: this.normalize(createUserDTO.phone),
     });
   }
 

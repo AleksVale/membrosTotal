@@ -1,5 +1,6 @@
 import http from '@/lib/http'
-import { User } from '@/pages/admin/User/interfaces'
+import { CreateUserForm, User } from '@/pages/admin/User/interfaces'
+import { SuccessResponse } from '@/utils/constants/routes'
 
 export interface PaginationMeta {
   total: number
@@ -21,8 +22,13 @@ const getUsers = async (searchParams: URLSearchParams) => {
   )
 }
 
+const createUser = async (user: CreateUserForm) => {
+  return http.post<SuccessResponse>('/user', user)
+}
+
 const UserService = {
   getUsers,
+  createUser,
 }
 
 export default UserService

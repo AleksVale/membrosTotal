@@ -5,8 +5,13 @@ import { CreateUserForm, createUserSchema } from '../interfaces'
 import AutocompleteService, {
   Autocomplete,
 } from '@/services/autocomplete.service'
+import UserService from '@/services/user.service'
+import { useNavigate } from 'react-router-dom'
+import { ADMIN_PAGES } from '@/utils/constants/routes'
+import { toast } from 'react-toastify'
 
 export function useNewUser() {
+  const navigate = useNavigate()
   const form = useForm<CreateUserForm>({
     resolver: zodResolver(createUserSchema),
     defaultValues: {
@@ -22,9 +27,16 @@ export function useNewUser() {
     },
   })
 
-  const handleSubmitForm = (data: CreateUserForm) => {
-    console.log(data)
-  }
+  const handleSubmitForm = useCallback(
+    async (data: CreateUserForm) => {
+      const response = await UserService.createUser(data)
+      if (response.data.success) {
+        toast.success('Usuário criado com sucesso')
+        navigate(ADMIN_PAGES.listUsers)
+      }
+    },
+    [navigate],
+  )
   const [profileOptions, setProfileOptions] = React.useState<Autocomplete[]>([])
   const fetchProfileOptions = useCallback(async () => {
     const response = await AutocompleteService.fetchAutocomplete(['profiles'])

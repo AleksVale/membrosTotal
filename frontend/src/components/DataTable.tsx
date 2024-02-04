@@ -18,30 +18,28 @@ import {
 import React from 'react'
 import { DataTablePagination } from './DataTablePagination'
 import { useSearchParams } from 'react-router-dom'
+import { PaginationMeta } from '@/services/user.service'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  meta: PaginationMeta
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  meta,
 }: Readonly<DataTableProps<TData, TValue>>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [searchParams, setSeachParams] = useSearchParams()
-
-  const pageSize = searchParams.get('per_page')
-    ? Number(searchParams.get('per_page'))
-    : 10
-  const maxPage = Math.ceil(data.length / pageSize)
+  const [, setSeachParams] = useSearchParams()
 
   const onPageChange = (pageNumber: number) => {
     setSeachParams((prevParams) => {
       const currentPage = Number(prevParams.get('page')) || 1
       const newPage = currentPage + pageNumber
 
-      if (newPage >= 1 && newPage <= Math.ceil(data.length / pageSize)) {
+      if (newPage >= 1 && newPage <= meta.lastPage) {
         const newParams = new URLSearchParams(prevParams)
         newParams.set('page', newPage.toString())
         return newParams
@@ -56,16 +54,14 @@ export function DataTable<TData, TValue>({
     columns,
     manualPagination: true,
     getCoreRowModel: getCoreRowModel(),
-    pageCount: Math.ceil(data.length / pageSize),
+    pageCount: meta.lastPage,
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
     state: {
       sorting,
       pagination: {
-        pageIndex: searchParams.get('page')
-          ? Number(searchParams.get('page')) - 1
-          : 0,
-        pageSize,
+        pageIndex: meta.currentPage - 1,
+        pageSize: meta.perPage,
       },
     },
   })
@@ -118,7 +114,7 @@ export function DataTable<TData, TValue>({
         <DataTablePagination
           table={table}
           onPageChange={onPageChange}
-          maxPage={maxPage}
+          maxPage={meta.lastPage}
         />
       </div>
     </div>

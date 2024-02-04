@@ -117,6 +117,39 @@ export function CreateUser() {
             />
             <FormField
               control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Senha</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira a senha" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Telefone</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Insira o telefone"
+                      {...field}
+                      ref={phoneRef}
+                      onInput={(evt) => {
+                        form.setValue('phone', evt.currentTarget.value)
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="document"
               render={({ field }) => (
                 <FormItem>
@@ -144,56 +177,10 @@ export function CreateUser() {
                   <FormControl>
                     <DatePicker
                       {...field}
-                      selected={field.value}
+                      selected={field.value ? new Date(field.value) : undefined}
                       onSelect={field.onChange}
                       layout="dropdown"
                       maxYear={new Date().getFullYear() - 18}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="instagram"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Instagram</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Insira o instagram" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="pixKey"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Pix</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Insira o pix" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="phone"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Telefone</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Insira o telefone"
-                      {...field}
-                      ref={phoneRef}
-                      onInput={(evt) => {
-                        form.setValue('phone', evt.currentTarget.value)
-                      }}
                     />
                   </FormControl>
                   <FormMessage />
@@ -228,12 +215,25 @@ export function CreateUser() {
             />
             <FormField
               control={form.control}
-              name="password"
+              name="instagram"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Senha</FormLabel>
+                  <FormLabel>Instagram</FormLabel>
                   <FormControl>
-                    <Input placeholder="Insira a senha" {...field} />
+                    <Input placeholder="Insira o instagram" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="pixKey"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Pix</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira o pix" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

@@ -25,13 +25,16 @@ export const createUserSchema = z.object({
     .min(11, { message: 'O telefone deve ter pelo menos 3 caracteres' }),
 
   document: z.string().optional(),
-  birthDate: z.string({ required_error: 'A data de nascimento é obrigatória' }),
+  birthDate: z.date({ required_error: 'A data de nascimento é obrigatória' }),
   instagram: z.string().optional(),
   pixKey: z.string().optional(),
   password: z
     .string()
     .min(8, { message: 'A senha deve ter pelo menos 8 caracteres' }),
-  profileId: z.coerce.number(),
+  profileId: z.coerce.number({
+    required_error: 'O perfil é obrigatório',
+    invalid_type_error: 'O perfil é inválido',
+  }),
 })
 
 export type CreateUserForm = z.infer<typeof createUserSchema>

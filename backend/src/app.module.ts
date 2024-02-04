@@ -12,6 +12,7 @@ import { MeetingsModule } from './meetings/meetings.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+import { AutocompleteModule } from './autocomplete/autocomplete.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
         },
       },
     }),
+    AutocompleteModule,
   ],
   controllers: [AppController],
   providers: [

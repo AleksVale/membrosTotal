@@ -17,6 +17,7 @@ async function bootstrap() {
     .setTitle('Area API')
     .setDescription('Uma api para uma área de membros')
     .setVersion('1.0')
+    .setBasePath('/api')
     .addTag('MEMBROS')
     .build();
   const document = SwaggerModule.createDocument(app, config);

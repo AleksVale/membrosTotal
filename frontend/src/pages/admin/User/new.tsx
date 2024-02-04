@@ -20,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import { DatePicker } from '@/components/ui/date-picker'
 const doocumentMask: MaskitoOptions = {
   mask: [
     /\d/,
@@ -141,9 +142,12 @@ export function CreateUser() {
                 <FormItem>
                   <FormLabel>Data de nascimento</FormLabel>
                   <FormControl>
-                    <Input
-                      placeholder="Insira sua data de nascimento"
+                    <DatePicker
                       {...field}
+                      selected={field.value}
+                      onSelect={field.onChange}
+                      layout="dropdown"
+                      maxYear={new Date().getFullYear() - 18}
                     />
                   </FormControl>
                   <FormMessage />
@@ -206,7 +210,7 @@ export function CreateUser() {
                     <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select a verified email to display" />
+                          <SelectValue placeholder="Selecione um perfil" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -215,13 +219,6 @@ export function CreateUser() {
                             {profile.label}
                           </SelectItem>
                         ))}
-                        <SelectItem value={'1'}>m@example.com</SelectItem>
-                        <SelectItem value="m@google.com">
-                          m@google.com
-                        </SelectItem>
-                        <SelectItem value="m@support.com">
-                          m@support.com
-                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormControl>

@@ -1,8 +1,10 @@
-import { ProfileOptions } from '@/utils/constants/profiles'
 import { zodResolver } from '@hookform/resolvers/zod'
-import React from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { CreateUserForm, createUserSchema } from '../interfaces'
+import AutocompleteService, {
+  Autocomplete,
+} from '@/services/autocomplete.service'
 
 export function useNewUser() {
   const form = useForm<CreateUserForm>({
@@ -10,7 +12,7 @@ export function useNewUser() {
     defaultValues: {
       email: '',
       password: '',
-      birthDate: '',
+      birthDate: undefined,
       document: '',
       firstName: '',
       instagram: '',
@@ -23,9 +25,15 @@ export function useNewUser() {
   const handleSubmitForm = (data: CreateUserForm) => {
     console.log(data)
   }
-  const [profileOptions, setProfileOptions] = React.useState<ProfileOptions[]>(
-    [],
-  )
+  const [profileOptions, setProfileOptions] = React.useState<Autocomplete[]>([])
+  const fetchProfileOptions = useCallback(async () => {
+    const response = await AutocompleteService.fetchAutocomplete(['profiles'])
+    setProfileOptions(response.data.profiles ?? [])
+  }, [])
+
+  useEffect(() => {
+    fetchProfileOptions()
+  }, [fetchProfileOptions])
 
   const { isSubmitting } = form.formState
 

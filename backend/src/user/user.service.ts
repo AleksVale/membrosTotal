@@ -10,6 +10,14 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
 
+export interface UserFilter {
+  email?: string;
+  name?: string;
+  phone?: string;
+  profile?: string;
+  page: number;
+  per_page: number;
+}
 @Injectable()
 export class UserService {
   constructor(
@@ -102,7 +110,7 @@ export class UserService {
     return user;
   }
 
-  async findAll(options: { page: number; per_page: number }) {
+  async findAll(options: UserFilter) {
     return await this.userRepository.findAll(options);
   }
 }

@@ -72,10 +72,16 @@ export class UserController {
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
+    @Query('name') name?: string,
+    @Query('email') email?: string,
+    @Query('profile') profile?: string,
   ) {
     return this.userService.findAll({
       page,
       per_page,
+      name,
+      email,
+      profile,
     });
   }
 }

@@ -3,6 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { UserResponseDTO } from './dto/user-response.dto';
 import { createPaginator } from 'prisma-pagination';
+import { UserFilter } from './user.service';
 
 @Injectable()
 export class UserRepository {
@@ -31,13 +32,25 @@ export class UserRepository {
     });
   }
 
-  async findAll(options: { page: number; per_page: number }) {
+  async findAll(options: UserFilter) {
     const paginate = createPaginator({ perPage: options.per_page });
+    let userIds: number[] | undefined = undefined;
+    if (options.name) {
+      const ids = await this.prisma.$queryRaw<{ id: number }[]>`
+    SELECT id
+    FROM users
+    WHERE CONCAT(firstName, ' ', lastName) LIKE ${`%${options.name}%`}
+  `;
+      userIds = ids.map((user) => user.id);
+    }
 
     return paginate<UserResponseDTO, Prisma.UserFindManyArgs>(
       this.prisma.user,
       {
-        where: {},
+        where: {
+          id: { in: userIds },
+          email: { contains: options.email },
+        },
         orderBy: { email: 'asc' },
         include: {
           Profile: true,

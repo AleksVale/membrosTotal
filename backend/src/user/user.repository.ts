@@ -50,6 +50,7 @@ export class UserRepository {
         where: {
           id: { in: userIds },
           email: { contains: options.email },
+          profileId: options.profile ? parseInt(options.profile) : undefined,
         },
         orderBy: { email: 'asc' },
         include: {

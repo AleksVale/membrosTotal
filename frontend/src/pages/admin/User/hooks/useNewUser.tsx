@@ -26,6 +26,7 @@ export function useNewUser() {
       pixKey: '',
     },
   })
+  const [profileOptions, setProfileOptions] = React.useState<Autocomplete[]>([])
 
   const handleSubmitForm = useCallback(
     async (data: CreateUserForm) => {
@@ -37,7 +38,6 @@ export function useNewUser() {
     },
     [navigate],
   )
-  const [profileOptions, setProfileOptions] = React.useState<Autocomplete[]>([])
   const fetchProfileOptions = useCallback(async () => {
     const response = await AutocompleteService.fetchAutocomplete(['profiles'])
     setProfileOptions(response.data.profiles ?? [])

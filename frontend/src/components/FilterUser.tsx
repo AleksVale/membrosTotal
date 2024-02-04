@@ -16,10 +16,23 @@ import {
   FormMessage,
 } from './ui/form'
 import { Input } from './ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select'
 
 export default function FilterUser() {
-  const { isOpen, setIsOpen, form, handleSubmitForm, handleClearFilter } =
-    useFilterUser()
+  const {
+    isOpen,
+    setIsOpen,
+    form,
+    handleSubmitForm,
+    handleClearFilter,
+    profileOptions,
+  } = useFilterUser()
   return (
     <section className="py-4">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
@@ -67,12 +80,28 @@ export default function FilterUser() {
                 />
                 <FormField
                   control={form.control}
-                  name="document"
+                  name="profile"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Documento</FormLabel>
+                      <FormLabel>Perfil</FormLabel>
                       <FormControl>
-                        <Input placeholder="Insira o documento" {...field} />
+                        <Select onValueChange={field.onChange}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione um perfil" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {profileOptions.map((profile) => (
+                              <SelectItem
+                                key={profile.id}
+                                value={`${profile.id}`}
+                              >
+                                {profile.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>

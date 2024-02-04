@@ -50,7 +50,7 @@ export const filterUserSchema = z.object({
   birthDate: z.string().optional(),
   instagram: z.string().optional(),
   pixKey: z.string().optional(),
-  profileId: z.string().optional(),
+  profile: z.string().optional(),
 })
 
 export type FilterUserForm = z.infer<typeof filterUserSchema>

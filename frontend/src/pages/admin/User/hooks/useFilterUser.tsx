@@ -2,7 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 import { useSearchParams } from 'react-router-dom'
 import { FilterUserForm, filterUserSchema } from '../interfaces'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
+import AutocompleteService, {
+  Autocomplete,
+} from '@/services/autocomplete.service'
 
 export function useFilterUser() {
   const [, setSearchParams] = useSearchParams()
@@ -17,6 +20,7 @@ export function useFilterUser() {
       phone: '',
     },
   })
+  const [profileOptions, setProfileOptions] = useState<Autocomplete[]>([])
 
   const { reset } = form
 
@@ -48,11 +52,21 @@ export function useFilterUser() {
     })
     reset()
   }, [reset, setSearchParams])
+
+  const fetchProfileOptions = useCallback(async () => {
+    const response = await AutocompleteService.fetchAutocomplete(['profiles'])
+    setProfileOptions(response.data.profiles ?? [])
+  }, [])
+
+  useEffect(() => {
+    fetchProfileOptions()
+  }, [fetchProfileOptions])
   return {
     form,
     handleSubmitForm,
     isOpen,
     setIsOpen,
     handleClearFilter,
+    profileOptions,
   }
 }

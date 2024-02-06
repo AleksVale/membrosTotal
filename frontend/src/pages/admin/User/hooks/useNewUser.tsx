@@ -43,6 +43,10 @@ export function useNewUser() {
     setProfileOptions(response.data.profiles ?? [])
   }, [])
 
+  const goBack = () => {
+    navigate(-1)
+  }
+
   useEffect(() => {
     fetchProfileOptions()
   }, [fetchProfileOptions])
@@ -54,5 +58,6 @@ export function useNewUser() {
     form,
     isSubmitting,
     handleSubmitForm,
+    goBack,
   }
 }

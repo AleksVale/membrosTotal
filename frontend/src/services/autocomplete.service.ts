@@ -2,9 +2,9 @@ import http from '@/lib/http'
 
 export interface Autocomplete {
   id: number
-  name: string
-  fullname: string
-  label: string
+  name?: string
+  fullName?: string
+  label?: string
 }
 
 interface AutocompleteResponse {

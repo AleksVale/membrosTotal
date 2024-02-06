@@ -2,10 +2,12 @@ import { createBrowserRouter } from 'react-router-dom'
 import NotFound from './pages/NotFound'
 import { Login } from './pages/Login'
 import DefaultLayout from './@layouts/DefaultLayout'
-import { AdminLayout } from './@layouts/AdminLayout'
 import { Home } from './pages/admin/Home'
 import { ListUser } from './pages/admin/User'
 import { CreateUser } from './pages/admin/User/new'
+import { ListMeetings } from './pages/admin/Meeting/list'
+import { AdminLayout } from './@layouts/Adminlayout'
+import { CreateMeeting } from './pages/admin/Meeting/new'
 
 export const routes = createBrowserRouter([
   {
@@ -22,6 +24,8 @@ export const routes = createBrowserRouter([
       { path: 'home', element: <Home /> },
       { path: 'user', element: <ListUser /> },
       { path: 'user/new', element: <CreateUser /> },
+      { path: 'meetings', element: <ListMeetings /> },
+      { path: 'meetings/new', element: <CreateMeeting /> },
     ],
   },
 ])

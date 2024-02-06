@@ -1,23 +1,18 @@
 import { DataTable } from '@/components/DataTable'
 import { columns } from './columns'
 import { useEffect, useState } from 'react'
-import UserService, { PaginationMeta } from '@/services/user.service'
+import UserService from '@/services/user.service'
 import { useSearchParams } from 'react-router-dom'
 import { User } from './interfaces'
 import { HeaderUser } from '@/components/HeaderUser'
 import FilterUser from '@/components/FilterUser'
+import { DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
+import { PaginationMeta } from '@/services/interfaces'
 
 export function ListUser() {
   const [searchParams] = useSearchParams()
   const [data, setData] = useState<User[]>([])
-  const [meta, setMeta] = useState<PaginationMeta>({
-    currentPage: 1,
-    lastPage: 1,
-    next: 1,
-    perPage: 10,
-    prev: 1,
-    total: 1,
-  })
+  const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
   useEffect(() => {
     UserService.getUsers(searchParams).then((response) => {
       setData(response.data.data)
@@ -28,7 +23,9 @@ export function ListUser() {
     <div className="container mx-auto py-2">
       <HeaderUser label="Usuários" showButton />
       <FilterUser />
-      <DataTable columns={columns} data={data} meta={meta} />
+      <section>
+        <DataTable columns={columns} data={data} meta={meta} />
+      </section>
     </div>
   )
 }

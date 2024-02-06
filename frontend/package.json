@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.18",
+    "@headlessui/tailwindcss": "^0.2.0",
     "@hookform/resolvers": "^3.3.4",
     "@maskito/core": "^2.0.2",
     "@maskito/react": "^2.0.2",
@@ -26,6 +28,7 @@
     "axios": "^1.6.7",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
+    "cmdk": "^0.2.1",
     "date-fns": "^3.3.1",
     "dayjs": "^1.11.10",
     "imask": "^7.3.0",

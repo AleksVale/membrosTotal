@@ -61,7 +61,8 @@ const phoneMask: MaskitoOptions = {
 }
 
 export function CreateUser() {
-  const { form, isSubmitting, profileOptions, handleSubmitForm } = useNewUser()
+  const { form, isSubmitting, profileOptions, handleSubmitForm, goBack } =
+    useNewUser()
 
   const documentRef = useMaskito({ options: doocumentMask })
 
@@ -241,6 +242,14 @@ export function CreateUser() {
             />
           </div>
           <div className="flex justify-end gap-3">
+            <Button
+              type="button"
+              size={'lg'}
+              variant={'secondary'}
+              onClick={goBack}
+            >
+              Cancelar
+            </Button>
             <Button type="submit" size={'lg'} disabled={isSubmitting}>
               {isSubmitting ? (
                 <>

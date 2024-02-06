@@ -9,7 +9,7 @@ import AutocompleteService, {
 
 export function useFilterUser() {
   const [, setSearchParams] = useSearchParams()
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const form = useForm<FilterUserForm>({
     resolver: zodResolver(filterUserSchema),
     defaultValues: {

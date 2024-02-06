@@ -73,7 +73,7 @@ export function DataTablePagination<TData>({
             variant="outline"
             className="h-8 w-8 p-0"
             onClick={() => onPageChange(1)}
-            disabled={maxPage === Number(searchParams.get('page'))}
+            disabled={maxPage <= Number(searchParams.get('page'))}
           >
             <span className="sr-only">Go to next page</span>
             <ChevronRightIcon className="h-4 w-4" />

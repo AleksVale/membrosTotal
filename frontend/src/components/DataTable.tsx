@@ -18,7 +18,7 @@ import {
 import React from 'react'
 import { DataTablePagination } from './DataTablePagination'
 import { useSearchParams } from 'react-router-dom'
-import { PaginationMeta } from '@/services/user.service'
+import { PaginationMeta } from '@/services/interfaces'
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="rounded-md border min-h-96 flex flex-col justify-between">
+    <div className="rounded-md border min-w-0 min-h-96 flex flex-col justify-between">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

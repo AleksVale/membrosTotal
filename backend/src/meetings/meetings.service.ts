@@ -10,10 +10,12 @@ import { MeetingRepository } from './meeting.repository';
 import { DateUtils } from 'src/utils/date';
 import { Prisma, StatusMeeting } from '@prisma/client';
 
-interface IMeetingFilters {
+export interface IMeetingFilters {
   status?: string;
   date?: string;
   user?: number;
+  page: number;
+  per_page: number;
 }
 
 @Injectable()
@@ -30,6 +32,7 @@ export class MeetingsService {
       const createInput: Prisma.MeetingCreateInput = {
         title: createMeetingDto.title,
         link: createMeetingDto.link,
+        description: createMeetingDto.description,
         date: DateUtils.stringToDate(createMeetingDto.meetingDate),
         UserMeeting: {
           createMany: {
@@ -83,11 +86,13 @@ export class MeetingsService {
     }
   }
 
-  findAll({ date, status, user }: IMeetingFilters) {
+  findAll({ date, status, user, page, per_page }: IMeetingFilters) {
     return this.meetingRepository.findAll({
       date,
       status,
       user,
+      page,
+      per_page,
     });
   }
 

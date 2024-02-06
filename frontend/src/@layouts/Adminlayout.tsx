@@ -13,7 +13,7 @@ import { JSX } from 'react/jsx-runtime'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import { User } from 'lucide-react'
+import { Speech, User } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
@@ -50,6 +50,11 @@ export function AdminLayout() {
                 to={ADMIN_PAGES.listUsers}
                 icon={<UsersIcon className="h-6 w-6" />}
                 label="Usuários"
+              />
+              <MenuLink
+                to={ADMIN_PAGES.listMeetings}
+                icon={<Speech className="h-6 w-6" />}
+                label="Reuniões"
               />
               <MenuLink
                 to={ADMIN_PAGES.settings}

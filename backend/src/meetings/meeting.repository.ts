@@ -2,12 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, StatusMeeting } from '@prisma/client';
 import { DateUtils } from '../utils/date';
-
-interface IFilterMeetings {
-  status?: string;
-  date?: string;
-  user?: number;
-}
+import { createPaginator } from 'prisma-pagination';
+import { MeetingResponseDTO } from './dto/meeting-response.dto';
+import { IMeetingFilters } from './meetings.service';
 
 @Injectable()
 export class MeetingRepository {
@@ -46,7 +43,9 @@ export class MeetingRepository {
     });
   }
 
-  async findAll({ date, status, user }: IFilterMeetings) {
+  async findAll({ date, status, user, page, per_page }: IMeetingFilters) {
+    const paginate = createPaginator({ perPage: per_page });
+
     const where: Prisma.MeetingWhereInput = {};
     where.UserMeeting = {};
     where.UserMeeting.some = {};
@@ -64,16 +63,23 @@ export class MeetingRepository {
       };
     }
 
-    return await this.prisma.meeting.findMany({
-      where,
-      include: {
-        UserMeeting: {
-          include: {
-            User: true,
+    return paginate<MeetingResponseDTO, Prisma.MeetingFindManyArgs>(
+      this.prisma.meeting,
+      {
+        where,
+        orderBy: { date: 'asc' },
+        include: {
+          UserMeeting: {
+            include: {
+              User: true,
+            },
           },
         },
       },
-    });
+      {
+        page,
+      },
+    );
   }
 
   getMeetingUser(user: number[]) {

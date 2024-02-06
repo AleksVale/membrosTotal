@@ -7,6 +7,8 @@ import {
   Param,
   UseGuards,
   Query,
+  DefaultValuePipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { MeetingsService } from './meetings.service';
 import { CreateMeetingDTO } from './dto/create-meeting.dto';
@@ -54,6 +56,8 @@ export class MeetingsController {
   @ApiQuery({ name: 'user', required: false, description: 'Filter by user ID' })
   @Get()
   findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
     @Query('status') status?: string,
     @Query('date') date?: string,
     @Query('user') user?: string,
@@ -62,6 +66,8 @@ export class MeetingsController {
       date,
       status,
       user: user ? parseInt(user) : undefined,
+      page,
+      per_page,
     });
   }
 

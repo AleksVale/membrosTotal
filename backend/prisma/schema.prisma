@@ -50,6 +50,7 @@ model Profile {
 model Meeting {
   id          Int           @id @default(autoincrement())
   title       String
+  description String
   date        DateTime
   link        String
   status      StatusMeeting @default(PENDING)

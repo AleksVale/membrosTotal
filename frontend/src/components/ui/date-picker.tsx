@@ -45,8 +45,8 @@ export function DatePicker({
       if (showTime && select && time) {
         const [hours, minutes] = time.split(':')
         const date = select ?? new Date()
-        date.setHours(Number(hours))
-        date.setMinutes(Number(minutes))
+        date.setUTCHours(Number(hours))
+        date.setUTCMinutes(Number(minutes))
         onSelect(date)
         return
       }

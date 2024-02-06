@@ -18,7 +18,7 @@ export function useCreateMeeting() {
     defaultValues: {
       description: '',
       link: '',
-      meetingDate: '',
+      meetingDate: undefined,
       title: '',
       users: [],
     },

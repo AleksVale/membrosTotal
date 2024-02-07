@@ -19,6 +19,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RoleGuard } from '../auth/role/role.guard';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { MeetingResponseDTO } from './dto/meeting-response.dto';
+import { StatusMeeting } from '@prisma/client';
 
 @ApiTags('Meetings')
 @Roles(['admin'])
@@ -92,5 +93,13 @@ export class MeetingsController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMeetingDto: UpdateMeetingDTO) {
     return this.meetingsService.update(+id, updateMeetingDto);
+  }
+  @Patch(':id/cancel')
+  cancelMeeting(@Param('id') id: string) {
+    return this.meetingsService.changeStatus(+id, StatusMeeting.CANCELED);
+  }
+  @Patch(':id/finish')
+  finishMeeting(@Param('id') id: string) {
+    return this.meetingsService.changeStatus(+id, StatusMeeting.DONE);
   }
 }

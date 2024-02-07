@@ -128,4 +128,12 @@ export class MeetingsService {
     };
     await this.meetingRepository.update(entity, { id });
   }
+
+  async changeStatus(id: number, status: StatusMeeting) {
+    const meeting = await this.meetingRepository.find({ id });
+    if (!meeting) throw new BadRequestException('Reunião não encontrada');
+    const newStatus = StatusMeeting[status];
+    if (!newStatus) throw new BadRequestException('Status inválido');
+    await this.meetingRepository.update({ status: newStatus }, { id });
+  }
 }

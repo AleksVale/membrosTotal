@@ -1,4 +1,5 @@
 import { ColumnDef } from '@tanstack/react-table'
+import { format, addMinutes } from 'date-fns'
 
 import {
   DropdownMenu,
@@ -21,9 +22,12 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog'
 import { DialogClose } from '@radix-ui/react-dialog'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useCallback, useEffect, useState } from 'react'
-import MeetingService, { Meeting } from '@/services/meeting.service'
+import MeetingService, {
+  Meeting,
+  MeetingStatus,
+} from '@/services/meeting.service'
 import { PaginationMeta } from '@/services/interfaces'
 import { DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
 
@@ -63,30 +67,46 @@ export function useListMeeting() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Data" />
       ),
+      accessorFn: (row) =>
+        format(
+          addMinutes(row.date, new Date(row.date).getTimezoneOffset()),
+          'dd/MM/yyyy HH:mm',
+        ),
     },
     {
       accessorKey: 'link',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Link" />
       ),
+      cell: ({ row }) => {
+        const original = row.original
+        return (
+          <Link to={original.link} target="_blank">
+            {original.link}
+          </Link>
+        )
+      },
     },
     {
       accessorKey: 'status',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
+      accessorFn: (row) => MeetingStatus[row.status],
     },
     {
       accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Criado em" />
       ),
+      accessorFn: (row) => format(row.createdAt, 'dd/MM/yyyy'),
     },
     {
       accessorKey: 'updatedAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Atualizada em" />
       ),
+      accessorFn: (row) => format(row.updatedAt, 'dd/MM/yyyy'),
     },
     {
       id: 'actions',

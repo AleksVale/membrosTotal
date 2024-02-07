@@ -8,6 +8,7 @@ import { CreateUser } from './pages/admin/User/new'
 import { ListMeetings } from './pages/admin/Meeting/list'
 import { AdminLayout } from './@layouts/Adminlayout'
 import { CreateMeeting } from './pages/admin/Meeting/new'
+import { EditUser } from './pages/admin/User/edit'
 
 export const routes = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ export const routes = createBrowserRouter([
       { path: 'home', element: <Home /> },
       { path: 'user', element: <ListUser /> },
       { path: 'user/new', element: <CreateUser /> },
+      { path: 'user/:id/e', element: <EditUser /> },
       { path: 'meetings', element: <ListMeetings /> },
       { path: 'meetings/new', element: <CreateMeeting /> },
     ],

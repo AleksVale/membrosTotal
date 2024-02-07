@@ -14,6 +14,7 @@ import { HeaderMeeting } from '@/components/HeaderMeeting'
 import { Textarea } from '@/components/ui/textarea'
 import { Autocomplete } from '@/components/ComboBox'
 import { DatePicker } from '@/components/ui/date-picker'
+import { Helmet } from 'react-helmet-async'
 
 export function CreateMeeting() {
   const { form, isSubmitting, handleSubmitForm, goBack, userOptions } =
@@ -21,6 +22,7 @@ export function CreateMeeting() {
 
   return (
     <div>
+      <Helmet title="Nova reunião" />
       <HeaderMeeting label="Criar reunião" />
       <Form {...form}>
         <form

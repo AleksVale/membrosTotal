@@ -10,8 +10,8 @@ import { envSchema } from './env';
 import { AuthModule } from './auth/auth.module';
 import { MeetingsModule } from './meetings/meetings.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { MailerModule } from '@nestjs-modules/mailer';
-import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
+// import { MailerModule } from '@nestjs-modules/mailer';
+// import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { AutocompleteModule } from './autocomplete/autocomplete.module';
 
 @Module({
@@ -25,22 +25,22 @@ import { AutocompleteModule } from './autocomplete/autocomplete.module';
     }),
     MeetingsModule,
     PrismaModule,
-    MailerModule.forRoot({
-      transport: {
-        host: 'smtp.gmail.com',
-        auth: {
-          user: 'undefined',
-          pass: 'undefined',
-        },
-      },
-      template: {
-        dir: __dirname + '/templates',
-        adapter: new PugAdapter(),
-        options: {
-          strict: true,
-        },
-      },
-    }),
+    // MailerModule.forRoot({
+    //   transport: {
+    //     host: 'smtp.gmail.com',
+    //     auth: {
+    //       user: 'undefined',
+    //       pass: 'undefined',
+    //     },
+    //   },
+    //   template: {
+    //     dir: __dirname + '/templates',
+    //     adapter: new PugAdapter(),
+    //     options: {
+    //       strict: true,
+    //     },
+    //   },
+    // }),
     AutocompleteModule,
   ],
   controllers: [AppController],

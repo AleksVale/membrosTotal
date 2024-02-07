@@ -1,6 +1,12 @@
 import dayjs from 'dayjs'
 import { z } from 'zod'
 
+export type Profile = {
+  id: number
+  label: string
+  name: string
+}
+
 export type User = {
   id: string
   email: string
@@ -11,6 +17,7 @@ export type User = {
   pixKey: string
   firstName: string
   lastName: string
+  Profile: Profile
 }
 
 export const createUserSchema = z.object({
@@ -26,14 +33,15 @@ export const createUserSchema = z.object({
     .min(11, { message: 'O telefone deve ter pelo menos 3 caracteres' }),
 
   document: z.string().optional(),
-  birthDate: z
+  birthDate: z.coerce
     .date({ required_error: 'A data de nascimento é obrigatória' })
     .transform((date) => dayjs(date, 'YYYY-DD-MM').format('YYYY-MM-DD')),
   instagram: z.string().optional(),
   pixKey: z.string().optional(),
   password: z
     .string()
-    .min(8, { message: 'A senha deve ter pelo menos 8 caracteres' }),
+    .min(8, { message: 'A senha deve ter pelo menos 8 caracteres' })
+    .optional(),
   profileId: z.coerce.number({
     required_error: 'O perfil é obrigatório',
     invalid_type_error: 'O perfil é inválido',

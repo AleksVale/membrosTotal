@@ -53,16 +53,23 @@ export class MeetingsController {
     required: false,
     description: 'Filter by meeting date',
   })
+  @ApiQuery({
+    name: 'title',
+    required: false,
+    description: 'Filter by meeting title',
+  })
   @ApiQuery({ name: 'user', required: false, description: 'Filter by user ID' })
   @Get()
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
+    @Query('title') title?: string,
     @Query('status') status?: string,
     @Query('date') date?: string,
     @Query('user') user?: string,
   ) {
     return this.meetingsService.findAll({
+      title,
       date,
       status,
       user: user ? parseInt(user) : undefined,

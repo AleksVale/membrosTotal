@@ -8,7 +8,7 @@ import { UserRepository } from './user.repository';
 import { DateUtils } from 'src/utils/date';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 
 export interface UserFilter {
   email?: string;
@@ -20,10 +20,7 @@ export interface UserFilter {
 }
 @Injectable()
 export class UserService {
-  constructor(
-    private userRepository: UserRepository,
-    private readonly mailerService: MailerService,
-  ) {}
+  constructor(private userRepository: UserRepository) {}
 
   private async hashPassword(password: string) {
     const saltRounds = 10;
@@ -88,20 +85,20 @@ export class UserService {
   async findOne(id: number) {
     const user = await this.userRepository.find({ id });
     if (!user) throw new NotFoundException('Usuário não encontrado');
-    this.mailerService
-      .sendMail({
-        to: 'alexalexx3@gmail.com', // list of receivers
-        from: 'noreply@nestjs.com', // sender address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
-        html: '<b>welcome</b>', // HTML body content
-      })
-      .then(() => {
-        console.log('aqio');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // this.mailerService
+    //   .sendMail({
+    //     to: 'alexalexx3@gmail.com', // list of receivers
+    //     from: 'noreply@nestjs.com', // sender address
+    //     subject: 'Testing Nest MailerModule ✔', // Subject line
+    //     text: 'welcome', // plaintext body
+    //     html: '<b>welcome</b>', // HTML body content
+    //   })
+    //   .then(() => {
+    //     console.log('aqio');
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
     return user;
   }
 

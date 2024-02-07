@@ -1,5 +1,5 @@
 import { DataTable } from '@/components/DataTable'
-import { columns } from './columns'
+import { useColumnsUser } from './columns'
 import { useEffect, useState } from 'react'
 import UserService from '@/services/user.service'
 import { useSearchParams } from 'react-router-dom'
@@ -8,6 +8,7 @@ import { HeaderUser } from '@/components/HeaderUser'
 import FilterUser from '@/components/FilterUser'
 import { DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
 import { PaginationMeta } from '@/services/interfaces'
+import { Helmet } from 'react-helmet-async'
 
 export function ListUser() {
   const [searchParams] = useSearchParams()
@@ -19,8 +20,10 @@ export function ListUser() {
       setMeta(response.data.meta)
     })
   }, [searchParams])
+  const { columns } = useColumnsUser()
   return (
     <div className="container mx-auto py-2">
+      <Helmet title="Usuários" />
       <HeaderUser label="Usuários" showButton />
       <FilterUser />
       <section>

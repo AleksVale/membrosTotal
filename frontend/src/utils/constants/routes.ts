@@ -1,4 +1,5 @@
 export const ADMIN_PAGES = {
+  prefix: '/admin',
   home: '/admin/home',
   listUsers: '/admin/user?page=1&per_page=10',
   createUser: '/admin/user/new',

@@ -18,3 +18,11 @@ export const createMeetingSchema = z.object({
 })
 
 export type CreateMeetingDTO = z.infer<typeof createMeetingSchema>
+
+export const filterMeetingSchema = z.object({
+  title: z.string().optional(),
+  date: z.date().optional(),
+  status: z.enum(['PENDING', 'DONE', 'CANCELED', 'ALL']).optional(),
+})
+
+export type FilterMeeting = z.infer<typeof filterMeetingSchema>

@@ -2,15 +2,20 @@ import http from '@/lib/http'
 import { SuccessResponse } from '@/utils/constants/routes'
 import { PaginatedResponseDto } from './interfaces'
 
+export enum MeetingStatus {
+  PENDING = 'Pendente',
+  DONE = 'Realizada',
+  CANCELED = 'Cancelada',
+}
 export interface Meeting {
   id: number
   date: string
-  status: string
+  status: 'PENDING' | 'DONE' | 'CANCELED'
   link: string
   title: string
   description: string
-  created_at: string
-  updated_at: string
+  createdAt: string
+  updatedAt: string
 }
 
 const getMeetings = async (searchParams: URLSearchParams) => {

@@ -9,13 +9,22 @@ const getUsers = async (searchParams: URLSearchParams) => {
   )
 }
 
+const getUser = async (id: string | undefined) => {
+  return http.get<User>(`/user/${id}`)
+}
 const createUser = async (user: CreateUserForm) => {
   return http.post<SuccessResponse>('/user', user)
+}
+
+const update = async (user: CreateUserForm, id: number | string) => {
+  return http.patch<SuccessResponse>(`/user/${id}`, user)
 }
 
 const UserService = {
   getUsers,
   createUser,
+  update,
+  getUser,
 }
 
 export default UserService

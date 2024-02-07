@@ -43,12 +43,24 @@ export class MeetingRepository {
     });
   }
 
-  async findAll({ date, status, user, page, per_page }: IMeetingFilters) {
+  async findAll({
+    date,
+    status,
+    user,
+    page,
+    per_page,
+    title,
+  }: IMeetingFilters) {
     const paginate = createPaginator({ perPage: per_page });
 
     const where: Prisma.MeetingWhereInput = {};
     where.UserMeeting = {};
     where.UserMeeting.some = {};
+    if (title) {
+      where.title = {
+        contains: title,
+      };
+    }
     if (date)
       where.date = {
         lte: DateUtils.endOfDay(date),
@@ -62,7 +74,7 @@ export class MeetingRepository {
         },
       };
     }
-
+    console.log(where, 'where');
     return paginate<MeetingResponseDTO, Prisma.MeetingFindManyArgs>(
       this.prisma.meeting,
       {

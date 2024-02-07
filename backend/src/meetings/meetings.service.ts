@@ -11,6 +11,7 @@ import { DateUtils } from 'src/utils/date';
 import { Prisma, StatusMeeting } from '@prisma/client';
 
 export interface IMeetingFilters {
+  title?: string;
   status?: string;
   date?: string;
   user?: number;
@@ -86,8 +87,9 @@ export class MeetingsService {
     }
   }
 
-  findAll({ date, status, user, page, per_page }: IMeetingFilters) {
+  findAll({ date, status, user, page, per_page, title }: IMeetingFilters) {
     return this.meetingRepository.findAll({
+      title,
       date,
       status,
       user,

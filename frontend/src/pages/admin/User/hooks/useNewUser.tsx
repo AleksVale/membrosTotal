@@ -1,10 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useCallback, useEffect } from 'react'
+import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { CreateUserForm, createUserSchema } from '../interfaces'
-import AutocompleteService, {
-  Autocomplete,
-} from '@/services/autocomplete.service'
 import UserService from '@/services/user.service'
 import { useNavigate } from 'react-router-dom'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
@@ -26,7 +23,6 @@ export function useNewUser() {
       pixKey: '',
     },
   })
-  const [profileOptions, setProfileOptions] = React.useState<Autocomplete[]>([])
 
   const handleSubmitForm = useCallback(
     async (data: CreateUserForm) => {
@@ -38,26 +34,12 @@ export function useNewUser() {
     },
     [navigate],
   )
-  const fetchProfileOptions = useCallback(async () => {
-    const response = await AutocompleteService.fetchAutocomplete(['profiles'])
-    setProfileOptions(response.data.profiles ?? [])
-  }, [])
-
-  const goBack = () => {
-    navigate(-1)
-  }
-
-  useEffect(() => {
-    fetchProfileOptions()
-  }, [fetchProfileOptions])
 
   const { isSubmitting } = form.formState
 
   return {
-    profileOptions,
     form,
     isSubmitting,
     handleSubmitForm,
-    goBack,
   }
 }

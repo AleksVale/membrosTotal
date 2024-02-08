@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import React, { useCallback, useEffect, useState } from 'react'
+import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import AutocompleteService, {
-  Autocomplete,
-} from '@/services/autocomplete.service'
 import { useNavigate } from 'react-router-dom'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
@@ -12,7 +9,6 @@ import MeetingService from '@/services/meeting.service'
 
 export function useCreateMeeting() {
   const navigate = useNavigate()
-  const [user, setUser] = useState<Autocomplete[]>([])
   const form = useForm<CreateMeetingDTO>({
     resolver: zodResolver(createMeetingSchema),
     defaultValues: {
@@ -23,7 +19,6 @@ export function useCreateMeeting() {
       users: [],
     },
   })
-  const [userOptions, setUserOptions] = React.useState<Autocomplete[]>([])
 
   const handleSubmitForm = useCallback(
     async (data: CreateMeetingDTO) => {
@@ -37,28 +32,12 @@ export function useCreateMeeting() {
     },
     [navigate],
   )
-  const fetchUserOptions = useCallback(async () => {
-    const response = await AutocompleteService.fetchAutocomplete(['users'])
-    setUserOptions(response.data.users ?? [])
-  }, [])
-
-  const goBack = () => {
-    navigate(-1)
-  }
-
-  useEffect(() => {
-    fetchUserOptions()
-  }, [fetchUserOptions])
 
   const { isSubmitting } = form.formState
 
   return {
-    userOptions,
     form,
     isSubmitting,
     handleSubmitForm,
-    goBack,
-    user,
-    setUser,
   }
 }

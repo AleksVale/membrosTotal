@@ -134,6 +134,6 @@ export class MeetingsService {
     if (!meeting) throw new BadRequestException('Reunião não encontrada');
     const newStatus = StatusMeeting[status];
     if (!newStatus) throw new BadRequestException('Status inválido');
-    await this.meetingRepository.update({ status: newStatus }, { id });
+    return await this.meetingRepository.update({ status: newStatus }, { id });
   }
 }

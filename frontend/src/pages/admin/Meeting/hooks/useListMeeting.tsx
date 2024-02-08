@@ -8,7 +8,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Trash } from 'lucide-react'
+import { CheckSquareIcon, Edit, MoreHorizontal, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { DataTableColumnHeader } from '@/components/DataTableColumnHeader'
@@ -29,15 +29,13 @@ import MeetingService, {
   MeetingStatus,
 } from '@/services/meeting.service'
 import { PaginationMeta } from '@/services/interfaces'
-import { DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
+import { ADMIN_PAGES, DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
+import { toast } from 'react-toastify'
 
 export function useListMeeting() {
   const [searchParams] = useSearchParams()
   const [meetings, setMeetings] = useState<Meeting[]>([])
   const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
-  const handleConfirmDeleteUser = (id: number) => {
-    console.log('deleting user', id)
-  }
 
   const getMeetings = useCallback(async () => {
     const response = await MeetingService.getMeetings(searchParams)
@@ -45,6 +43,21 @@ export function useListMeeting() {
     setMeta(response.data.meta)
   }, [searchParams])
 
+  const handleCancelMeeting = async (id: number) => {
+    const { data } = await MeetingService.cancelMeeting(id)
+    if (data.success) {
+      toast.success('Reunião cancelada com sucesso')
+    }
+    getMeetings()
+  }
+
+  const handleFinishMeeting = async (id: number) => {
+    const { data } = await MeetingService.finishMeeting(id)
+    if (data.success) {
+      toast.success('Reunião finalizada com sucesso')
+    }
+    getMeetings()
+  }
   useEffect(() => {
     getMeetings()
   }, [getMeetings])
@@ -111,7 +124,7 @@ export function useListMeeting() {
     {
       id: 'actions',
       cell: ({ row }) => {
-        const user = row.original
+        const meeting = row.original
 
         return (
           <Dialog>
@@ -124,12 +137,35 @@ export function useListMeeting() {
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                <DropdownMenuItem
+                  className="flex items-center gap-2 group"
+                  asChild
+                >
+                  <Link to={`${ADMIN_PAGES.prefix}/meetings/${meeting.id}/e`}>
+                    <Edit size={16} className="text-primary" />
+                    <span className="group-hover:text-primary">
+                      Editar reunião
+                    </span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={() => {
+                    handleFinishMeeting(meeting.id)
+                  }}
+                  className="flex items-center gap-2 group"
+                >
+                  <CheckSquareIcon size={16} className="text-emerald-400" />
+                  <span className="group-hover:text-emerald-400">
+                    Finalizar reunião
+                  </span>
+                </DropdownMenuItem>
+
                 <DialogTrigger asChild>
                   <DropdownMenuItem className="flex items-center gap-2 group">
+                    <X size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
                       Cancelar reunião
-                    </span>{' '}
-                    <Trash size={16} className="text-destructive" />
+                    </span>
                   </DropdownMenuItem>
                 </DialogTrigger>
               </DropdownMenuContent>
@@ -146,7 +182,7 @@ export function useListMeeting() {
                 <DialogClose asChild>
                   <Button
                     variant={'destructive'}
-                    onClick={() => handleConfirmDeleteUser(user.id)}
+                    onClick={() => handleCancelMeeting(meeting.id)}
                   >
                     Cancelar
                   </Button>

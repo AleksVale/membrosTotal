@@ -95,11 +95,23 @@ export class MeetingsController {
     return this.meetingsService.update(+id, updateMeetingDto);
   }
   @Patch(':id/cancel')
-  cancelMeeting(@Param('id') id: string) {
-    return this.meetingsService.changeStatus(+id, StatusMeeting.CANCELED);
+  async cancelMeeting(@Param('id') id: string) {
+    const result = await this.meetingsService.changeStatus(
+      +id,
+      StatusMeeting.CANCELED,
+    );
+    return {
+      success: !!result,
+    };
   }
   @Patch(':id/finish')
-  finishMeeting(@Param('id') id: string) {
-    return this.meetingsService.changeStatus(+id, StatusMeeting.DONE);
+  async finishMeeting(@Param('id') id: string) {
+    const result = await this.meetingsService.changeStatus(
+      +id,
+      StatusMeeting.DONE,
+    );
+    return {
+      success: !!result,
+    };
   }
 }

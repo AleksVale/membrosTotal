@@ -1,6 +1,6 @@
 import http from '@/lib/http'
 
-interface LoginResponse {
+export interface LoginResponse {
   token: string
   id: number
   profile: string

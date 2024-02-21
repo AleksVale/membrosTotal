@@ -10,6 +10,9 @@ import { AdminLayout } from './@layouts/Adminlayout'
 import { CreateMeeting } from './pages/admin/Meeting/new'
 import { EditUser } from './pages/admin/User/edit'
 import { EditMeeting } from './pages/admin/Meeting/edit'
+import { ColaboratorLayout } from './@layouts/ColaboratorLayout'
+import CollaboratorHome from './pages/collaborator/Home'
+import { Profile } from './pages/collaborator/Profile'
 
 export const routes = createBrowserRouter([
   {
@@ -30,6 +33,15 @@ export const routes = createBrowserRouter([
       { path: 'meetings', element: <ListMeetings /> },
       { path: 'meetings/new', element: <CreateMeeting /> },
       { path: 'meetings/:id/e', element: <EditMeeting /> },
+    ],
+  },
+  {
+    path: '/collaborator',
+    element: <ColaboratorLayout />,
+    errorElement: <NotFound />,
+    children: [
+      { path: 'home', element: <CollaboratorHome /> },
+      { path: 'profile', element: <Profile /> },
     ],
   },
 ])

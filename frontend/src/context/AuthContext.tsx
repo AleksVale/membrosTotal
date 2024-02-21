@@ -1,5 +1,5 @@
 import useLocalStorage from '@/hooks/useLocalStorage'
-import AuthService from '@/services/auth.service'
+import AuthService, { LoginResponse } from '@/services/auth.service'
 import {
   createContext,
   useState,
@@ -12,7 +12,7 @@ import {
 interface AuthContextType {
   token: string | null
   profile: string | null
-  login: (email: string, senha: string) => Promise<boolean>
+  login: (email: string, senha: string) => Promise<LoginResponse>
   logout: () => void
 }
 
@@ -35,17 +35,11 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
   const login = useCallback(
     async (email: string, senha: string) => {
-      try {
-        const token = await AuthService.login(email, senha)
+      const token = await AuthService.login(email, senha)
 
-        // Update state and local storage with the new token
-        setToken(token.data.token)
-        setProfile(token.data.profile)
-        return !!token.data
-      } catch (error) {
-        console.error(error)
-        return false
-      }
+      setToken(token.data.token)
+      setProfile(token.data.profile)
+      return token.data
     },
     [setProfile, setToken],
   )

@@ -13,6 +13,8 @@ import { PrismaModule } from './prisma/prisma.module';
 // import { MailerModule } from '@nestjs-modules/mailer';
 // import { PugAdapter } from '@nestjs-modules/mailer/dist/adapters/pug.adapter';
 import { AutocompleteModule } from './autocomplete/autocomplete.module';
+import { UserModule as CollaboratorUserModule } from './collaborator/user/user.module';
+import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meetings/meetings.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { AutocompleteModule } from './autocomplete/autocomplete.module';
     }),
     MeetingsModule,
     PrismaModule,
+    CollaboratorUserModule,
+    ColaboratorMeetingsModule,
     // MailerModule.forRoot({
     //   transport: {
     //     host: 'smtp.gmail.com',

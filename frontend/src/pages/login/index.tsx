@@ -17,6 +17,9 @@ import { Input } from '@/components/ui/input'
 import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
+import { Profile } from '@/utils/constants/profiles'
+import { ADMIN_PAGES, COLLABORATOR_PAGES } from '@/utils/constants/routes'
+import { toast } from 'react-toastify'
 
 export function Login() {
   const navigate = useNavigate()
@@ -36,8 +39,18 @@ export function Login() {
 
   async function onSubmit(values: LoginForm) {
     try {
-      await login(values.email, values.password)
-      navigate('/admin/home')
+      const response = await login(values.email, values.password)
+      console.log(response)
+      switch (response.profile) {
+        case Profile.ADMIN:
+          navigate(ADMIN_PAGES.home)
+          break
+        case Profile.EMPLOYEE:
+          navigate(COLLABORATOR_PAGES.home)
+          break
+        default:
+          toast.error('Perfil não encontrado')
+      }
     } catch (error) {
       console.error(error)
     }

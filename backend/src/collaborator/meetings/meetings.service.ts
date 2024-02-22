@@ -1,14 +1,19 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMeetingDto } from './dto/create-meeting.dto';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
+import { MeetingRepository } from 'src/meetings/meeting.repository';
+
+interface IFindAllMeetingsColaborator {
+  userId: number;
+  page: number;
+  per_page: number;
+}
 
 @Injectable()
 export class MeetingsService {
-  create(createMeetingDto: CreateMeetingDto) {
-    return 'This action adds a new meeting';
-  }
+  constructor(private readonly meetingRepository: MeetingRepository) {}
 
-  findAll() {
+  findAll({}: IFindAllMeetingsColaborator) {
+    // return this.meetingRepository.findAll();
     return `This action returns all meetings`;
   }
 
@@ -18,9 +23,5 @@ export class MeetingsService {
 
   update(id: number, updateMeetingDto: UpdateMeetingDto) {
     return `This action updates a #${id} meeting`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} meeting`;
   }
 }

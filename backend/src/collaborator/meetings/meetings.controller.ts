@@ -1,20 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
 import { MeetingsService } from './meetings.service';
-import { CreateMeetingDto } from './dto/create-meeting.dto';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
+import { CurrentUser } from 'src/auth/current-user-decorator';
+import { TokenPayload } from 'src/auth/jwt.strategy';
 
-@Controller('meetings')
+@Controller('collaborator/meetings')
 export class MeetingsController {
   constructor(private readonly meetingsService: MeetingsService) {}
 
-  @Post()
-  create(@Body() createMeetingDto: CreateMeetingDto) {
-    return this.meetingsService.create(createMeetingDto);
-  }
-
   @Get()
-  findAll() {
-    return this.meetingsService.findAll();
+  findAll(@CurrentUser() user: TokenPayload) {
+    return this.meetingsService.findAll(user.id);
   }
 
   @Get(':id')
@@ -25,10 +21,5 @@ export class MeetingsController {
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateMeetingDto: UpdateMeetingDto) {
     return this.meetingsService.update(+id, updateMeetingDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.meetingsService.remove(+id);
   }
 }

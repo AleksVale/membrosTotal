@@ -1,9 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { PaymentRepository } from '../../payment-admin/payment.repository';
 import { TokenPayload } from '../../auth/jwt.strategy';
+import { Payment } from './entities/payment.entity';
+import { PaymentStatus } from '@prisma/client';
 
+export interface IFindAllPayment {
+  page: number;
+  per_page: number;
+  user?: number;
+  status?: PaymentStatus;
+}
 @Injectable()
 export class PaymentsService {
   constructor(private readonly paymentRepository: PaymentRepository) {}
@@ -14,8 +22,27 @@ export class PaymentsService {
     });
   }
 
-  findAll() {
-    return `This action returns all payments`;
+  findAll({
+    page,
+    per_page,
+    userId,
+    status,
+  }: {
+    page: number;
+    per_page: number;
+    userId: number;
+    status: string;
+  }) {
+    const statusEnum = Payment[status];
+    if (!statusEnum) {
+      throw new BadRequestException('Status inválido');
+    }
+    return this.paymentRepository.findAll({
+      page,
+      per_page,
+      user: userId,
+      status: statusEnum,
+    });
   }
 
   findOne(id: number) {

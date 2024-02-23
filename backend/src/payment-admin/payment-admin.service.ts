@@ -46,7 +46,7 @@ export class PaymentAdminService {
     if (status && !PaymentStatus[status]) {
       throw new BadRequestException('Status inválido');
     }
-    return this.paymentRepository.findAll({
+    return this.paymentRepository.findAllExpert({
       page,
       per_page,
       expert,

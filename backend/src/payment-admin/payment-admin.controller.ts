@@ -21,7 +21,7 @@ import { Roles } from 'src/auth/roles/roles.decorator';
 import { CurrentUser } from 'src/auth/current-user-decorator';
 import { TokenPayload } from 'src/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';
-import { PaymentResponseDTO } from './dto/payment-response.dto';
+import { PaymentResponseAdminDTO } from './dto/payment-response-admin.dto';
 import { ApiOkResponsePaginated } from '../common/decorators/apiResponseDecorator';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
@@ -40,7 +40,7 @@ export class PaymentAdminController {
   }
 
   @Get()
-  @ApiOkResponsePaginated(PaymentResponseDTO)
+  @ApiOkResponsePaginated(PaymentResponseAdminDTO)
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,

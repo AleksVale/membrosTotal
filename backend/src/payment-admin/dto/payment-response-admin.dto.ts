@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { UserResponseDTO } from '../../user/dto/user-response.dto';
 
 export class PaymentTypeDTO {
   @ApiProperty()
@@ -8,18 +9,7 @@ export class PaymentTypeDTO {
   name!: string;
 }
 
-export class UserDTO {
-  @ApiProperty()
-  id!: number;
-
-  @ApiProperty()
-  name!: string;
-
-  @ApiProperty()
-  email!: string;
-}
-
-export class PaymentResponseDTO {
+export class PaymentResponseAdminDTO {
   @ApiProperty()
   id!: number;
 
@@ -41,9 +31,9 @@ export class PaymentResponseDTO {
   @ApiProperty({ type: PaymentTypeDTO })
   paymentType!: PaymentTypeDTO;
 
-  @ApiProperty({ type: UserDTO })
-  user!: UserDTO;
+  @ApiProperty({ type: UserResponseDTO })
+  user!: UserResponseDTO;
 
-  @ApiProperty({ type: UserDTO })
-  expert!: UserDTO;
+  @ApiProperty({ type: UserResponseDTO })
+  expert!: UserResponseDTO;
 }

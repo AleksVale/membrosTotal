@@ -16,11 +16,12 @@ import { TokenPayload } from 'src/auth/jwt.strategy';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { MeetingResponseDTO } from 'src/meetings/dto/meeting-response.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
+@ApiTags('Collaborator/meetings')
 @Controller('collaborator/meetings')
 export class MeetingsController {
   constructor(private readonly meetingsService: MeetingsService) {}

@@ -4,6 +4,7 @@ import { EditProfileForm } from '@/pages/collaborator/Profile/interfaces'
 import { SuccessResponse } from '@/utils/constants/routes'
 import { Meeting } from './meeting.service'
 import { PaginatedResponseDto } from './interfaces'
+import { Payment } from '../utils/interfaces/payment'
 
 const getCurrentUser = async () => {
   return http.get<User>(`collaborator/user`)
@@ -19,10 +20,17 @@ const getMeetings = async (searchParams: string) => {
   )
 }
 
+const getPayments = async (searchParams: string) => {
+  return http.get<PaginatedResponseDto<Payment>>(
+    `collaborator/payments?${searchParams}`,
+  )
+}
+
 const ColaboratorService = {
   update,
   getCurrentUser,
   getMeetings,
+  getPayments,
 }
 
 export default ColaboratorService

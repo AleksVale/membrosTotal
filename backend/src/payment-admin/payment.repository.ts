@@ -3,7 +3,8 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { IFindAllPaymentAdmin } from './payment-admin.service';
-import { PaymentResponseDTO } from './dto/payment-response.dto';
+import { PaymentResponseAdminDTO } from './dto/payment-response-admin.dto';
+import { IFindAllPayment } from '../collaborator/payments/payments.service';
 
 @Injectable()
 export class PaymentRepository {
@@ -29,10 +30,10 @@ export class PaymentRepository {
     });
   }
 
-  async findAll(options: IFindAllPaymentAdmin) {
+  async findAllExpert(options: IFindAllPaymentAdmin) {
     const paginate = createPaginator({ perPage: options.per_page });
 
-    return paginate<PaymentResponseDTO, Prisma.PaymentFindManyArgs>(
+    return paginate<PaymentResponseAdminDTO, Prisma.PaymentFindManyArgs>(
       this.prisma.payment,
       {
         where: {
@@ -50,6 +51,28 @@ export class PaymentRepository {
               User: true,
             },
           },
+          PaymentType: true,
+          User: true,
+        },
+      },
+      {
+        page: options.page,
+      },
+    );
+  }
+
+  async findAll(options: IFindAllPayment) {
+    const paginate = createPaginator({ perPage: options.per_page });
+
+    return paginate<PaymentResponseAdminDTO, Prisma.PaymentFindManyArgs>(
+      this.prisma.payment,
+      {
+        where: {
+          status: options.status,
+          userId: options.user,
+        },
+        orderBy: { createdAt: 'asc' },
+        include: {
           PaymentType: true,
           User: true,
         },

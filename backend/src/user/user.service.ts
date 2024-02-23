@@ -29,6 +29,9 @@ export class UserService {
   }
 
   private normalize(value?: string) {
+    if (!value) {
+      return undefined;
+    }
     return value?.replace(/\D/g, '');
   }
 

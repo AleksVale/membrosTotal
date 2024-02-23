@@ -70,7 +70,7 @@ export default function FilterMeeting() {
                   name="date"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Data de nascimento</FormLabel>
+                      <FormLabel>Data da reunião</FormLabel>
                       <FormControl>
                         <DatePicker
                           {...field}

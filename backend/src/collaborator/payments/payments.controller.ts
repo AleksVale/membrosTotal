@@ -13,6 +13,7 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
@@ -23,7 +24,12 @@ import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SuccessResponse } from '../../utils/success-response.dto';
 import { ApiOkResponsePaginated } from '../../common/decorators/apiResponseDecorator';
 import { PaymentResponseDTO } from './dto/payment-response.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
 
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(['employee'])
 @ApiTags('Collaborator/payments')
 @Controller('collaborator/payments')
 export class PaymentsController {
@@ -55,11 +61,12 @@ export class PaymentsController {
   @Get()
   @ApiOkResponsePaginated(PaymentResponseDTO)
   findAll(
+    @CurrentUser() user: TokenPayload,
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
     @Query('status') status: string,
-    @CurrentUser() user: TokenPayload,
   ) {
+    console.log(user);
     return this.paymentsService.findAll({
       page,
       per_page,

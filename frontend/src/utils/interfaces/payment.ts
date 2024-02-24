@@ -12,6 +12,7 @@ export enum PaymentLabel {
   PAID = 'Pago',
   CANCELLED = 'Cancelado',
   APPROVED = 'Aprovado',
+  ALL = 'Todos',
 }
 
 export interface PaymentType {

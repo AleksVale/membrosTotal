@@ -15,6 +15,7 @@ import CollaboratorHome from './pages/collaborator/Home'
 import { Profile } from './pages/collaborator/Profile'
 import { ColaboratorListMeeting } from './pages/collaborator/Meetings/list'
 import { ListPayment } from './pages/collaborator/Payments/list'
+import { CreatePayment } from './pages/collaborator/Payments/new'
 
 export const routes = createBrowserRouter([
   {
@@ -46,6 +47,7 @@ export const routes = createBrowserRouter([
       { path: 'profile', element: <Profile /> },
       { path: 'meetings', element: <ColaboratorListMeeting /> },
       { path: 'payments', element: <ListPayment /> },
+      { path: 'payments/new', element: <CreatePayment /> },
     ],
   },
 ])

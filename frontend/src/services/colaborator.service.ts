@@ -5,6 +5,7 @@ import { SuccessResponse } from '@/utils/constants/routes'
 import { Meeting } from './meeting.service'
 import { PaginatedResponseDto } from './interfaces'
 import { Payment } from '../utils/interfaces/payment'
+import { CreatePaymentDTO } from '@/pages/collaborator/Payments/validation'
 
 const getCurrentUser = async () => {
   return http.get<User>(`collaborator/user`)
@@ -26,11 +27,16 @@ const getPayments = async (searchParams: string) => {
   )
 }
 
+const createPayment = async (payment: CreatePaymentDTO) => {
+  return http.post<SuccessResponse>('collaborator/payment', payment)
+}
+
 const ColaboratorService = {
   update,
   getCurrentUser,
   getMeetings,
   getPayments,
+  createPayment,
 }
 
 export default ColaboratorService

@@ -16,24 +16,35 @@ enum StatusMeeting {
   CANCELED
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  CANCELLED
+  APPROVED
+}
+
 model User {
-  id          Int           @id @default(autoincrement())
-  email       String        @unique
-  firstName   String
-  lastName    String
-  phone       String?
-  document    String?       @unique
-  birthDate   DateTime      @db.Date
-  instagram   String?
-  pixKey      String?
-  photoKey    String?
-  password    String
-  createdAt   DateTime      @default(now())
-  updatedAt   DateTime      @updatedAt
-  profileId   Int
-  Profile     Profile       @relation(fields: [profileId], references: [id])
-  UserMeeting UserMeeting[]
-  TimeRecord  TimeRecord[]
+  id             Int              @id @default(autoincrement())
+  email          String           @unique
+  firstName      String
+  lastName       String
+  phone          String?
+  document       String?          @unique
+  birthDate      DateTime         @db.Date
+  instagram      String?
+  pixKey         String?
+  photoKey       String?
+  password       String
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  profileId      Int
+  Profile        Profile          @relation(fields: [profileId], references: [id])
+  UserMeeting    UserMeeting[]
+  TimeRecord     TimeRecord[]
+  Payment        Payment[]
+  Refund         Refund[]
+  PaymentRequest PaymentRequest[]
+  PaymentExpert  PaymentExpert[]
 
   @@map("users")
 }
@@ -81,4 +92,97 @@ model TimeRecord {
   User      User      @relation(fields: [userId], references: [id])
 
   @@map("time_records")
+}
+
+model PaymentType {
+  id      Int       @id @default(autoincrement())
+  label   String    @unique
+  Payment Payment[]
+
+  @@map("payment_types")
+}
+
+model Payment {
+  id            Int             @id @default(autoincrement())
+  userId        Int
+  value         Float
+  paymentDate   DateTime?
+  photoKey      String?
+  status        PaymentStatus   @default(PENDING)
+  paidBy        Int?
+  description   String
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  User          User            @relation(fields: [userId], references: [id])
+  PaymentType   PaymentType?    @relation(fields: [paymentTypeId], references: [id])
+  paymentTypeId Int?
+  PaymentExpert PaymentExpert[]
+
+  @@map("payments")
+}
+
+model PaymentExpert {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  paymentId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Payment   Payment  @relation(fields: [paymentId], references: [id])
+
+  @@map("payment_experts")
+}
+
+model RefundType {
+  id     Int      @id @default(autoincrement())
+  label  String   @unique
+  Refund Refund[]
+
+  @@map("refund_types")
+}
+
+model Refund {
+  id           Int           @id @default(autoincrement())
+  userId       Int
+  value        Float
+  refundDate   DateTime?
+  photoKey     String?
+  status       PaymentStatus @default(PENDING)
+  reason       String?
+  paidBy       Int?
+  description  String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  User         User          @relation(fields: [userId], references: [id])
+  RefundType   RefundType?   @relation(fields: [refundTypeId], references: [id])
+  refundTypeId Int?
+
+  @@map("refunds")
+}
+
+model PaymentRequestType {
+  id             Int              @id @default(autoincrement())
+  label          String           @unique
+  PaymentRequest PaymentRequest[]
+
+  @@map("payment_request_types")
+}
+
+model PaymentRequest {
+  id                   Int                 @id @default(autoincrement())
+  userId               Int
+  value                Float?
+  requestDate          DateTime?
+  photoKey             String?
+  status               PaymentStatus       @default(PENDING)
+  reason               String?
+  paidBy               Int?
+  description          String
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
+  User                 User                @relation(fields: [userId], references: [id])
+  PaymentRequestType   PaymentRequestType? @relation(fields: [paymentRequestTypeId], references: [id])
+  paymentRequestTypeId Int?
+
+  @@map("payment_requests")
 }

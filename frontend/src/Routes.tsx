@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import NotFound from './pages/NotFound'
-import { Login } from './pages/Login'
+import { Login } from './pages/login'
 import DefaultLayout from './@layouts/DefaultLayout'
 import { Home } from './pages/admin/Home'
 import { ListUser } from './pages/admin/User'
@@ -13,6 +13,9 @@ import { EditMeeting } from './pages/admin/Meeting/edit'
 import { ColaboratorLayout } from './@layouts/ColaboratorLayout'
 import CollaboratorHome from './pages/collaborator/Home'
 import { Profile } from './pages/collaborator/Profile'
+import { ColaboratorListMeeting } from './pages/collaborator/Meetings/list'
+import { ListPayment } from './pages/collaborator/Payments/list'
+import { CreatePayment } from './pages/collaborator/Payments/new'
 
 export const routes = createBrowserRouter([
   {
@@ -42,6 +45,9 @@ export const routes = createBrowserRouter([
     children: [
       { path: 'home', element: <CollaboratorHome /> },
       { path: 'profile', element: <Profile /> },
+      { path: 'meetings', element: <ColaboratorListMeeting /> },
+      { path: 'payments', element: <ListPayment /> },
+      { path: 'payments/new', element: <CreatePayment /> },
     ],
   },
 ])

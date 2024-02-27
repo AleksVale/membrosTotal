@@ -56,6 +56,11 @@ export function ColaboratorLayout() {
                 icon={<Speech className="h-6 w-6" />}
                 label="Reuniões"
               />
+              <MenuLink
+                to={COLLABORATOR_PAGES.listPayments}
+                icon={<Speech className="h-6 w-6" />}
+                label="Pagamentos"
+              />
             </nav>
           </div>
         </div>

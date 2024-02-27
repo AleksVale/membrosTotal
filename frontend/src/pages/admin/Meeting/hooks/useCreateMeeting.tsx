@@ -22,12 +22,11 @@ export function useCreateMeeting() {
 
   const handleSubmitForm = useCallback(
     async (data: CreateMeetingDTO) => {
-      console.log(data)
       const users = data.users?.map((user) => user.id)
       const response = await MeetingService.createMeeting({ ...data, users })
       if (response.data.success) {
         toast.success('Reunião marcada!')
-        navigate(ADMIN_PAGES.listUsers)
+        navigate(ADMIN_PAGES.listMeetings)
       }
     },
     [navigate],

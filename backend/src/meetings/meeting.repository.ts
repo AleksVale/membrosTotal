@@ -74,7 +74,6 @@ export class MeetingRepository {
         },
       };
     }
-    console.log(where, 'where');
     return paginate<MeetingResponseDTO, Prisma.MeetingFindManyArgs>(
       this.prisma.meeting,
       {

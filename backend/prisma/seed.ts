@@ -8,6 +8,26 @@ async function main() {
     { label: 'Expert', name: 'expert' },
   ];
 
+  const defaultRefundTypes = [
+    { label: 'Transporte' },
+    { label: 'Alimentação' },
+    { label: 'Outros' },
+  ];
+
+  const defaultPaymentRequest = [
+    { label: 'Ferramentas' },
+    { label: 'Mobília' },
+    { label: 'Utensílios' },
+    { label: 'Outros' },
+  ];
+
+  const defaultPaymentTypes = [
+    { label: 'Recorrência mensal fixa' },
+    { label: 'Recorrência mensal variável' },
+    { label: 'Prestação de serviço pontual' },
+    { label: 'Prestação de serviço variável' },
+    { label: 'Outros' },
+  ];
   for (const profile of profiles) {
     const existingProfile = await prisma.profile.findFirst({
       where: { name: profile.name },
@@ -15,6 +35,42 @@ async function main() {
 
     if (!existingProfile) {
       await prisma.profile.create({ data: profile });
+    }
+  }
+
+  for (const payment of defaultPaymentTypes) {
+    const existingProfile = await prisma.paymentType.findFirst({
+      where: { label: payment.label },
+    });
+
+    if (!existingProfile) {
+      await prisma.paymentType.create({
+        data: payment,
+      });
+    }
+  }
+
+  for (const refund of defaultRefundTypes) {
+    const existingProfile = await prisma.refundType.findFirst({
+      where: { label: refund.label },
+    });
+
+    if (!existingProfile) {
+      await prisma.refundType.create({
+        data: refund,
+      });
+    }
+  }
+
+  for (const request of defaultPaymentRequest) {
+    const existingProfile = await prisma.paymentRequestType.findFirst({
+      where: { label: request.label },
+    });
+
+    if (!existingProfile) {
+      await prisma.paymentRequestType.create({
+        data: request,
+      });
     }
   }
 

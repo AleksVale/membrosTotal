@@ -14,6 +14,8 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { AutocompleteModule } from './autocomplete/autocomplete.module';
 import { UserModule as CollaboratorUserModule } from './collaborator/user/user.module';
 import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meetings/meetings.module';
+import { PaymentsModule } from './collaborator/payments/payments.module';
+import { PaymentAdminModule } from './payment-admin/payment-admin.module';
 
 @Module({
   imports: [
@@ -42,6 +44,8 @@ import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meet
       }),
     }),
     AutocompleteModule,
+    PaymentsModule,
+    PaymentAdminModule,
   ],
   controllers: [AppController],
   providers: [

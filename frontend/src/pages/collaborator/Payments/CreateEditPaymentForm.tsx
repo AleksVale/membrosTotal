@@ -25,7 +25,7 @@ export function CreateEditPaymentForm({
   onSubmitForm,
   isSubmitting,
 }: Readonly<CreateEditMeetingFormProps>) {
-  const { goBack, paymentTypeOptions } = useFilterPayment()
+  const { goBack } = useFilterPayment()
   return (
     <Form {...form}>
       <form

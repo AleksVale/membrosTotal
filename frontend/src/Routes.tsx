@@ -1,6 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom'
 import NotFound from './pages/NotFound'
-import { Login } from './pages/Login'
+import { Login } from './pages/login'
 import DefaultLayout from './@layouts/DefaultLayout'
 import { Home } from './pages/admin/Home'
 import { ListUser } from './pages/admin/User'

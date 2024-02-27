@@ -6,6 +6,8 @@ export const envSchema = z.object({
   JWT_PRIVATE_KEY: z.string(),
   JWT_PUBLIC_KEY: z.string(),
   JWT_EXPIRATION_TIME: z.string(),
+  MAILER_USERNAME: z.string(),
+  MAILER_PASSWORD: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

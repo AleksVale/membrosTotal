@@ -19,7 +19,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ADMIN_PAGES, COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
-import { LoginForm, LoginSchema } from '@/pages/Login/validation'
+import { LoginForm, LoginSchema } from './validation'
 
 export function Login() {
   const navigate = useNavigate()

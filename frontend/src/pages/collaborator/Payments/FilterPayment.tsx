@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { PaymentLabel, PaymentStatus } from '@/utils/interfaces/payment'
 
 export default function FilterPayment() {
   const {

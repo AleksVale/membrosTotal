@@ -21,7 +21,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
-import { PaymentLabel, PaymentStatus } from '@/utils/interfaces/payment'
 
 export default function FilterPayment() {
   const {
@@ -68,24 +67,14 @@ export default function FilterPayment() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {paymentTypeOptions.map(
-                              (payment) =>
-                                payment.label &&
-                                PaymentLabel[
-                                  payment.label as PaymentStatus
-                                ] && (
-                                  <SelectItem
-                                    key={payment.id}
-                                    value={`${payment.label}`}
-                                  >
-                                    {
-                                      PaymentLabel[
-                                        payment.label as PaymentStatus
-                                      ]
-                                    }
-                                  </SelectItem>
-                                ),
-                            )}
+                            {paymentTypeOptions.map((payment) => (
+                              <SelectItem
+                                key={payment.id}
+                                value={`${payment.id}`}
+                              >
+                                {payment.label}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                       </FormControl>

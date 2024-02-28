@@ -42,6 +42,14 @@ export class AutocompleteService {
             },
           });
           break;
+        case 'paymentTypes':
+          response.paymentTypes = await this.prisma.paymentType.findMany({
+            select: {
+              id: true,
+              label: true,
+            },
+          });
+          break;
         default:
           break;
       }

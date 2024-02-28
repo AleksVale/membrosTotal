@@ -55,9 +55,9 @@ export function useFilterPayment() {
 
   const fetchPaymentTypeOptions = useCallback(async () => {
     const response = await AutocompleteService.fetchAutocomplete([
-      'paymentType',
+      'paymentTypes',
     ])
-    setPaymentTypeOptions(response.data.paymentType ?? [])
+    setPaymentTypeOptions(response.data.paymentTypes ?? [])
   }, [])
 
   const goBack = useCallback(() => {

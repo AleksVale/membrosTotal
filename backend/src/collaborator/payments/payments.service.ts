@@ -38,7 +38,7 @@ export class PaymentsService {
     status: string;
   }) {
     const statusEnum = Payment[status];
-    if (!statusEnum) {
+    if (status && !statusEnum) {
       throw new BadRequestException('Status inválido');
     }
     return this.paymentRepository.findAll({

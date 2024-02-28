@@ -5,6 +5,7 @@ import { PaymentRepository } from '../../payment-admin/payment.repository';
 import { TokenPayload } from '../../auth/jwt.strategy';
 import { Payment } from './entities/payment.entity';
 import { PaymentStatus } from '@prisma/client';
+import { AwsService } from 'src/aws/aws.service';
 
 export interface IFindAllPayment {
   page: number;
@@ -14,7 +15,10 @@ export interface IFindAllPayment {
 }
 @Injectable()
 export class PaymentsService {
-  constructor(private readonly paymentRepository: PaymentRepository) {}
+  constructor(
+    private readonly paymentRepository: PaymentRepository,
+    private readonly awsService: AwsService,
+  ) {}
   create(createPaymentDto: CreatePaymentDto, user: TokenPayload) {
     return this.paymentRepository.create({
       ...createPaymentDto,
@@ -55,5 +59,14 @@ export class PaymentsService {
 
   remove(id: number) {
     return `This action removes a #${id} payment`;
+  }
+
+  async createFile(
+    file: Express.Multer.File,
+    user: TokenPayload,
+    paymentId: number,
+  ) {
+    const photoKey = `payments/${user.id}/${file.originalname}`;
+    return this.paymentRepository.update({ photoKey }, { id: paymentId });
   }
 }

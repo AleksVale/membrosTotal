@@ -8,6 +8,9 @@ export const envSchema = z.object({
   JWT_EXPIRATION_TIME: z.string(),
   MAILER_USERNAME: z.string(),
   MAILER_PASSWORD: z.string(),
+  ACCESS_KEY_ID: z.string(),
+  SECRET_ACCESS_KEY: z.string(),
+  BUCKET: z.string(),
 });
 
 export type Env = z.infer<typeof envSchema>;

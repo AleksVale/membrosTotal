@@ -16,6 +16,7 @@ import { UserModule as CollaboratorUserModule } from './collaborator/user/user.m
 import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meetings/meetings.module';
 import { PaymentsModule } from './collaborator/payments/payments.module';
 import { PaymentAdminModule } from './payment-admin/payment-admin.module';
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { PaymentAdminModule } from './payment-admin/payment-admin.module';
     AutocompleteModule,
     PaymentsModule,
     PaymentAdminModule,
+    AwsModule,
   ],
   controllers: [AppController],
   providers: [

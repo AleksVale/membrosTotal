@@ -37,12 +37,16 @@ export class PaymentsController {
 
   @Post(':id/file')
   @UseInterceptors(FileInterceptor('file'))
-  createFile(
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFile(
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: TokenPayload,
+    @Param('id', ParseIntPipe) id: number,
   ) {
+    await this.paymentsService.createFile(file, user, +id);
     console.log(file);
     console.log(user);
+
     return { success: true };
   }
 

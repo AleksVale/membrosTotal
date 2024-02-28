@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `meetings` ADD COLUMN `status` ENUM('PENDING', 'DONE', 'CANCELED') NOT NULL DEFAULT 'PENDING';

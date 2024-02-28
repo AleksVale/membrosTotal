@@ -1,7 +1,6 @@
 import { Helmet } from 'react-helmet-async'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
-import { LoginForm, LoginSchema } from './validation'
 import { Loader2, Eye, EyeOff } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
@@ -20,6 +19,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ADMIN_PAGES, COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
+import { LoginForm, LoginSchema } from './validation'
 
 export function Login() {
   const navigate = useNavigate()

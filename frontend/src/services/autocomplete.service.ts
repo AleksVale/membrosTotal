@@ -10,7 +10,7 @@ export interface Autocomplete {
 interface AutocompleteResponse {
   profiles?: Autocomplete[]
   users?: Autocomplete[]
-  paymentType?: Autocomplete[]
+  paymentTypes?: Autocomplete[]
 }
 
 const fetchAutocomplete = async (fields: string[]) => {

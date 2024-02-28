@@ -40,7 +40,6 @@ export function Login() {
   async function onSubmit(values: LoginForm) {
     try {
       const response = await login(values.email, values.password)
-      console.log(response)
       switch (response.profile) {
         case Profile.ADMIN:
           navigate(ADMIN_PAGES.home)

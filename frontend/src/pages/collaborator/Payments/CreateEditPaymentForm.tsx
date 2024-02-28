@@ -13,6 +13,14 @@ import { CreatePaymentDTO } from './validation'
 import { useFilterPayment } from './hooks/useFilterPayment'
 import { Button } from '@/components/ui/button'
 import { CurrencyInput } from '@/components/ui/currency-input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Input } from '@/components/ui/input'
 
 interface CreateEditMeetingFormProps {
   form: UseFormReturn<CreatePaymentDTO>
@@ -26,6 +34,7 @@ export function CreateEditPaymentForm({
   isSubmitting,
 }: Readonly<CreateEditMeetingFormProps>) {
   const { goBack, paymentTypeOptions } = useFilterPayment()
+  const fileRef = form.register('file')
   return (
     <Form {...form}>
       <form
@@ -44,6 +53,48 @@ export function CreateEditPaymentForm({
                     value={field.value}
                     onChange={field.onChange}
                   />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="paymentTypeId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Categoria do pagamento</FormLabel>
+                <FormControl>
+                  <Select
+                    value={`${field.value}`}
+                    onValueChange={field.onChange}
+                  >
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Selecione um perfil" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {paymentTypeOptions.map((payment) => (
+                        <SelectItem key={payment.id} value={`${payment.id}`}>
+                          {payment.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="file"
+            render={() => (
+              <FormItem>
+                <FormLabel>Arquivo</FormLabel>
+                <FormControl>
+                  <Input {...fileRef} id="file" type="file" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

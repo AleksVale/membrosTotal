@@ -1,4 +1,4 @@
-import { ADMIN_PAGES } from '@/utils/constants/routes'
+import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
@@ -20,9 +20,21 @@ export function useCreatePayment() {
   const handleSubmitForm = useCallback(
     async (data: CreatePaymentDTO) => {
       const response = await ColaboratorService.createPayment(data)
-      if (response.data.success) {
-        toast.success('Usuário criado com sucesso')
-        navigate(ADMIN_PAGES.listUsers)
+
+      if (response.data.id) {
+        try {
+          const fileResponse = await ColaboratorService.createPhotoPayment(
+            data.file[0],
+            response.data.id,
+          )
+          if (fileResponse.data.success) {
+            toast.success('Pagamento criado com sucesso')
+            navigate(COLLABORATOR_PAGES.listPayments)
+          }
+        } catch (error) {
+          toast.error('Erro ao enviar a foto, tente editar mais tarde.')
+          navigate(COLLABORATOR_PAGES.listPayments)
+        }
       }
     },
     [navigate],

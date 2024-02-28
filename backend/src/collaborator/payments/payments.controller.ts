@@ -27,6 +27,7 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { CreatePaymentResponseDTO } from './dto/create-payment-response.dto';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
@@ -44,8 +45,6 @@ export class PaymentsController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     await this.paymentsService.createFile(file, user, +id);
-    console.log(file);
-    console.log(user);
 
     return { success: true };
   }

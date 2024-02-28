@@ -66,7 +66,8 @@ export class PaymentsService {
     user: TokenPayload,
     paymentId: number,
   ) {
-    const photoKey = `payments/${user.id}/${file.originalname}`;
+    const photoKey = `payments/${user.id}/${paymentId}/${file.originalname}`;
+    await this.awsService.updatePhoto(file, photoKey);
     return this.paymentRepository.update({ photoKey }, { id: paymentId });
   }
 }

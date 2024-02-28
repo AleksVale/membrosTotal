@@ -11,7 +11,7 @@ export class AwsService {
   s3 = new S3Client({
     region: 'auto',
     endpoint:
-      'https://dd17476fdbcb9b0de068fc9fb29b4a5d.r2.cloudflarestorage.com',
+      'https://dd17476fdbcb9b0de068fc9fb29b4a5d.r2.cloudflarestorage.com/membros',
     credentials: {
       accessKeyId: this.configService.get('ACCESS_KEY_ID'),
       secretAccessKey: this.configService.get('SECRET_ACCESS_KEY'),

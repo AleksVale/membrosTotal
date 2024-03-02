@@ -25,7 +25,7 @@ export const createPaymentchema = z.object({
     }, `Max image size is 5MB.`)
     .refine(
       (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      'Only .pdf, .jpg, .jpeg, .png and .webp formats are supported.',
+      'Apenas .pdf, .jpg, .jpeg, .png and .webp formatos são suportados.',
     ),
 })
 

@@ -66,7 +66,14 @@ export class PaymentsService {
     user: TokenPayload,
     paymentId: number,
   ) {
-    const photoKey = `payments/${user.id}/${paymentId}/${file.originalname}`;
+    const payment = await this.paymentRepository.find({ id: paymentId });
+    const photoKey = payment?.photoKey
+      ? payment.photoKey
+      : this.awsService.createPhotoKeyPayment(
+          user.id,
+          paymentId,
+          file.mimetype.split('/')[1],
+        );
     await this.awsService.updatePhoto(file, photoKey);
     return this.paymentRepository.update({ photoKey }, { id: paymentId });
   }

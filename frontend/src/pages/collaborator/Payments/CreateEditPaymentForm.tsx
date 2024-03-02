@@ -107,10 +107,10 @@ export function CreateEditPaymentForm({
             name="description"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Nome da reunião</FormLabel>
+                <FormLabel>Descrição do pagamento</FormLabel>
                 <FormControl>
                   <Textarea
-                    placeholder="Descreva o objetivo da reunião"
+                    placeholder="Descreva os detalhes do pagamento"
                     className="resize-none"
                     {...field}
                   />

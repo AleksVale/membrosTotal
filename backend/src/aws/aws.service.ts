@@ -27,4 +27,9 @@ export class AwsService {
     );
     return uploadResult;
   }
+
+  createPhotoKeyPayment(userId: number, paymentId: number, mimeType: string) {
+    console.log(mimeType);
+    return `payments/${userId}/${paymentId}/payment.${mimeType}`;
+  }
 }

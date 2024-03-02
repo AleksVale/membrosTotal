@@ -9,7 +9,6 @@ import { AuthenticateResponseDTO } from './dto/authenticate.response.dto';
 export class AuthController {
   constructor(private authService: AuthService) {}
 
-  //TODO CREATE THE REPSONSDE DTO TO THE DOCUMENTATION OF THE ROUTE
   @ApiResponse({
     type: AuthenticateResponseDTO,
     status: 201,

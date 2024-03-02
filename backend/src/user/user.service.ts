@@ -25,7 +25,6 @@ export class UserService {
     private userRepository: UserRepository,
     private mailerService: MailerService,
   ) {}
-
   private async hashPassword(password: string) {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -55,11 +54,11 @@ export class UserService {
     });
     this.mailerService
       .sendMail({
-        to: 'alexalexx3@gmail.com', // list of receivers
-        from: 'noreply@nestjs.com', // sender address
-        subject: 'Testing Nest MailerModule ✔', // Subject line
-        text: 'welcome', // plaintext body
-        html: '<b>welcome</b>', // HTML body content
+        to: user.email, // list of receivers
+        from: 'vitor@vtn.business', // sender address
+        subject: 'Bem vindo ao membros', // Subject line
+        text: 'Bem vindo', // plaintext body
+        html: '<b>Bem vindo ao membros vai la fazer login</b>', // HTML body content
       })
       .then(() => {
         console.log('aqio');

@@ -24,27 +24,30 @@ enum PaymentStatus {
 }
 
 model User {
-  id             Int              @id @default(autoincrement())
-  email          String           @unique
-  firstName      String
-  lastName       String
-  phone          String?
-  document       String?          @unique
-  birthDate      DateTime         @db.Date
-  instagram      String?
-  pixKey         String?
-  photoKey       String?
-  password       String
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  profileId      Int
-  Profile        Profile          @relation(fields: [profileId], references: [id])
-  UserMeeting    UserMeeting[]
-  TimeRecord     TimeRecord[]
-  Payment        Payment[]
-  Refund         Refund[]
-  PaymentRequest PaymentRequest[]
-  PaymentExpert  PaymentExpert[]
+  id                      Int                       @id @default(autoincrement())
+  email                   String                    @unique
+  firstName               String                    @map("first_name")
+  lastName                String                    @map("last_name")
+  phone                   String?
+  document                String?                   @unique
+  birthDate               DateTime                  @db.Date
+  instagram               String?
+  pixKey                  String?
+  photoKey                String?
+  password                String
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
+  profileId               Int
+  Profile                 Profile                   @relation(fields: [profileId], references: [id])
+  UserMeeting             UserMeeting[]
+  TimeRecord              TimeRecord[]
+  Payment                 Payment[]
+  Refund                  Refund[]
+  PaymentRequest          PaymentRequest[]
+  PaymentExpert           PaymentExpert[]
+  PermissionUserTraining  PermissionUserTraining[]
+  PermissionUserModule    PermissionUserModule[]
+  PermissionUserSubModule PermissionUserSubModule[]
 
   @@map("users")
 }
@@ -185,4 +188,94 @@ model PaymentRequest {
   paymentRequestTypeId Int?
 
   @@map("payment_requests")
+}
+
+model Training {
+  id                     Int                      @id @default(autoincrement())
+  title                  String
+  description            String
+  tutor                  String
+  thumbnail              String?
+  createdAt              DateTime                 @default(now())
+  updatedAt              DateTime                 @updatedAt
+  Module                 Module[]
+  PermissionUserTraining PermissionUserTraining[]
+
+  @@map("trainings")
+}
+
+model Module {
+  id                   Int                    @id @default(autoincrement())
+  title                String
+  description          String?
+  thumbnail            String?
+  submodules           Submodule[]
+  trainingId           Int // ID do treinamento pai
+  training             Training               @relation(fields: [trainingId], references: [id])
+  PermissionUserModule PermissionUserModule[]
+
+  @@map("modules")
+}
+
+// Tabela de Submódulos
+model Submodule {
+  id                      Int                       @id @default(autoincrement())
+  title                   String
+  description             String?
+  thumbnail               String?
+  moduleId                Int // ID do módulo pai
+  module                  Module                    @relation(fields: [moduleId], references: [id])
+  lessons                 Lesson[]
+  PermissionUserSubModule PermissionUserSubModule[]
+
+  @@map("submodules")
+}
+
+// Tabela de Aulas
+model Lesson {
+  id          Int       @id @default(autoincrement())
+  title       String
+  description String?
+  content     String // Este campo pode ser uma URL para vídeos, documentos, etc.
+  thumbnail   String?
+  submoduleId Int // ID do submódulo pai
+  submodule   Submodule @relation(fields: [submoduleId], references: [id])
+
+  @@map("lessons")
+}
+
+model PermissionUserTraining {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  trainingId Int
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  User       User     @relation(fields: [userId], references: [id])
+  Training   Training @relation(fields: [trainingId], references: [id])
+
+  @@map("permission_user_trainings")
+}
+
+model PermissionUserModule {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  moduleId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Module    Module   @relation(fields: [moduleId], references: [id])
+
+  @@map("permission_user_modules")
+}
+
+model PermissionUserSubModule {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  submoduleId Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  User        User      @relation(fields: [userId], references: [id])
+  Submodule   Submodule @relation(fields: [submoduleId], references: [id])
+
+  @@map("permission_user_submodules")
 }

@@ -16,6 +16,8 @@ import { Profile } from './pages/collaborator/Profile'
 import { ColaboratorListMeeting } from './pages/collaborator/Meetings/list'
 import { ListPayment } from './pages/collaborator/Payments/list'
 import { CreatePayment } from './pages/collaborator/Payments/new'
+import { ListPaymentAdmin } from './pages/admin/Payments/list'
+import { CreatePaymentAdmin } from './pages/admin/Payments/new'
 
 export const routes = createBrowserRouter([
   {
@@ -36,6 +38,8 @@ export const routes = createBrowserRouter([
       { path: 'meetings', element: <ListMeetings /> },
       { path: 'meetings/new', element: <CreateMeeting /> },
       { path: 'meetings/:id/e', element: <EditMeeting /> },
+      { path: 'payments', element: <ListPaymentAdmin /> },
+      { path: 'payments/new', element: <CreatePaymentAdmin /> },
     ],
   },
   {

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { Profile } from 'src/profile/profile.entity';
 
 @Injectable()
 export class AutocompleteService {
@@ -47,6 +48,36 @@ export class AutocompleteService {
             select: {
               id: true,
               label: true,
+            },
+          });
+          break;
+        case 'paymentRequest':
+          response.paymentRequest =
+            await this.prisma.paymentRequestType.findMany({
+              select: {
+                id: true,
+                label: true,
+              },
+            });
+          break;
+        case 'refundTypes':
+          response.refundTypes = await this.prisma.refundType.findMany({
+            select: {
+              id: true,
+              label: true,
+            },
+          });
+          break;
+        case 'experts':
+          response.experts = await prismaExtended.user.findMany({
+            select: {
+              id: true,
+              fullName: true,
+            },
+            where: {
+              Profile: {
+                name: Profile.EXPERT,
+              },
             },
           });
           break;

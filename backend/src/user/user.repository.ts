@@ -39,7 +39,7 @@ export class UserRepository {
       const ids = await this.prisma.$queryRaw<{ id: number }[]>`
     SELECT id
     FROM users
-    WHERE CONCAT(firstName, ' ', lastName) LIKE ${`%${options.name}%`}
+    WHERE CONCAT(first_name, ' ', last_name) LIKE ${`%${options.name}%`}
   `;
       userIds = ids.map((user) => user.id);
     }

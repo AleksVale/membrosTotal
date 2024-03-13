@@ -1,5 +1,6 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
+import { DateUtils } from 'src/utils/date';
 
 const createPaymentRequestSchema = z.object({
   value: z
@@ -11,6 +12,10 @@ const createPaymentRequestSchema = z.object({
   paymentRequestTypeId: z.number({
     required_error: 'O id do tipo de solicitação de pagamento é obrigatório',
   }),
+  requestDate: z
+    .dateString({ required_error: 'A data do evento é obrigatória' })
+    .format('date')
+    .transform((val) => DateUtils.stringToDate(val)),
 });
 
 // class is required for using DTO as a type

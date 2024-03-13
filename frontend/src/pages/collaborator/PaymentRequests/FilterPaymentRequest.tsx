@@ -7,7 +7,6 @@ import {
   FormMessage,
   Form,
 } from '@/components/ui/form'
-import { useFilterPayment } from './hooks/useFilterPayment'
 import {
   Collapsible,
   CollapsibleContent,
@@ -21,22 +20,23 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { Button } from '@/components/ui/button'
+import { useFilterPaymentRequest } from './hooks/useFilterPayment'
 
-export default function FilterPayment() {
+export default function FilterPaymentRequest() {
   const {
     isOpen,
     setIsOpen,
     form,
     handleSubmitForm,
     handleClearFilter,
-    paymentTypeOptions,
-  } = useFilterPayment()
+    paymentRequestTypeOptions,
+  } = useFilterPaymentRequest()
   return (
     <section className="py-4">
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <Button
-            className="flex items-center pl-0  text-2xl gap-1 mb-4"
+            className="flex items-center justify-start pl-0 text-2xl gap-1 mb-4"
             variant={'ghost'}
           >
             Filtros{' '}
@@ -52,10 +52,10 @@ export default function FilterPayment() {
               <div className="grid grid-cols-3 gap-4">
                 <FormField
                   control={form.control}
-                  name="status"
+                  name="paymentRequestTypeId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Status</FormLabel>
+                      <FormLabel>Categoria</FormLabel>
                       <FormControl>
                         <Select
                           value={field.value}
@@ -67,7 +67,7 @@ export default function FilterPayment() {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {paymentTypeOptions.map((payment) => (
+                            {paymentRequestTypeOptions.map((payment) => (
                               <SelectItem
                                 key={payment.id}
                                 value={`${payment.id}`}

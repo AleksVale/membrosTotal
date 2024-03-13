@@ -32,4 +32,13 @@ export class AwsService {
     console.log(mimeType);
     return `payments/${userId}/${paymentId}/payment.${mimeType}`;
   }
+
+  createPhotoKeyPaymentRequest(
+    userId: number,
+    paymentRequestId: number,
+    mimeType: string,
+  ) {
+    console.log(mimeType);
+    return `payment_requests/${userId}/${paymentRequestId}/payment_request.${mimeType}`;
+  }
 }

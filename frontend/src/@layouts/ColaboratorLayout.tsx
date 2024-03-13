@@ -13,7 +13,14 @@ import { JSX } from 'react/jsx-runtime'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import { Home, Speech, User, UserCircle2 } from 'lucide-react'
+import {
+  HandCoins,
+  Home,
+  Landmark,
+  Speech,
+  User,
+  UserCircle2,
+} from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
@@ -58,8 +65,13 @@ export function ColaboratorLayout() {
               />
               <MenuLink
                 to={COLLABORATOR_PAGES.listPayments}
-                icon={<Speech className="h-6 w-6" />}
+                icon={<Landmark className="h-6 w-6" />}
                 label="Pagamentos"
+              />
+              <MenuLink
+                to={COLLABORATOR_PAGES.listPaymentRequest}
+                icon={<HandCoins className="h-6 w-6" />}
+                label="Solicitação de pagamentos"
               />
             </nav>
           </div>

@@ -4,6 +4,7 @@ import { UpdatePaymentRequestCollaboratorDTO } from './dto/update-payment-reques
 import { PaymentRequestRequestRepository } from './payment-request.repository';
 import { TokenPayload } from 'src/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';
+import { AwsService } from 'src/aws/aws.service';
 
 export interface CollaboratorPaymentRequestOptions {
   per_page: number;
@@ -17,11 +18,13 @@ export interface CollaboratorPaymentRequestOptions {
 export class PaymentRequestService {
   constructor(
     private readonly paymentRequestRepository: PaymentRequestRequestRepository,
+    private readonly awsService: AwsService,
   ) {}
   create(
     createPaymentRequestDto: CreatePaymentRequestCollaboratorDTO,
     user: TokenPayload,
   ) {
+    console.log(createPaymentRequestDto, user);
     const paymentRequest = { ...createPaymentRequestDto, userId: user.id };
     return this.paymentRequestRepository.create(paymentRequest);
   }
@@ -53,5 +56,27 @@ export class PaymentRequestService {
     return this.paymentRequestRepository.update(updatePaymentRequestDto, {
       id,
     });
+  }
+
+  async createFile(
+    file: Express.Multer.File,
+    user: TokenPayload,
+    paymentRequestId: number,
+  ) {
+    const payment = await this.paymentRequestRepository.find({
+      id: paymentRequestId,
+    });
+    const photoKey = payment?.photoKey
+      ? payment.photoKey
+      : this.awsService.createPhotoKeyPaymentRequest(
+          user.id,
+          paymentRequestId,
+          file.mimetype.split('/')[1],
+        );
+    await this.awsService.updatePhoto(file, photoKey);
+    return this.paymentRequestRepository.update(
+      { photoKey },
+      { id: paymentRequestId },
+    );
   }
 }

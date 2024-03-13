@@ -15,6 +15,8 @@ export const COLLABORATOR_PAGES = {
   profile: '/collaborator/profile',
   listPayments: '/collaborator/payments?page=1&per_page=10',
   newPayment: '/collaborator/payments/new',
+  listPaymentRequest: '/collaborator/payment_requests?page=1&per_page=10',
+  newPaymentRequest: '/collaborator/payment_requests/new',
 }
 
 export const AUTH_PAGES = {

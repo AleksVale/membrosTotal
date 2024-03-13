@@ -44,8 +44,8 @@ export class PaymentResponseDto {
   updatedAt!: Date;
 
   @ApiProperty({ type: () => UserResponseDTO })
-  user!: UserResponseDTO;
+  User!: UserResponseDTO;
 
   @ApiProperty({ type: () => PaymentRequestTypeDto })
-  paymentRequestType!: PaymentRequestTypeDto;
+  PaymentRequestType!: PaymentRequestTypeDto;
 }

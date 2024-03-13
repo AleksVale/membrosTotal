@@ -19,7 +19,7 @@ import { CreatePayment } from './pages/collaborator/Payments/new'
 import { ListPaymentAdmin } from './pages/admin/Payments/list'
 import { CreatePaymentAdmin } from './pages/admin/Payments/new'
 import { CreatePaymentRequest } from './pages/collaborator/PaymentRequests/new'
-import { ListPaymentRequest } from './pages/collaborator/PaymentRequests/list'
+import { ListPaymentRequests } from './pages/collaborator/PaymentRequests/list'
 
 export const routes = createBrowserRouter([
   {
@@ -54,7 +54,7 @@ export const routes = createBrowserRouter([
       { path: 'meetings', element: <ColaboratorListMeeting /> },
       { path: 'payments', element: <ListPayment /> },
       { path: 'payments/new', element: <CreatePayment /> },
-      { path: 'payment_requests', element: <ListPaymentRequest /> },
+      { path: 'payment_requests', element: <ListPaymentRequests /> },
       { path: 'payment_requests/new', element: <CreatePaymentRequest /> },
     ],
   },

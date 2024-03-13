@@ -81,7 +81,7 @@ export function DatePicker({
           fromYear={minYear}
           toYear={maxYear}
           locale={ptBR}
-          defaultMonth={selected ?? new Date(minYear, 0)}
+          defaultMonth={selected ?? new Date()}
         />
         {showTime && (
           <div className="px-4 pb-2">

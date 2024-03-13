@@ -14,6 +14,6 @@ const createPaymentRequestSchema = z.object({
 });
 
 // class is required for using DTO as a type
-export class CreatePaymentRequestAdminDTO extends createZodDto(
+export class CreatePaymentRequestCollaboratorDTO extends createZodDto(
   createPaymentRequestSchema,
 ) {}

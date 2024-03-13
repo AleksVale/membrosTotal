@@ -11,8 +11,10 @@ import {
 import { PaymentRequestAdminService } from './payment-request-admin.service';
 import { UpdatePaymentRequestAdminDTO } from './dto/update-payment-request-admin.dto';
 import { PaymentStatus } from '@prisma/client';
-import { ApiQuery } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { PaymentResponseDto } from './dto/payment-request-response.dto';
 
+@ApiTags('PaymentRequests')
 @Controller('payment-request-admin')
 export class PaymentRequestAdminController {
   constructor(
@@ -29,6 +31,10 @@ export class PaymentRequestAdminController {
   })
   @ApiQuery({ name: 'user', required: false, type: Number })
   @ApiQuery({ name: 'paymentRequestTypeId', required: false, type: Number })
+  @ApiOkResponse({
+    description: 'This action returns all paymentRequest for the user',
+    type: PaymentResponseDto,
+  })
   @Get()
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,

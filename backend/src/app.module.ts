@@ -17,6 +17,8 @@ import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meet
 import { PaymentsModule } from './collaborator/payments/payments.module';
 import { PaymentAdminModule } from './payment-admin/payment-admin.module';
 import { AwsModule } from './aws/aws.module';
+import { PaymentRequestAdminModule } from './payment-request-admin/payment-request-admin.module';
+import { PaymentRequestModule } from './collaborator/payment-request/payment-request.module';
 
 @Module({
   imports: [
@@ -48,6 +50,8 @@ import { AwsModule } from './aws/aws.module';
     PaymentsModule,
     PaymentAdminModule,
     AwsModule,
+    PaymentRequestAdminModule,
+    PaymentRequestModule,
   ],
   controllers: [AppController],
   providers: [

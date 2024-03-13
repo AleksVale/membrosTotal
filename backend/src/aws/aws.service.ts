@@ -29,7 +29,6 @@ export class AwsService {
   }
 
   createPhotoKeyPayment(userId: number, paymentId: number, mimeType: string) {
-    console.log(mimeType);
     return `payments/${userId}/${paymentId}/payment.${mimeType}`;
   }
 
@@ -38,7 +37,14 @@ export class AwsService {
     paymentRequestId: number,
     mimeType: string,
   ) {
-    console.log(mimeType);
     return `payment_requests/${userId}/${paymentRequestId}/payment_request.${mimeType}`;
+  }
+
+  createPhotoKeyRefunds(
+    userId: number,
+    paymentRequestId: number,
+    mimeType: string,
+  ) {
+    return `refunds/${userId}/${paymentRequestId}/refund.${mimeType}`;
   }
 }

@@ -19,6 +19,7 @@ import { PaymentAdminModule } from './payment-admin/payment-admin.module';
 import { AwsModule } from './aws/aws.module';
 import { PaymentRequestAdminModule } from './payment-request-admin/payment-request-admin.module';
 import { PaymentRequestModule } from './collaborator/payment-request/payment-request.module';
+import { RefundsModule } from './collaborator/refund/refunds.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { PaymentRequestModule } from './collaborator/payment-request/payment-req
     AwsModule,
     PaymentRequestAdminModule,
     PaymentRequestModule,
+    RefundsModule,
   ],
   controllers: [AppController],
   providers: [

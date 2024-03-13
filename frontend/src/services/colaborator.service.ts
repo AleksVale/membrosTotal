@@ -4,9 +4,14 @@ import { EditProfileForm } from '@/pages/collaborator/Profile/interfaces'
 import { SuccessResponse } from '@/utils/constants/routes'
 import { Meeting } from './meeting.service'
 import { PaginatedResponseDto } from './interfaces'
-import { Payment, PaymentResponseDto } from '../utils/interfaces/payment'
+import {
+  Payment,
+  PaymentResponseDto,
+  RefundResponseDto,
+} from '../utils/interfaces/payment'
 import { CreatePaymentDTO } from '@/pages/collaborator/Payments/validation'
 import { CreatePaymentRequestDTO } from '@/pages/collaborator/PaymentRequests/validation'
+import { CreateRefundDTO } from '@/pages/collaborator/Refunds/validation'
 
 interface CreatePaymentResponse extends SuccessResponse {
   id: number
@@ -43,6 +48,10 @@ const createPaymentRequest = async (payment: CreatePaymentRequestDTO) => {
   )
 }
 
+const createRefund = async (refund: CreateRefundDTO) => {
+  return http.post<CreatePaymentResponse>('collaborator/refunds', refund)
+}
+
 const createPhotoPayment = async (file: File, paymentId: number) => {
   const formData = new FormData()
   formData.append('file', file)
@@ -71,9 +80,29 @@ const createPhotoPaymentRequest = async (file: File, paymentId: number) => {
   )
 }
 
+const createPhotoRefund = async (file: File, refundId: number) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return http.post<SuccessResponse>(
+    `collaborator/refunds/${refundId}/file`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  )
+}
+
 const getPaymentRequests = async (searchParams: string) => {
   return http.get<PaginatedResponseDto<PaymentResponseDto>>(
     `collaborator/payment_requests?${searchParams}`,
+  )
+}
+
+const getRefunds = async (searchParams: string) => {
+  return http.get<PaginatedResponseDto<RefundResponseDto>>(
+    `collaborator/refunds?${searchParams}`,
   )
 }
 
@@ -87,6 +116,9 @@ const ColaboratorService = {
   getPaymentRequests,
   createPaymentRequest,
   createPhotoPaymentRequest,
+  getRefunds,
+  createRefund,
+  createPhotoRefund,
 }
 
 export default ColaboratorService

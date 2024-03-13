@@ -66,3 +66,24 @@ export interface PaymentResponseDto {
   User: User
   PaymentRequestType: PaymentRequestTypeDto
 }
+
+interface RefundTypeDto {
+  id: number
+  label: string
+}
+
+export interface RefundResponseDto {
+  id: number
+  userId: number
+  value: number
+  refundDate: Date
+  photoKey: string
+  status: PaymentStatus
+  reason: string
+  paidBy: number
+  description: string
+  createdAt: Date
+  updatedAt: Date
+  User: User
+  RefundTypeDto: RefundTypeDto
+}

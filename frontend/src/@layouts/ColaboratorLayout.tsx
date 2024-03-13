@@ -14,6 +14,7 @@ import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
 import {
+  Barcode,
   HandCoins,
   Home,
   Landmark,
@@ -72,6 +73,11 @@ export function ColaboratorLayout() {
                 to={COLLABORATOR_PAGES.listPaymentRequest}
                 icon={<HandCoins className="h-6 w-6" />}
                 label="Solicitação de pagamentos"
+              />
+              <MenuLink
+                to={COLLABORATOR_PAGES.listRefund}
+                icon={<Barcode className="h-6 w-6" />}
+                label="Reembolsos"
               />
             </nav>
           </div>

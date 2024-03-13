@@ -20,6 +20,8 @@ import { ListPaymentAdmin } from './pages/admin/Payments/list'
 import { CreatePaymentAdmin } from './pages/admin/Payments/new'
 import { CreatePaymentRequest } from './pages/collaborator/PaymentRequests/new'
 import { ListPaymentRequests } from './pages/collaborator/PaymentRequests/list'
+import { ListRefunds } from './pages/collaborator/Refunds/list'
+import { CreateRefunds } from './pages/collaborator/Refunds/new'
 
 export const routes = createBrowserRouter([
   {
@@ -56,6 +58,8 @@ export const routes = createBrowserRouter([
       { path: 'payments/new', element: <CreatePayment /> },
       { path: 'payment_requests', element: <ListPaymentRequests /> },
       { path: 'payment_requests/new', element: <CreatePaymentRequest /> },
+      { path: 'refunds', element: <ListRefunds /> },
+      { path: 'refunds/new', element: <CreateRefunds /> },
     ],
   },
 ])

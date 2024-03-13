@@ -20,7 +20,6 @@ export class RefundsService {
     private readonly awsService: AwsService,
   ) {}
   create(createRefundsDto: CreateRefundCollaboratorDTO, user: TokenPayload) {
-    console.log(createRefundsDto, user);
     const paymentRequest = { ...createRefundsDto, userId: user.id };
     return this.refundRepository.create(paymentRequest);
   }

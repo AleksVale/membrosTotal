@@ -14,7 +14,8 @@ import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RoleGuard } from 'src/auth/role/role.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CreatePaymentResponseDTO } from 'src/collaborator/payments/dto/create-payment-response.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
@@ -23,9 +24,18 @@ import { ApiTags } from '@nestjs/swagger';
 export class TrainingAdminController {
   constructor(private readonly trainingAdminService: TrainingAdminService) {}
 
+  @ApiResponse({ type: CreatePaymentResponseDTO, status: 201 })
   @Post()
-  create(@Body() createTrainingAdminDto: CreateTrainingAdminDTO) {
-    return this.trainingAdminService.create(createTrainingAdminDto);
+  async create(
+    @Body() createTrainingAdminDto: CreateTrainingAdminDTO,
+  ): Promise<CreatePaymentResponseDTO> {
+    const training = await this.trainingAdminService.create(
+      createTrainingAdminDto,
+    );
+    return {
+      id: training.id,
+      success: true,
+    };
   }
 
   @Get()

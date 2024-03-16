@@ -19,6 +19,7 @@ export const COLLABORATOR_PAGES = {
   newPaymentRequest: '/collaborator/payment_requests/new',
   listRefund: '/collaborator/refunds?page=1&per_page=10',
   newRefund: '/collaborator/refunds/new',
+  listTrainings: '/collaborator/trainings',
 }
 
 export const AUTH_PAGES = {

@@ -83,10 +83,10 @@ export function Profile() {
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(handleSubmitForm)}
-          className="space-y-4 w-full"
+          className="bg-muted m-auto w-11/12 justify-center space-y-4 rounded-lg px-8 py-6"
         >
-          <fieldset disabled={!editing} className="space-y-4 w-full">
-            <div className="grid grid-cols-4 gap-4">
+          <fieldset disabled={!editing} className="w-full space-y-4">
+            <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="firstName"
@@ -226,11 +226,11 @@ export function Profile() {
               <Button type="submit" size={'lg'} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 size-4 animate-spin" />
                     Carregando
                   </>
                 ) : (
-                  <span>Cadastrar</span>
+                  <span>Salvar</span>
                 )}
               </Button>
             </div>

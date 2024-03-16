@@ -14,17 +14,17 @@ import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
 import {
-  Barcode,
-  HandCoins,
+  BookOpen,
+  DollarSign,
   Home,
-  Landmark,
-  Speech,
+  LucideHome,
   User,
-  UserCircle2,
+  User2,
 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
+import { SideMenuCollapsible } from '@/components/SideMenuCollapsible'
 
 export function ColaboratorLayout() {
   const navigate = useNavigate()
@@ -35,59 +35,67 @@ export function ColaboratorLayout() {
   }, [profile, navigate, pathname])
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r border-r-muted-foreground bg-muted lg:block">
+      <div className="border-r-muted-foreground bg-muted hidden border-r lg:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-6">
             <Link className="flex items-center gap-2 font-semibold" to="#">
-              <Home className="h-6 w-6" />
+              <Home className="size-6" />
               <span className="">Painel do colaborador</span>
             </Link>
-            <Button className="ml-auto h-8 w-8" size="icon" variant="outline">
-              <BellIcon className="h-4 w-4" />
+            <Button className="ml-auto size-8" size="icon" variant="outline">
+              <BellIcon className="size-4" />
               <span className="sr-only">Toggle notifications</span>
             </Button>
           </div>
           <div className="flex-1 overflow-auto py-2">
-            <nav className="grid items-start px-4 text-sm font-medium">
+            <nav className="grid items-start gap-2 px-4 text-sm font-medium">
               <MenuLink
                 to={COLLABORATOR_PAGES.home}
-                icon={<HomeIcon className="h-6 w-6" />}
                 label="Home"
+                icon={<LucideHome />}
               />
-              <MenuLink
-                to={COLLABORATOR_PAGES.profile}
-                icon={<UserCircle2 className="h-6 w-6" />}
-                label="Perfil"
-              />
-              <MenuLink
-                to={COLLABORATOR_PAGES.listMeetings}
-                icon={<Speech className="h-6 w-6" />}
-                label="Reuniões"
-              />
-              <MenuLink
-                to={COLLABORATOR_PAGES.listPayments}
-                icon={<Landmark className="h-6 w-6" />}
-                label="Pagamentos"
-              />
-              <MenuLink
-                to={COLLABORATOR_PAGES.listPaymentRequest}
-                icon={<HandCoins className="h-6 w-6" />}
-                label="Solicitação de pagamentos"
-              />
-              <MenuLink
-                to={COLLABORATOR_PAGES.listRefund}
-                icon={<Barcode className="h-6 w-6" />}
-                label="Reembolsos"
-              />
+              <SideMenuCollapsible title="Perfil" icon={<User2 size={20} />}>
+                <MenuLink to={COLLABORATOR_PAGES.profile} label="Informações" />
+                <MenuLink
+                  to={COLLABORATOR_PAGES.listMeetings}
+                  label="Reuniões"
+                />
+              </SideMenuCollapsible>
+              <SideMenuCollapsible
+                title="Financeiro"
+                icon={<DollarSign size={20} />}
+              >
+                <MenuLink
+                  to={COLLABORATOR_PAGES.listPayments}
+                  label="Pagamentos"
+                />
+                <MenuLink
+                  to={COLLABORATOR_PAGES.listPaymentRequest}
+                  label="Solicitação de pagamentos"
+                />
+                <MenuLink
+                  to={COLLABORATOR_PAGES.listRefund}
+                  label="Reembolsos"
+                />
+              </SideMenuCollapsible>
+              <SideMenuCollapsible
+                title="Treinamentos"
+                icon={<BookOpen size={20} />}
+              >
+                <MenuLink
+                  to={COLLABORATOR_PAGES.listTrainings}
+                  label="Treinamentos"
+                />
+              </SideMenuCollapsible>
             </nav>
           </div>
         </div>
       </div>
 
       <div className="flex flex-col">
-        <header className="flex h-14 lg:h-[60px] items-center gap-4 sm:gap-8 border-b bg-muted pl-2">
+        <header className="bg-muted flex h-14 items-center gap-4 border-b pl-2 sm:gap-8 lg:h-[60px]">
           <Link className="lg:hidden" to="#">
-            <Home className="h-6 w-6" />
+            <Home className="size-6" />
             <span className="sr-only">Home</span>
           </Link>
           <div className="w-full flex-1">
@@ -99,7 +107,7 @@ export function ColaboratorLayout() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                className="rounded-full border border-gray-200 w-8 h-8 dark:border-gray-800 mr-6"
+                className="mr-6 size-8 rounded-full border border-gray-200 dark:border-gray-800"
                 size="icon"
                 variant="ghost"
               >
@@ -149,26 +157,6 @@ function BellIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
     >
       <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
       <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
-    </svg>
-  )
-}
-
-function HomeIcon(props: JSX.IntrinsicAttributes & SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-      <polyline points="9 22 9 12 15 12 15 22" />
     </svg>
   )
 }

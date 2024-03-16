@@ -3,6 +3,12 @@ import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
 import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
 import { TrainingRepository } from './training.repository';
 
+export interface TrainingQuery {
+  title: string;
+  page: number;
+  per_page: number;
+}
+
 @Injectable()
 export class TrainingAdminService {
   constructor(private readonly trainingRepository: TrainingRepository) {}
@@ -11,19 +17,15 @@ export class TrainingAdminService {
     return this.trainingRepository.create(createTrainingAdminDto);
   }
 
-  findAll() {
-    return `This action returns all trainingAdmin`;
+  findAll(query: TrainingQuery) {
+    return this.trainingRepository.findAll(query);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} trainingAdmin`;
+    return this.trainingRepository.find({ id });
   }
 
   update(id: number, updateTrainingAdminDto: UpdateTrainingAdminDto) {
-    return `This action updates a #${id} trainingAdmin`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} trainingAdmin`;
+    return this.trainingRepository.update(updateTrainingAdminDto, { id });
   }
 }

@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
+import { TrainingDTO } from './dto/training-response.dto';
+import { TrainingQuery } from './training-admin.service';
 
 @Injectable()
 export class TrainingRepository {
@@ -27,10 +29,10 @@ export class TrainingRepository {
     });
   }
 
-  async findAll(options: any) {
+  async findAll(options: TrainingQuery) {
     const paginate = createPaginator({ perPage: options.per_page });
 
-    return paginate<any, Prisma.TrainingFindManyArgs>(
+    return paginate<TrainingDTO, Prisma.TrainingFindManyArgs>(
       this.prisma.training,
       {
         where: {

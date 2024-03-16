@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
+import { TrainingModulesAdminQuery } from './training-modules-admin.service';
+import { ModuleDTO } from './dto/module-response.dto';
 
 @Injectable()
 export class ModuleRepository {
@@ -27,10 +29,10 @@ export class ModuleRepository {
     });
   }
 
-  async findAll(options: any) {
+  async findAll(options: TrainingModulesAdminQuery) {
     const paginate = createPaginator({ perPage: options.per_page });
 
-    return paginate<any, Prisma.ModuleFindManyArgs>(
+    return paginate<ModuleDTO, Prisma.ModuleFindManyArgs>(
       this.prisma.module,
       {
         where: {

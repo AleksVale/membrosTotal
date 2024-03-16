@@ -91,6 +91,11 @@ export class RefundsController {
     });
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.refundService.findOne(+id);
+  }
+
   @ApiResponse({ type: SuccessResponse, status: 200 })
   @Patch(':id')
   update(

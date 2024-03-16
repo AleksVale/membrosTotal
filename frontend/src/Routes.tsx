@@ -23,6 +23,7 @@ import { ListPaymentRequests } from './pages/collaborator/PaymentRequests/list'
 import { ListRefunds } from './pages/collaborator/Refunds/list'
 import { CreateRefunds } from './pages/collaborator/Refunds/new'
 import TrainingList from './pages/collaborator/Trainings/list'
+import { EditRefunds } from './pages/collaborator/Refunds/edit'
 
 export const routes = createBrowserRouter([
   {
@@ -61,6 +62,7 @@ export const routes = createBrowserRouter([
       { path: 'payment_requests/new', element: <CreatePaymentRequest /> },
       { path: 'refunds', element: <ListRefunds /> },
       { path: 'refunds/new', element: <CreateRefunds /> },
+      { path: 'refunds/:id/e', element: <EditRefunds /> },
       { path: 'trainings', element: <TrainingList /> },
     ],
   },

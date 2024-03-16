@@ -50,10 +50,12 @@ export function CreateEditPaymentRefund({
               <FormItem>
                 <FormLabel>Valor</FormLabel>
                 <FormControl>
-                  <CurrencyInput
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
+                  {field.value !== undefined && (
+                    <CurrencyInput
+                      value={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 </FormControl>
                 <FormMessage />
               </FormItem>

@@ -115,7 +115,7 @@ export function ColaboratorLayout() {
               <DropdownMenuItem asChild>
                 <Link to={COLLABORATOR_PAGES.profile}>Perfil</Link>
               </DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>Suporte</DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>

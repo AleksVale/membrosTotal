@@ -76,7 +76,7 @@ export interface RefundResponseDto {
   id: number
   userId: number
   value: number
-  refundDate: Date
+  refundDate: string
   photoKey: string
   status: PaymentStatus
   reason: string

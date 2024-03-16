@@ -56,7 +56,7 @@ export function useListPaymentRequestCollaborator() {
     async (id: number) => {
       const deleted = await ColaboratorService.deletePaymentRequest(id)
       if (deleted.data.success) {
-        toast.success('Pagamento cancelado com sucesso')
+        toast.success('Solicitação cancelada com sucesso')
         getPaymentRequests()
       }
     },
@@ -143,14 +143,14 @@ export function useListPaymentRequestCollaborator() {
                 >
                   <Edit size={16} className="text-primary" />
                   <span className="group-hover:text-primary">
-                    Editar pagamento
+                    Editar solicitação
                   </span>
                 </DropdownMenuItem>
                 <DialogTrigger asChild>
                   <DropdownMenuItem className="group flex items-center gap-2">
                     <Trash size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
-                      Cancelar pagamento
+                      Cancelar solicitação
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>

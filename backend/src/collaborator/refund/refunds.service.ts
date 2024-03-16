@@ -34,7 +34,7 @@ export class RefundsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} paymentRequest`;
+    return this.refundRepository.find({ id });
   }
 
   update(id: number, updateRefundsDto: UpdateRefundCollaboratorDTO) {

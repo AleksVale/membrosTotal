@@ -25,7 +25,7 @@ const TrainingList: React.FC = () => {
         </div>
       ))} */}
       <Carousel
-        opts={{ loop: true }}
+        opts={{ loop: true, align: 'start' }}
         className="m-auto flex h-full w-2/3 items-center justify-center p-2"
       >
         <CarouselContent>

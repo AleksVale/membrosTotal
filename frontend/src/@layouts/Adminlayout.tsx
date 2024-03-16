@@ -27,15 +27,15 @@ export function AdminLayout() {
   }, [profile, navigate, pathname])
   return (
     <div className="grid min-h-screen w-full lg:grid-cols-[280px_1fr]">
-      <div className="hidden border-r border-r-muted-foreground bg-muted lg:block">
+      <div className="border-r-muted-foreground bg-muted hidden border-r lg:block">
         <div className="flex h-full max-h-screen flex-col gap-2">
           <div className="flex h-[60px] items-center border-b px-6">
             <Link className="flex items-center gap-2 font-semibold" to="#">
-              <Package2Icon className="h-6 w-6" />
+              <Package2Icon className="size-6" />
               <span className="">Admin Dashboard</span>
             </Link>
-            <Button className="ml-auto h-8 w-8" size="icon" variant="outline">
-              <BellIcon className="h-4 w-4" />
+            <Button className="ml-auto size-8" size="icon" variant="outline">
+              <BellIcon className="size-4" />
               <span className="sr-only">Toggle notifications</span>
             </Button>
           </div>
@@ -43,22 +43,22 @@ export function AdminLayout() {
             <nav className="grid items-start px-4 text-sm font-medium">
               <MenuLink
                 to={ADMIN_PAGES.home}
-                icon={<HomeIcon className="h-6 w-6" />}
+                icon={<HomeIcon className="size-6" />}
                 label="Home"
               />
               <MenuLink
                 to={ADMIN_PAGES.listUsers}
-                icon={<UsersIcon className="h-6 w-6" />}
+                icon={<UsersIcon className="size-6" />}
                 label="Usuários"
               />
               <MenuLink
                 to={ADMIN_PAGES.listMeetings}
-                icon={<Speech className="h-6 w-6" />}
+                icon={<Speech className="size-6" />}
                 label="Reuniões"
               />
               <MenuLink
                 to={ADMIN_PAGES.settings}
-                icon={<SettingsIcon className="h-6 w-6" />}
+                icon={<SettingsIcon className="size-6" />}
                 label="Settings"
               />
             </nav>
@@ -67,9 +67,9 @@ export function AdminLayout() {
       </div>
 
       <div className="flex flex-col">
-        <header className="flex h-14 lg:h-[60px] items-center gap-4 sm:gap-8 border-b bg-muted pl-2">
+        <header className="bg-muted flex h-14 items-center gap-4 border-b pl-2 sm:gap-8 lg:h-[60px]">
           <Link className="lg:hidden" to="#">
-            <Package2Icon className="h-6 w-6" />
+            <Package2Icon className="size-6" />
             <span className="sr-only">Home</span>
           </Link>
           <div className="w-full flex-1">
@@ -81,7 +81,7 @@ export function AdminLayout() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
-                className="rounded-full border border-gray-200 w-8 h-8 dark:border-gray-800 mr-6"
+                className="mr-6 size-8 rounded-full border border-gray-200 dark:border-gray-800"
                 size="icon"
                 variant="ghost"
               >

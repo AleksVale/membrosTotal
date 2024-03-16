@@ -12,7 +12,7 @@ export const ListRefunds = () => {
     <section>
       <Helmet title="Reembolsos" />
       <Headerbutton
-        label="Solicitação de pagamentos"
+        label="Reembolsos"
         showButton
         labelButton="Criar solicitação de reembolso"
         navigateTo={COLLABORATOR_PAGES.newRefund}

@@ -20,6 +20,10 @@ import { AwsModule } from './aws/aws.module';
 import { PaymentRequestAdminModule } from './payment-request-admin/payment-request-admin.module';
 import { PaymentRequestModule } from './collaborator/payment-request/payment-request.module';
 import { RefundsModule } from './collaborator/refund/refunds.module';
+import { TrainingAdminModule } from './training-admin/training-admin.module';
+import { TrainingModulesAdminModule } from './training-modules-admin/training-modules-admin.module';
+import { SubModulesAdminModule } from './sub-modules-admin/sub-modules-admin.module';
+import { ClassesAdminModule } from './classes-admin/classes-admin.module';
 
 @Module({
   imports: [
@@ -54,6 +58,10 @@ import { RefundsModule } from './collaborator/refund/refunds.module';
     PaymentRequestAdminModule,
     PaymentRequestModule,
     RefundsModule,
+    TrainingAdminModule,
+    TrainingModulesAdminModule,
+    SubModulesAdminModule,
+    ClassesAdminModule,
   ],
   controllers: [AppController],
   providers: [

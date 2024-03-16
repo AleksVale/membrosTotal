@@ -39,6 +39,7 @@ export class ModuleRepository {
           title: {
             contains: options.title,
           },
+          trainingId: options.trainingId,
         },
         orderBy: { createdAt: 'asc' },
         include: {

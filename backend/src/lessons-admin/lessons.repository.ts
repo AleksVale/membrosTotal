@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
+import { LessonQuery } from './lessons-admin.service';
+import { LessonResponseDTO } from './dto/lessos-response.dto';
 
 @Injectable()
 export class LessonsRepository {
@@ -27,16 +29,17 @@ export class LessonsRepository {
     });
   }
 
-  async findAll(options: any) {
+  async findAll(options: LessonQuery) {
     const paginate = createPaginator({ perPage: options.per_page });
 
-    return paginate<any, Prisma.LessonFindManyArgs>(
+    return paginate<LessonResponseDTO, Prisma.LessonFindManyArgs>(
       this.prisma.lesson,
       {
         where: {
           title: {
             contains: options.title,
           },
+          submoduleId: options.subModuleId,
         },
         orderBy: { createdAt: 'asc' },
       },
@@ -44,5 +47,11 @@ export class LessonsRepository {
         page: options.page,
       },
     );
+  }
+
+  async remove(condition: Prisma.LessonWhereUniqueInput) {
+    return await this.prisma.lesson.delete({
+      where: condition,
+    });
   }
 }

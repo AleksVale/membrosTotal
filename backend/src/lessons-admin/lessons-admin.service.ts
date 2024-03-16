@@ -3,6 +3,12 @@ import { CreateLessonAdminDTO } from './dto/create-lessons-admin.dto';
 import { UpdateLessonsAdminDto } from './dto/update-lessons-admin.dto';
 import { LessonsRepository } from './lessons.repository';
 
+export interface LessonQuery {
+  title: string;
+  page: number;
+  per_page: number;
+  subModuleId: number;
+}
 @Injectable()
 export class LessonsAdminService {
   constructor(private readonly lessonsRepository: LessonsRepository) {}
@@ -10,19 +16,19 @@ export class LessonsAdminService {
     return this.lessonsRepository.create(createLessonsAdminDto);
   }
 
-  findAll() {
-    return `This action returns all lessonsAdmin`;
+  findAll(query: LessonQuery) {
+    return this.lessonsRepository.findAll(query);
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} lessonsAdmin`;
+    return this.lessonsRepository.find({ id });
   }
 
   update(id: number, updateLessonsAdminDto: UpdateLessonsAdminDto) {
-    return `This action updates a #${id} lessonsAdmin`;
+    return this.lessonsRepository.update(updateLessonsAdminDto, { id });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} lessonsAdmin`;
+    return this.lessonsRepository.remove({ id });
   }
 }

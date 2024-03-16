@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateSubModulesAdminDto } from './dto/create-sub-modules-admin.dto';
+import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
+import { SubModuleRepository } from './sub-modules.repository';
 
 @Injectable()
 export class SubModulesAdminService {
-  create(createSubModulesAdminDto: CreateSubModulesAdminDto) {
-    return 'This action adds a new subModulesAdmin';
+  constructor(private readonly subModulesRepository: SubModuleRepository) {}
+  create(createSubModulesAdminDto: CreateSubModuleAdminDTO) {
+    return this.subModulesRepository.create(createSubModulesAdminDto);
   }
 
   findAll() {

@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { CreateLessonsAdminDto } from './dto/create-lessons-admin.dto';
+import { CreateLessonAdminDTO } from './dto/create-lessons-admin.dto';
 import { UpdateLessonsAdminDto } from './dto/update-lessons-admin.dto';
+import { LessonsRepository } from './lessons.repository';
 
 @Injectable()
 export class LessonsAdminService {
-  create(createLessonsAdminDto: CreateLessonsAdminDto) {
-    return 'This action adds a new lessonsAdmin';
+  constructor(private readonly lessonsRepository: LessonsRepository) {}
+  create(createLessonsAdminDto: CreateLessonAdminDTO) {
+    return this.lessonsRepository.create(createLessonsAdminDto);
   }
 
   findAll() {

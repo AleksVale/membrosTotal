@@ -1,14 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SubModulesAdminService } from './sub-modules-admin.service';
-import { CreateSubModulesAdminDto } from './dto/create-sub-modules-admin.dto';
+import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
 
 @Controller('sub-modules-admin')
 export class SubModulesAdminController {
-  constructor(private readonly subModulesAdminService: SubModulesAdminService) {}
+  constructor(
+    private readonly subModulesAdminService: SubModulesAdminService,
+  ) {}
 
   @Post()
-  create(@Body() createSubModulesAdminDto: CreateSubModulesAdminDto) {
+  create(@Body() createSubModulesAdminDto: CreateSubModuleAdminDTO) {
     return this.subModulesAdminService.create(createSubModulesAdminDto);
   }
 
@@ -23,7 +33,10 @@ export class SubModulesAdminController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubModulesAdminDto: UpdateSubModulesAdminDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSubModulesAdminDto: UpdateSubModulesAdminDto,
+  ) {
     return this.subModulesAdminService.update(+id, updateSubModulesAdminDto);
   }
 

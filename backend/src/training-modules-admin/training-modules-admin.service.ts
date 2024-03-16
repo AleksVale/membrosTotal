@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTrainingModulesAdminDto } from './dto/create-training-modules-admin.dto';
+import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
 import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
+import { ModuleRepository } from './modules.repository';
 
+// TODO: realizar validações de dados
 @Injectable()
 export class TrainingModulesAdminService {
-  create(createTrainingModulesAdminDto: CreateTrainingModulesAdminDto) {
-    return 'This action adds a new trainingModulesAdmin';
+  constructor(private readonly moduleRepository: ModuleRepository) {}
+  async create(createTrainingModulesAdminDto: CreateModuleAdminDTO) {
+    return this.moduleRepository.create(createTrainingModulesAdminDto);
   }
 
   findAll() {
@@ -16,7 +19,10 @@ export class TrainingModulesAdminService {
     return `This action returns a #${id} trainingModulesAdmin`;
   }
 
-  update(id: number, updateTrainingModulesAdminDto: UpdateTrainingModulesAdminDto) {
+  update(
+    id: number,
+    updateTrainingModulesAdminDto: UpdateTrainingModulesAdminDto,
+  ) {
     return `This action updates a #${id} trainingModulesAdmin`;
   }
 

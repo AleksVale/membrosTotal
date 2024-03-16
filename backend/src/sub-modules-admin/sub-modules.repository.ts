@@ -4,25 +4,25 @@ import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 
 @Injectable()
-export class TrainingRepository {
+export class SubModuleRepository {
   constructor(private prisma: PrismaService) {}
 
-  async create(data: Prisma.TrainingUncheckedCreateInput) {
-    return await this.prisma.training.create({ data });
+  async create(data: Prisma.SubmoduleUncheckedCreateInput) {
+    return await this.prisma.submodule.create({ data });
   }
 
-  async find(condition: Prisma.TrainingWhereInput) {
-    return await this.prisma.training.findFirst({
+  async find(condition: Prisma.SubmoduleWhereInput) {
+    return await this.prisma.submodule.findFirst({
       where: condition,
     });
   }
 
   async update(
-    training: Prisma.TrainingUpdateInput,
-    where: Prisma.TrainingWhereUniqueInput,
+    submodule: Prisma.SubmoduleUpdateInput,
+    where: Prisma.SubmoduleWhereUniqueInput,
   ) {
-    return await this.prisma.training.update({
-      data: training,
+    return await this.prisma.submodule.update({
+      data: submodule,
       where: where,
     });
   }
@@ -30,8 +30,8 @@ export class TrainingRepository {
   async findAll(options: any) {
     const paginate = createPaginator({ perPage: options.per_page });
 
-    return paginate<any, Prisma.TrainingFindManyArgs>(
-      this.prisma.training,
+    return paginate<any, Prisma.SubmoduleFindManyArgs>(
+      this.prisma.submodule,
       {
         where: {
           title: {
@@ -40,8 +40,8 @@ export class TrainingRepository {
         },
         orderBy: { createdAt: 'asc' },
         include: {
-          Module: true,
-          PermissionUserTraining: true,
+          lessons: true,
+          PermissionUserSubModule: true,
         },
       },
       {

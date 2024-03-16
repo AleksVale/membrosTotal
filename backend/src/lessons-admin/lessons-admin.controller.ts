@@ -1,6 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { LessonsAdminService } from './lessons-admin.service';
-import { CreateLessonsAdminDto } from './dto/create-lessons-admin.dto';
+import { CreateLessonAdminDTO } from './dto/create-lessons-admin.dto';
 import { UpdateLessonsAdminDto } from './dto/update-lessons-admin.dto';
 
 @Controller('lessons-admin')
@@ -8,7 +16,7 @@ export class LessonsAdminController {
   constructor(private readonly lessonsAdminService: LessonsAdminService) {}
 
   @Post()
-  create(@Body() createLessonsAdminDto: CreateLessonsAdminDto) {
+  create(@Body() createLessonsAdminDto: CreateLessonAdminDTO) {
     return this.lessonsAdminService.create(createLessonsAdminDto);
   }
 
@@ -23,7 +31,10 @@ export class LessonsAdminController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateLessonsAdminDto: UpdateLessonsAdminDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateLessonsAdminDto: UpdateLessonsAdminDto,
+  ) {
     return this.lessonsAdminService.update(+id, updateLessonsAdminDto);
   }
 

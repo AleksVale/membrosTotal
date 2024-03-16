@@ -6,6 +6,13 @@ export const ADMIN_PAGES = {
   listMeetings: '/admin/meetings?page=1&per_page=10',
   createMeeting: '/admin/meetings/new',
   settings: '/admin/settings',
+  listPayments: '/admin/payments?page=1&per_page=10',
+  newPayment: '/admin/payments/new',
+  listPaymentRequest: '/admin/payment_requests?page=1&per_page=10',
+  newPaymentRequest: '/admin/payment_requests/new',
+  listRefund: '/admin/refunds?page=1&per_page=10',
+  newRefund: '/admin/refunds/new',
+  listTrainings: '/admin/trainings',
 }
 
 export const COLLABORATOR_PAGES = {

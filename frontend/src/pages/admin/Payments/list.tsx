@@ -1,12 +1,12 @@
 import { Helmet } from 'react-helmet-async'
 import { DataTable } from '../../../components/DataTable'
-import { useListPaymentCollaborator } from './hooks/useListPaymentCollaborator'
+import { useListPayment } from './hooks/useListPayment'
 import { Headerbutton } from '../../../components/HeaderButton'
-import { COLLABORATOR_PAGES } from '../../../utils/constants/routes'
+import { ADMIN_PAGES } from '../../../utils/constants/routes'
 import FilterPayment from './FilterPayment'
 
 export const ListPaymentAdmin = () => {
-  const { columns, meta, payments } = useListPaymentCollaborator()
+  const { columns, meta, payments } = useListPayment()
 
   return (
     <section>
@@ -15,7 +15,7 @@ export const ListPaymentAdmin = () => {
         label="Pagametos"
         showButton
         labelButton="Criar pagamento"
-        navigateTo={COLLABORATOR_PAGES.newPayment}
+        navigateTo={ADMIN_PAGES.newPayment}
       />
       <FilterPayment />
       <DataTable columns={columns} data={payments} meta={meta} />

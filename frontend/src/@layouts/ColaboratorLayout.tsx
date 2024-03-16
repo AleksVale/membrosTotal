@@ -13,14 +13,7 @@ import { JSX } from 'react/jsx-runtime'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import {
-  BookOpen,
-  DollarSign,
-  Home,
-  LucideHome,
-  User,
-  User2,
-} from 'lucide-react'
+import { BookOpen, DollarSign, Home, User, User2 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
@@ -49,11 +42,6 @@ export function ColaboratorLayout() {
           </div>
           <div className="flex-1 overflow-auto py-2">
             <nav className="grid items-start gap-2 px-4 text-sm font-medium">
-              <MenuLink
-                to={COLLABORATOR_PAGES.home}
-                label="Home"
-                icon={<LucideHome />}
-              />
               <SideMenuCollapsible title="Perfil" icon={<User2 size={20} />}>
                 <MenuLink to={COLLABORATOR_PAGES.profile} label="Informações" />
                 <MenuLink

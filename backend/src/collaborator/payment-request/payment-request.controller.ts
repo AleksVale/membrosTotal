@@ -12,6 +12,7 @@ import {
   HttpStatus,
   UploadedFile,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { PaymentRequestService } from './payment-request.service';
 import { CreatePaymentRequestCollaboratorDTO } from './dto/create-payment-request.dto';
@@ -106,5 +107,12 @@ export class PaymentRequestController {
     @Body() updatePaymentRequestDto: UpdatePaymentRequestCollaboratorDTO,
   ) {
     return this.paymentRequestService.update(+id, updatePaymentRequestDto);
+  }
+
+  @ApiOkResponse({ type: SuccessResponse })
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.paymentRequestService.remove(+id);
+    return { success: true };
   }
 }

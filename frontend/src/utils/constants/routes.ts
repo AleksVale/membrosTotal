@@ -10,7 +10,7 @@ export const ADMIN_PAGES = {
 
 export const COLLABORATOR_PAGES = {
   prefix: '/collaborator',
-  home: '/collaborator/home',
+  home: '/collaborator/profile',
   listMeetings: '/collaborator/meetings?page=1&per_page=10',
   profile: '/collaborator/profile',
   listPayments: '/collaborator/payments?page=1&per_page=10',

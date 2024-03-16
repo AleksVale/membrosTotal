@@ -24,7 +24,10 @@ const TrainingList: React.FC = () => {
           <p>Date: {training.tutor}</p>
         </div>
       ))} */}
-      <Carousel className="m-auto flex h-full w-2/3 items-center justify-center p-2">
+      <Carousel
+        opts={{ loop: true }}
+        className="m-auto flex h-full w-2/3 items-center justify-center p-2"
+      >
         <CarouselContent>
           <CarouselItem className="basis-1/2">
             <CarouselTrainingItem imageUrl={imagem} title="galo" />

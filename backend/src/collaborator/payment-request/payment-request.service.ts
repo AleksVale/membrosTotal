@@ -58,6 +58,16 @@ export class PaymentRequestService {
     });
   }
 
+  remove(id: number) {
+    return this.paymentRequestRepository.update(
+      {
+        status: PaymentStatus.CANCELLED,
+        reason: 'Solicitação cancelada pelo usuário',
+      },
+      { id },
+    );
+  }
+
   async createFile(
     file: Express.Multer.File,
     user: TokenPayload,

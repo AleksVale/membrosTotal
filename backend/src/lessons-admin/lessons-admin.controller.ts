@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
+  DefaultValuePipe,
 } from '@nestjs/common';
 import { LessonsAdminService } from './lessons-admin.service';
 import { CreateLessonAdminDTO } from './dto/create-lessons-admin.dto';
 import { UpdateLessonsAdminDto } from './dto/update-lessons-admin.dto';
+import { ApiQuery } from '@nestjs/swagger';
 
 @Controller('lessons-admin')
 export class LessonsAdminController {
@@ -20,9 +24,23 @@ export class LessonsAdminController {
     return this.lessonsAdminService.create(createLessonsAdminDto);
   }
 
+  @ApiQuery({ name: 'title', required: false, type: String })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'per_page', required: false, type: Number })
+  @ApiQuery({ name: 'subModuleId', required: true, type: Number })
   @Get()
-  findAll() {
-    return this.lessonsAdminService.findAll();
+  findAll(
+    @Query('subModuleId', ParseIntPipe) subModuleId: number,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
+    @Query('title') title?: string,
+  ) {
+    return this.lessonsAdminService.findAll({
+      page,
+      per_page,
+      subModuleId,
+      title,
+    });
   }
 
   @Get(':id')

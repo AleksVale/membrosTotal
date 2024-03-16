@@ -20,7 +20,7 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CurrentUser } from 'src/auth/current-user-decorator';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from '../../common/decorators/apiResponseDecorator';
 import { PaymentResponseDTO } from './dto/payment-response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
@@ -88,8 +88,10 @@ export class PaymentsController {
     return this.paymentsService.update(+id, updatePaymentDto);
   }
 
+  @ApiOkResponse({ type: SuccessResponse })
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.paymentsService.remove(+id);
+  async remove(@Param('id') id: string) {
+    await this.paymentsService.remove(+id);
+    return { success: true };
   }
 }

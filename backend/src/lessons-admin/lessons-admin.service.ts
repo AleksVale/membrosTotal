@@ -4,7 +4,7 @@ import { UpdateLessonsAdminDto } from './dto/update-lessons-admin.dto';
 import { LessonsRepository } from './lessons.repository';
 
 export interface LessonQuery {
-  title: string;
+  title?: string;
   page: number;
   per_page: number;
   subModuleId: number;

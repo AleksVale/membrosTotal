@@ -106,6 +106,14 @@ const getRefunds = async (searchParams: string) => {
   )
 }
 
+const deletePayment = async (id: number) => {
+  return http.delete<SuccessResponse>(`collaborator/payments/${id}`)
+}
+
+const deletePaymentRequest = async (id: number) => {
+  return http.delete<SuccessResponse>(`collaborator/payment_requests/${id}`)
+}
+
 const ColaboratorService = {
   update,
   getCurrentUser,
@@ -119,6 +127,8 @@ const ColaboratorService = {
   getRefunds,
   createRefund,
   createPhotoRefund,
+  deletePayment,
+  deletePaymentRequest,
 }
 
 export default ColaboratorService

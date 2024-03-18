@@ -1,5 +1,5 @@
 import React from 'react'
-import useListTraining from './hooks/useListTraining'
+// import useListTraining from './hooks/useListTraining'
 import CarouselTrainingItem from '@/components/CarouselTrainingItem'
 import {
   Carousel,

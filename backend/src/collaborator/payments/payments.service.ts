@@ -50,15 +50,18 @@ export class PaymentsService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} payment`;
+    return this.paymentRepository.find({ id });
   }
 
   update(id: number, updatePaymentDto: UpdatePaymentDto) {
-    return `This action updates a #${id} payment`;
+    return this.paymentRepository.update(updatePaymentDto, { id });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} payment`;
+    return this.paymentRepository.update(
+      { status: PaymentStatus.CANCELLED },
+      { id },
+    );
   }
 
   async createFile(

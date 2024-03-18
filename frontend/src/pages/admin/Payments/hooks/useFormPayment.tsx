@@ -2,7 +2,7 @@ import { Autocomplete } from '@/services/autocomplete.service'
 import { useState } from 'react'
 
 export function useFormPayment() {
-  const [expertOptions, setExpertOptions] = useState<Autocomplete[]>([])
+  const [expertOption] = useState<Autocomplete[]>([])
 
-  return { expertOptions }
+  return { expertOption }
 }

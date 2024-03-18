@@ -3,20 +3,18 @@ import { format } from 'date-fns'
 import { useState, useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { DataTableColumnHeader } from '../../../../components/DataTableColumnHeader'
-import ColaboratorService from '../../../../services/colaborator.service'
 import { PaginationMeta } from '../../../../services/interfaces'
 import { DEFAULT_META_PAGINATION } from '../../../../utils/constants/routes'
 import { Payment, PaymentLabel } from '../../../../utils/interfaces/payment'
+import Paymentservice from '@/services/payment.service'
 
-export function useListPaymentCollaborator() {
+export function useListPayment() {
   const [searchParams] = useSearchParams()
   const [payments, setPayments] = useState<Payment[]>([])
   const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
 
   const getPayments = useCallback(async () => {
-    const response = await ColaboratorService.getPayments(
-      searchParams.toString(),
-    )
+    const response = await Paymentservice.getPayments(searchParams)
     setPayments(response.data.data)
     setMeta(response.data.meta)
   }, [searchParams])
@@ -26,6 +24,12 @@ export function useListPaymentCollaborator() {
   }, [getPayments])
 
   const columns: ColumnDef<Payment>[] = [
+    {
+      accessorKey: 'User.fullName',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Usuário" />
+      ),
+    },
     {
       accessorKey: 'description',
       header: ({ column }) => (

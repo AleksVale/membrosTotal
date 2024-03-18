@@ -6,6 +6,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:react-hooks/recommended',
     '@rocketseat/eslint-config/react',
+    'plugin:tailwindcss/recommended'
   ],
   ignorePatterns: ['dist', '.eslintrc.cjs'],
   parser: '@typescript-eslint/parser',
@@ -15,5 +16,6 @@ module.exports = {
       'warn',
       { allowConstantExport: true },
     ],
+    'tailwindcss/no-custom-classname': 'off',
   },
 }

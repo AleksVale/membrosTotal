@@ -36,7 +36,7 @@ export default function FilterPayment() {
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <Button
-            className="flex items-center text-2xl gap-1 mb-4"
+            className="flex items-center pl-0  text-2xl gap-1 mb-4"
             variant={'ghost'}
           >
             Filtros{' '}

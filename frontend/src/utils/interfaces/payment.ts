@@ -45,3 +45,45 @@ export interface Payment {
   paymentTypeId?: number | null
   PaymentExpert: PaymentExpert[] // Assuming PaymentExpert model is imported and defined elsewhere
 }
+
+export interface PaymentRequestTypeDto {
+  id: number
+  label: string
+}
+
+export interface PaymentResponseDto {
+  id: number
+  userId: number
+  value: number
+  requestDate: Date
+  photoKey: string
+  status: PaymentStatus
+  reason?: string
+  paidBy?: number
+  description: string
+  createdAt: Date
+  updatedAt: Date
+  User: User
+  PaymentRequestType: PaymentRequestTypeDto
+}
+
+interface RefundTypeDto {
+  id: number
+  label: string
+}
+
+export interface RefundResponseDto {
+  id: number
+  userId: number
+  value: number
+  refundDate: string
+  photoKey: string
+  status: PaymentStatus
+  reason: string
+  paidBy: number
+  description: string
+  createdAt: Date
+  updatedAt: Date
+  User: User
+  RefundTypeDto: RefundTypeDto
+}

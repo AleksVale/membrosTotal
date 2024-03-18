@@ -213,6 +213,8 @@ model Module {
   trainingId           Int // ID do treinamento pai
   training             Training               @relation(fields: [trainingId], references: [id])
   PermissionUserModule PermissionUserModule[]
+  createdAt            DateTime               @default(now())
+  updatedAt            DateTime               @updatedAt
 
   @@map("modules")
 }
@@ -227,6 +229,8 @@ model Submodule {
   module                  Module                    @relation(fields: [moduleId], references: [id])
   lessons                 Lesson[]
   PermissionUserSubModule PermissionUserSubModule[]
+  createdAt               DateTime                  @default(now())
+  updatedAt               DateTime                  @updatedAt
 
   @@map("submodules")
 }
@@ -240,6 +244,8 @@ model Lesson {
   thumbnail   String?
   submoduleId Int // ID do submódulo pai
   submodule   Submodule @relation(fields: [submoduleId], references: [id])
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   @@map("lessons")
 }

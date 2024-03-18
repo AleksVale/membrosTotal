@@ -39,9 +39,9 @@ export function CreateEditPaymentForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitForm)}
-        className="space-y-4 w-full"
+        className="bg-muted m-auto w-2/3 justify-center space-y-4 rounded-lg px-8 py-6"
       >
-        <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-4 lg:grid-cols-1">
           <FormField
             control={form.control}
             name="value"
@@ -132,7 +132,7 @@ export function CreateEditPaymentForm({
           <Button type="submit" size={'lg'} disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 size-4 animate-spin" />
                 Carregando
               </>
             ) : (

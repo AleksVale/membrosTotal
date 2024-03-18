@@ -8,6 +8,11 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  UseInterceptors,
+  HttpStatus,
+  UploadedFile,
+  UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { PaymentRequestService } from './payment-request.service';
 import { CreatePaymentRequestCollaboratorDTO } from './dto/create-payment-request.dto';
@@ -18,18 +23,49 @@ import { CurrentUser } from 'src/auth/current-user-decorator';
 import { TokenPayload } from 'src/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CreatePaymentRequestResponseDTO } from './dto/create-payment-request-response.dto';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
 
-@ApiTags('Collaborator/PaymentRequest')
-@Controller('payment-request')
+@UseGuards(JwtAuthGuard, RoleGuard)
+@Roles(['employee'])
+@ApiTags('Collaborator/PaymentRequests')
+@Controller('collaborator/payment_requests')
 export class PaymentRequestController {
   constructor(private readonly paymentRequestService: PaymentRequestService) {}
 
+  @Post(':id/file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFile(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: TokenPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.paymentRequestService.createFile(file, user, +id);
+
+    return { success: true };
+  }
+
+  @ApiResponse({
+    type: CreatePaymentRequestResponseDTO,
+    status: HttpStatus.CREATED,
+  })
   @Post()
-  create(
+  async create(
     @Body() createPaymentRequestDto: CreatePaymentRequestCollaboratorDTO,
     @CurrentUser() user: TokenPayload,
-  ) {
-    return this.paymentRequestService.create(createPaymentRequestDto, user);
+  ): Promise<CreatePaymentRequestResponseDTO> {
+    const paymentRequest = await this.paymentRequestService.create(
+      createPaymentRequestDto,
+      user,
+    );
+    return {
+      id: paymentRequest.id,
+      success: true,
+    };
   }
 
   @ApiOkResponse({
@@ -58,7 +94,9 @@ export class PaymentRequestController {
       per_page,
       status,
       user: user.id,
-      paymentRequestTypeId,
+      paymentRequestTypeId: paymentRequestTypeId
+        ? +paymentRequestTypeId
+        : undefined,
     });
   }
 
@@ -69,5 +107,12 @@ export class PaymentRequestController {
     @Body() updatePaymentRequestDto: UpdatePaymentRequestCollaboratorDTO,
   ) {
     return this.paymentRequestService.update(+id, updatePaymentRequestDto);
+  }
+
+  @ApiOkResponse({ type: SuccessResponse })
+  @Delete(':id')
+  async remove(@Param('id') id: string) {
+    await this.paymentRequestService.remove(+id);
+    return { success: true };
   }
 }

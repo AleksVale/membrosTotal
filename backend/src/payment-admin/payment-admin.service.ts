@@ -42,14 +42,13 @@ export class PaymentAdminService {
     });
   }
 
-  findAll({ page, per_page, expert, status }: IFindAllPaymentAdmin) {
+  findAll({ page, per_page, status }: IFindAllPaymentAdmin) {
     if (status && !PaymentStatus[status]) {
       throw new BadRequestException('Status inválido');
     }
-    return this.paymentRepository.findAllExpert({
+    return this.paymentRepository.findAll({
       page,
       per_page,
-      expert,
       status,
     });
   }
@@ -59,7 +58,7 @@ export class PaymentAdminService {
   }
 
   update(id: number, updatePaymentAdminDto: UpdatePaymentAdminDto) {
-    return `This action updates a #${id} paymentAdmin`;
+    return this.paymentRepository.update(updatePaymentAdminDto, { id });
   }
 
   remove(id: number) {

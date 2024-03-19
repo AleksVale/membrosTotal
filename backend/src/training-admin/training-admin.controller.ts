@@ -20,6 +20,8 @@ import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreatePaymentResponseDTO } from 'src/collaborator/payments/dto/create-payment-response.dto';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 import { TrainingDTO } from './dto/training-response.dto';
+import { AddPermissionTrainingAdminDTO } from './dto/add-permissions-training.dto';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
@@ -71,5 +73,15 @@ export class TrainingAdminController {
     @Body() updateTrainingAdminDto: UpdateTrainingAdminDto,
   ) {
     return this.trainingAdminService.update(+id, updateTrainingAdminDto);
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Post(':id/permissions')
+  async addPermission(
+    @Param('id') id: string,
+    @Body() body: AddPermissionTrainingAdminDTO,
+  ): Promise<SuccessResponse> {
+    await this.trainingAdminService.addPermission(+id, body);
+    return { success: true };
   }
 }

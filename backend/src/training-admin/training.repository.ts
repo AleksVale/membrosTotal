@@ -51,4 +51,16 @@ export class TrainingRepository {
       },
     );
   }
+
+  async addPermission(id: number, users: number[]) {
+    await this.prisma.permissionUserTraining.deleteMany({
+      where: { trainingId: id },
+    });
+    await this.prisma.permissionUserTraining.createMany({
+      data: users.map((userId) => ({
+        userId,
+        trainingId: id,
+      })),
+    });
+  }
 }

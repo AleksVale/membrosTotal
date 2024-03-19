@@ -51,4 +51,17 @@ export class ModuleRepository {
       },
     );
   }
+
+  async addPermission(id: number, users: number[]) {
+    await this.prisma.permissionUserModule.deleteMany({
+      where: { moduleId: id },
+    });
+
+    await this.prisma.permissionUserModule.createMany({
+      data: users.map((userId) => ({
+        userId,
+        moduleId: id,
+      })),
+    });
+  }
 }

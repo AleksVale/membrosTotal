@@ -15,6 +15,8 @@ import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-adm
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 import { ModuleDTO } from './dto/module-response.dto';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
+import { SuccessResponse } from 'src/utils/success-response.dto';
+import { AddPermissionModuleAdminDTO } from './dto/add-permissions-module.dto';
 
 @Controller('training-modules-admin')
 export class TrainingModulesAdminController {
@@ -64,5 +66,15 @@ export class TrainingModulesAdminController {
       +id,
       updateTrainingModulesAdminDto,
     );
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Post(':id/permissions')
+  async addPermission(
+    @Param('id') id: string,
+    @Body() body: AddPermissionModuleAdminDTO,
+  ): Promise<SuccessResponse> {
+    await this.trainingModulesAdminService.addPermission(+id, body);
+    return { success: true };
   }
 }

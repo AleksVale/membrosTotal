@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
 import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
 import { TrainingRepository } from './training.repository';
+import { AddPermissionTrainingAdminDTO } from './dto/add-permissions-training.dto';
 
 export interface TrainingQuery {
   title: string;
@@ -27,5 +28,15 @@ export class TrainingAdminService {
 
   update(id: number, updateTrainingAdminDto: UpdateTrainingAdminDto) {
     return this.trainingRepository.update(updateTrainingAdminDto, { id });
+  }
+
+  addPermission(
+    id: number,
+    addPermissionTrainingAdminDto: AddPermissionTrainingAdminDTO,
+  ) {
+    return this.trainingRepository.addPermission(
+      id,
+      addPermissionTrainingAdminDto.users,
+    );
   }
 }

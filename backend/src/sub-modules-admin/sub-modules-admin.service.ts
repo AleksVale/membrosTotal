@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
 import { SubModuleRepository } from './sub-modules.repository';
+import { AddPermissionSubModuleAdminDTO } from './dto/add-permissions-subModule-training.dto';
 
 export interface SubModulesQuery {
   title?: string;
@@ -27,5 +28,15 @@ export class SubModulesAdminService {
 
   update(id: number, updateSubModulesAdminDto: UpdateSubModulesAdminDto) {
     return this.subModulesRepository.update(updateSubModulesAdminDto, { id });
+  }
+
+  addPermission(
+    id: number,
+    addPermissionSubModuleAdminDto: AddPermissionSubModuleAdminDTO,
+  ) {
+    return this.subModulesRepository.addPermission(
+      id,
+      addPermissionSubModuleAdminDto.users,
+    );
   }
 }

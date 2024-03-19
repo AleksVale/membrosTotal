@@ -16,6 +16,7 @@ import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 import { SubmoduleDTO } from './dto/sub-modules-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { AddPermissionSubModuleAdminDTO } from './dto/add-permissions-subModule-training.dto';
 
 @Controller('sub-modules-admin')
 export class SubModulesAdminController {
@@ -61,5 +62,15 @@ export class SubModulesAdminController {
     @Body() updateSubModulesAdminDto: UpdateSubModulesAdminDto,
   ) {
     return this.subModulesAdminService.update(+id, updateSubModulesAdminDto);
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Post(':id/permissions')
+  async addPermission(
+    @Param('id') id: string,
+    @Body() body: AddPermissionSubModuleAdminDTO,
+  ): Promise<SuccessResponse> {
+    await this.subModulesAdminService.addPermission(+id, body);
+    return { success: true };
   }
 }

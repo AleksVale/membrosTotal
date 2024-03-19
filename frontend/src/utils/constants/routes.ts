@@ -13,6 +13,8 @@ export const ADMIN_PAGES = {
   listRefund: '/admin/refunds?page=1&per_page=10',
   newRefund: '/admin/refunds/new',
   listTrainings: '/admin/trainings',
+  createTrainings: '/admin/trainings/new',
+  permissions: '/admin/permissions',
 }
 
 export const COLLABORATOR_PAGES = {

@@ -13,7 +13,7 @@ import { JSX } from 'react/jsx-runtime'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import { BookOpen, DollarSign, User, User2 } from 'lucide-react'
+import { BookOpen, DollarSign, Settings, User, User2 } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
@@ -65,6 +65,12 @@ export function AdminLayout() {
                 icon={<BookOpen size={20} />}
               >
                 <MenuLink to={ADMIN_PAGES.listTrainings} label="Treinamentos" />
+              </SideMenuCollapsible>
+              <SideMenuCollapsible
+                title="Configurações"
+                icon={<Settings size={20} />}
+              >
+                <MenuLink to={ADMIN_PAGES.permissions} label="Permissões" />
               </SideMenuCollapsible>
             </nav>
           </div>

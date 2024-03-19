@@ -6,6 +6,7 @@ import { Profile } from '../profile/profile.entity';
 import { TokenPayload } from '../auth/jwt.strategy';
 import { UserService } from '../user/user.service';
 import { PaymentStatus } from '@prisma/client';
+import { AwsService } from 'src/aws/aws.service';
 
 export interface IFindAllPaymentAdmin {
   page: number;
@@ -18,6 +19,7 @@ export class PaymentAdminService {
   constructor(
     private readonly paymentRepository: PaymentRepository,
     private readonly userService: UserService,
+    private readonly awsService: AwsService,
   ) {}
   async create(
     createPaymentAdminDto: CreatePaymentAdminDTO,
@@ -61,7 +63,31 @@ export class PaymentAdminService {
     return this.paymentRepository.update(updatePaymentAdminDto, { id });
   }
 
+  pay(id: number, user: TokenPayload) {
+    return this.paymentRepository.update(
+      { paidBy: user.id, status: PaymentStatus.PAID },
+      { id },
+    );
+  }
+
   remove(id: number) {
     return `This action removes a #${id} paymentAdmin`;
+  }
+
+  async createFile(
+    file: Express.Multer.File,
+    user: TokenPayload,
+    paymentId: number,
+  ) {
+    const payment = await this.paymentRepository.find({ id: paymentId });
+    const photoKey = payment?.photoKey
+      ? payment.photoKey
+      : this.awsService.createPhotoKeyPayment(
+          user.id,
+          paymentId,
+          file.mimetype.split('/')[1],
+        );
+    await this.awsService.updatePhoto(file, photoKey);
+    return this.paymentRepository.update({ photoKey }, { id: paymentId });
   }
 }

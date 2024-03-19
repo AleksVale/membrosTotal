@@ -21,7 +21,10 @@ const update = async (payment: unknown, id: string) => {
 }
 
 const cancelPayment = async (id: number) => {
-  return http.patch<SuccessResponse>(`/payment-admin/${id}/cancel`)
+  return http.patch<SuccessResponse>(`/payment-admin/${id}`, {
+    status: 'CANCELLED',
+    reason: 'Cancelado pelo administrador',
+  })
 }
 
 const finishPayment = async (id: number) => {

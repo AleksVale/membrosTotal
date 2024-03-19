@@ -24,6 +24,9 @@ import { ListRefunds } from './pages/collaborator/Refunds/list'
 import { CreateRefunds } from './pages/collaborator/Refunds/new'
 import TrainingList from './pages/collaborator/Trainings/list'
 import { EditRefunds } from './pages/collaborator/Refunds/edit'
+import { Permissions } from './pages/admin/Permissions'
+import { CreateTraining } from './pages/admin/Training/new'
+import { TrainingAdminList } from './pages/admin/Training/list'
 
 export const routes = createBrowserRouter([
   {
@@ -46,6 +49,9 @@ export const routes = createBrowserRouter([
       { path: 'meetings/:id/e', element: <EditMeeting /> },
       { path: 'payments', element: <ListPaymentAdmin /> },
       { path: 'payments/new', element: <CreatePaymentAdmin /> },
+      { path: 'trainings', element: <TrainingAdminList /> },
+      { path: 'trainings/new', element: <CreateTraining /> },
+      { path: 'permissions', element: <Permissions /> },
     ],
   },
   {

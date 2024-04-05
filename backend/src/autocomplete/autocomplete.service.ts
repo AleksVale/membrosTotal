@@ -81,6 +81,19 @@ export class AutocompleteService {
             },
           });
           break;
+        case 'trainings':
+          response.trainings = (
+            await this.prisma.training.findMany({
+              select: {
+                id: true,
+                title: true,
+              },
+            })
+          ).map((value) => ({
+            id: value.id,
+            label: value.title,
+          }));
+          break;
         default:
           break;
       }

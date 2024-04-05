@@ -1,6 +1,6 @@
 import { SuccessResponse } from '@/utils/constants/routes'
 
-export interface ITraining {
+export interface IModule {
   id: number
   title: string
   description: string
@@ -10,11 +10,11 @@ export interface ITraining {
   updatedAt: Date
 }
 
-export interface GetTrainingResponse {
-  training: ITraining
+export interface GetModuleResponse {
+  module: IModule
   stream: ArrayBuffer
 }
 
-export interface CreateTrainingResponse extends SuccessResponse {
+export interface CreateModuleResponse extends SuccessResponse {
   id: number
 }

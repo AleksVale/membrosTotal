@@ -67,7 +67,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="rounded-md border min-w-0 min-h-96 flex flex-col justify-between">
+    <div className="flex min-h-96 min-w-0 flex-col justify-between rounded-md border">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -110,7 +110,7 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      <div className="py-4 border-t border-background-foreground">
+      <div className="border-background-foreground border-t py-4">
         <DataTablePagination
           table={table}
           onPageChange={onPageChange}

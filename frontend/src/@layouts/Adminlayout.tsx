@@ -65,6 +65,7 @@ export function AdminLayout() {
                 icon={<BookOpen size={20} />}
               >
                 <MenuLink to={ADMIN_PAGES.listTrainings} label="Treinamentos" />
+                <MenuLink to={ADMIN_PAGES.listModules} label="Módulos" />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Configurações"

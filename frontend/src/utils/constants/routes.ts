@@ -12,9 +12,13 @@ export const ADMIN_PAGES = {
   newPaymentRequest: '/admin/payment_requests/new',
   listRefund: '/admin/refunds?page=1&per_page=10',
   newRefund: '/admin/refunds/new',
-  listTrainings: '/admin/trainings',
+  listTrainings: '/admin/trainings?page=1&per_page=10',
   createTrainings: '/admin/trainings/new',
+  editTraining: (id: number) => `/admin/trainings/${id}/e`,
   permissions: '/admin/permissions',
+  listModules: '/admin/modules?page=1&per_page=10',
+  createModules: '/admin/modules/new',
+  editModule: (id: number) => `/admin/modules/${id}/e`,
 }
 
 export const COLLABORATOR_PAGES = {

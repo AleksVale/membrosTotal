@@ -9,16 +9,16 @@ const ACCEPTED_IMAGE_TYPES = [
   'application/pdf',
 ]
 
-export const createTraining = z.object({
+export const createModule = z.object({
   title: z
     .string({ required_error: 'Título obrigatório' })
     .min(2, { message: 'Título obrigatório' }),
   description: z
     .string({ required_error: 'Descrição obrigatória' })
     .min(2, { message: 'Descrição obrigatória' }),
-  tutor: z
-    .string({ required_error: 'Campo obrigatório' })
-    .min(2, { message: 'Campo obrigatório' }),
+  trainingId: z.coerce.number({
+    required_error: 'Selecione um treinamento',
+  }),
   file: z
     .any()
     .refine((files) => {
@@ -35,4 +35,4 @@ export const createTraining = z.object({
     }, 'Apenas .pdf, .jpg, .jpeg, .png and .webp formatos são suportados.'),
 })
 
-export type CreateTrainingDTO = z.infer<typeof createTraining>
+export type CreateModuleDTO = z.infer<typeof createModule>

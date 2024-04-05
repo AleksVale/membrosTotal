@@ -44,4 +44,10 @@ export class AutocompleteResponseDto {
     isArray: true,
   })
   refundTypes?: AutocompleteResponse[];
+
+  @ApiPropertyOptional({
+    type: AutocompleteResponse,
+    isArray: true,
+  })
+  trainings?: AutocompleteResponse[];
 }

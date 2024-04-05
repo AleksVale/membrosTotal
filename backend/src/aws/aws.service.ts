@@ -1,7 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Env } from 'src/env';
-import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+} from '@aws-sdk/client-s3';
+
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
 @Injectable()
 export class AwsService {
@@ -32,6 +38,14 @@ export class AwsService {
     return `payments/${userId}/${paymentId}/payment.${mimeType}`;
   }
 
+  createPhotoKeyTraining(trainingId: number, mimeType: string) {
+    return `trainings/${trainingId}/thumbnail.${mimeType}`;
+  }
+
+  createPhotoKeyModule(moduleId: number, mimeType: string) {
+    return `modules/${moduleId}/thumbnail.${mimeType}`;
+  }
+
   createPhotoKeyPaymentRequest(
     userId: number,
     paymentRequestId: number,
@@ -46,5 +60,18 @@ export class AwsService {
     mimeType: string,
   ) {
     return `refunds/${userId}/${paymentRequestId}/refund.${mimeType}`;
+  }
+
+  async getPhoto(photoKey: string) {
+    const uploadResult = await getSignedUrl(
+      this.s3,
+      new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: photoKey,
+      }),
+      { expiresIn: 3600 },
+    );
+    console.log(uploadResult);
+    return uploadResult;
   }
 }

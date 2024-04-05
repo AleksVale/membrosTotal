@@ -28,3 +28,8 @@ export class TrainingDTO {
   @ApiProperty({ type: [ModuleDTO], description: 'List of modules' })
   modules!: ModuleDTO[];
 }
+
+export class GetTrainingResponse {
+  training!: TrainingDTO;
+  stream!: ArrayBuffer;
+}

@@ -16,6 +16,9 @@ export class ModuleRepository {
   async find(condition: Prisma.ModuleWhereInput) {
     return await this.prisma.module.findFirst({
       where: condition,
+      include: {
+        training: true,
+      },
     });
   }
 
@@ -31,7 +34,6 @@ export class ModuleRepository {
 
   async findAll(options: TrainingModulesAdminQuery) {
     const paginate = createPaginator({ perPage: options.per_page });
-
     return paginate<ModuleDTO, Prisma.ModuleFindManyArgs>(
       this.prisma.module,
       {
@@ -43,7 +45,7 @@ export class ModuleRepository {
         },
         orderBy: { createdAt: 'asc' },
         include: {
-          submodules: true,
+          training: true,
         },
       },
       {

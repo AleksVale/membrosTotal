@@ -3,6 +3,7 @@ import { SuccessResponse } from '@/utils/constants/routes'
 import { PaginatedResponseDto } from './interfaces'
 import {
   CreateTrainingResponse,
+  GetTrainingResponse,
   ITraining,
 } from '@/pages/admin/Training/interfaces'
 import { CreateTrainingDTO } from '@/pages/admin/Training/validation'
@@ -14,14 +15,14 @@ const getTrainings = async (searchParams: URLSearchParams) => {
 }
 
 const getTraining = async (id: string | undefined) => {
-  return http.get<ITraining>(`/training-admin/${id}`)
+  return http.get<GetTrainingResponse>(`/training-admin/${id}`)
 }
 const createTraining = async (training: CreateTrainingDTO) => {
   return http.post<CreateTrainingResponse>('/training-admin', training)
 }
 
 const update = async (training: CreateTrainingDTO, id: number | string) => {
-  return http.patch<SuccessResponse>(`/training-admin/${id}`, training)
+  return http.patch<ITraining>(`/training-admin/${id}`, training)
 }
 
 const createPhotoTraining = async (file: File, trainingId: number) => {

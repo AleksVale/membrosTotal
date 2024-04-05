@@ -62,14 +62,14 @@ export function Autocomplete({
       onKeyDown={handleKeyDown}
       className="overflow-visible bg-transparent"
     >
-      <div className="group border border-input px-3 py-2 text-sm ring-offset-background rounded-md focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2">
-        <div className="flex gap-1 flex-wrap">
+      <div className="border-input ring-offset-background focus-within:ring-ring group rounded-md border px-3 py-2 text-sm focus-within:ring-2 focus-within:ring-offset-2">
+        <div className="flex flex-wrap gap-1">
           {value.map((framework) => {
             return (
               <Badge key={framework.id} variant="secondary">
                 {framework.label ?? framework.fullName}
                 <button
-                  className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
+                  className="ring-offset-background focus:ring-ring ml-1 rounded-full outline-none focus:ring-2 focus:ring-offset-2"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleUnselect(framework)
@@ -81,7 +81,7 @@ export function Autocomplete({
                   }}
                   onClick={() => handleUnselect(framework)}
                 >
-                  <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  <X className="text-muted-foreground hover:text-foreground size-3" />
                 </button>
               </Badge>
             )
@@ -94,13 +94,13 @@ export function Autocomplete({
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
             placeholder="Selecione os usuários"
-            className="ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1"
+            className="placeholder:text-muted-foreground ml-2 flex-1 bg-transparent outline-none"
           />
         </div>
       </div>
       <div className="relative mt-2">
         {open && selectables.length > 0 ? (
-          <div className="absolute w-full z-50 top-0 rounded-md border bg-popover text-popover-foreground shadow-md outline-none animate-in">
+          <div className="bg-popover text-popover-foreground animate-in absolute top-0 z-50 w-full rounded-md border shadow-md outline-none">
             <CommandGroup className="h-full overflow-auto">
               {selectables.map((framework) => {
                 return (
@@ -113,6 +113,11 @@ export function Autocomplete({
                     onSelect={() => {
                       setInputValue('')
                       setSelected((prev) => {
+                        if (
+                          prev.some((selected) => selected.id === framework.id)
+                        ) {
+                          return prev
+                        }
                         const result = [...prev, framework]
                         onChange(result)
                         return result

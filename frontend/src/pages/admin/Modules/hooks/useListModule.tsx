@@ -1,9 +1,8 @@
 import { PaginationMeta } from '@/services/interfaces'
-import TrainingService from '@/services/training.service'
 import { ADMIN_PAGES, DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
 import { useState, useCallback, useEffect } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { ITraining } from '../interfaces'
+import { IModule } from '../interfaces'
 import {
   Dialog,
   DialogClose,
@@ -26,25 +25,32 @@ import {
 import { DataTableColumnHeader } from '@/components/DataTableColumnHeader'
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import ModuleService from '@/services/module.service'
 
-export function useListTraining() {
+export function useListModule() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
 
-  const [training, setTraining] = useState<ITraining[]>([])
+  const [module, setModule] = useState<IModule[]>([])
   const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
 
-  const getTrainings = useCallback(async () => {
-    const response = await TrainingService.getTrainings(searchParams)
-    setTraining(response.data.data)
+  const getModules = useCallback(async () => {
+    const response = await ModuleService.getModules(searchParams)
+    setModule(response.data.data)
     setMeta(response.data.meta)
   }, [searchParams])
 
   useEffect(() => {
-    getTrainings()
-  }, [getTrainings])
+    getModules()
+  }, [getModules])
 
-  const columns: ColumnDef<ITraining>[] = [
+  const columns: ColumnDef<IModule>[] = [
+    {
+      accessorKey: 'training.title',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Treinamento" />
+      ),
+    },
     {
       accessorKey: 'title',
       header: ({ column }) => (
@@ -55,12 +61,6 @@ export function useListTraining() {
       accessorKey: 'description',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Descrição" />
-      ),
-    },
-    {
-      accessorKey: 'tutor',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Professor" />
       ),
     },
     {
@@ -80,7 +80,7 @@ export function useListTraining() {
     {
       id: 'actions',
       cell: ({ row }) => {
-        const training = row.original
+        const module = row.original
 
         return (
           <Dialog>
@@ -94,9 +94,7 @@ export function useListTraining() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem
-                  onClick={() =>
-                    navigate(ADMIN_PAGES.editTraining(training.id))
-                  }
+                  onClick={() => navigate(ADMIN_PAGES.editModule(module.id))}
                   className="group flex items-center gap-2"
                 >
                   <Edit size={16} className="text-primary" />
@@ -126,7 +124,7 @@ export function useListTraining() {
                 <DialogClose asChild>
                   <Button
                     variant={'destructive'}
-                    onClick={() => console.log(training.id)}
+                    onClick={() => console.log(module.id)}
                   >
                     Cancelar
                   </Button>
@@ -139,5 +137,5 @@ export function useListTraining() {
     },
   ]
 
-  return { training, meta, columns }
+  return { module, meta, columns }
 }

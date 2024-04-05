@@ -27,3 +27,13 @@ export class ModuleDTO {
   })
   submodules!: SubmoduleDTO[];
 }
+
+export class GetModuleResponse {
+  @ApiProperty({
+    type: ModuleDTO,
+  })
+  module!: ModuleDTO;
+
+  @ApiProperty({ type: String })
+  stream!: string;
+}

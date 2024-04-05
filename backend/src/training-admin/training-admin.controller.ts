@@ -9,6 +9,9 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  UseInterceptors,
+  HttpStatus,
+  UploadedFile,
 } from '@nestjs/common';
 import { TrainingAdminService } from './training-admin.service';
 import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
@@ -17,11 +20,12 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CreatePaymentResponseDTO } from 'src/collaborator/payments/dto/create-payment-response.dto';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
-import { TrainingDTO } from './dto/training-response.dto';
+import { GetTrainingResponse, TrainingDTO } from './dto/training-response.dto';
 import { AddPermissionTrainingAdminDTO } from './dto/add-permissions-training.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { PostResponse } from 'src/utils/post-response.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
@@ -30,11 +34,23 @@ import { SuccessResponse } from 'src/utils/success-response.dto';
 export class TrainingAdminController {
   constructor(private readonly trainingAdminService: TrainingAdminService) {}
 
-  @ApiResponse({ type: CreatePaymentResponseDTO, status: 201 })
+  @Post(':id/file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.trainingAdminService.createFile(file, +id);
+
+    return { success: true };
+  }
+
+  @ApiResponse({ type: PostResponse, status: 201 })
   @Post()
   async create(
     @Body() createTrainingAdminDto: CreateTrainingAdminDTO,
-  ): Promise<CreatePaymentResponseDTO> {
+  ): Promise<PostResponse> {
     const training = await this.trainingAdminService.create(
       createTrainingAdminDto,
     );
@@ -62,7 +78,7 @@ export class TrainingAdminController {
   }
 
   @Get(':id')
-  @ApiResponse({ type: TrainingDTO, status: 200 })
+  @ApiResponse({ type: GetTrainingResponse, status: 200 })
   findOne(@Param('id') id: string) {
     return this.trainingAdminService.findOne(+id);
   }

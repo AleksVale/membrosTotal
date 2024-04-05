@@ -1,13 +1,14 @@
-import { useCreateTraining } from './hooks/useCreateTraining'
 import { CreateEditTrainingForm } from './components/CreateEditTrainingForm'
 import { BaseHeader } from '@/components/BaseHeader'
+import { Helmet } from 'react-helmet-async'
+import { useEditTraining } from './hooks/useEditTraining'
 
-export function CreateTraining() {
-  const { form, handleSubmitForm, isSubmitting } = useCreateTraining()
+export function EditTraining() {
+  const { form, handleSubmitForm, isSubmitting } = useEditTraining()
   return (
     <div>
-      <Helmet title="Treinamentos" />
-      <BaseHeader label="Criar treinamento" />
+      <Helmet title="Editar treinamentos" />
+      <BaseHeader label="Editar treinamento" />
       <CreateEditTrainingForm
         form={form}
         onSubmitForm={handleSubmitForm}

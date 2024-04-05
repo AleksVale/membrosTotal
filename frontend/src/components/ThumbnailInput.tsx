@@ -11,7 +11,6 @@ interface ThumbnailInputProps
 
 export const ThumbnailInput = forwardRef(
   (props: ThumbnailInputProps, ref: ForwardedRef<HTMLInputElement>) => {
-    console.log(props.placeholder)
     return (
       <div>
         <label className="hover:cursor-pointer" htmlFor="imageUpload">

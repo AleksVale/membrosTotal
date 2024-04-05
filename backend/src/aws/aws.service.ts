@@ -71,7 +71,6 @@ export class AwsService {
       }),
       { expiresIn: 3600 },
     );
-    console.log(uploadResult);
     return uploadResult;
   }
 }

@@ -14,7 +14,7 @@ import { Helmet } from 'react-helmet-async'
 import { BaseHeader } from '@/components/BaseHeader'
 
 const TrainingList: React.FC = () => {
-  const { trainings, error, isLoading } = useListTraining()
+  const { trainings } = useListTraining()
 
   return (
     <div className="m-auto flex size-full flex-col items-center justify-center">

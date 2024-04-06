@@ -2,9 +2,9 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 interface CarouselTrainingItemProps {
-  imageUrl: string
+  imageUrl?: string
   title: string
-  trainingId?: number
+  trainingId: number
 }
 
 const CarouselTrainingItem: React.FC<CarouselTrainingItemProps> = ({

@@ -12,6 +12,7 @@ import {
 import { CreatePaymentDTO } from '@/pages/collaborator/Payments/validation'
 import { CreatePaymentRequestDTO } from '@/pages/collaborator/PaymentRequests/validation'
 import { CreateRefundDTO } from '@/pages/collaborator/Refunds/validation'
+import { ITraining } from '@/pages/admin/Training/interfaces'
 
 interface CreatePaymentResponse extends SuccessResponse {
   id: number
@@ -122,6 +123,10 @@ const getRefund = async (id: number) => {
   return http.get<RefundResponseDto>(`collaborator/refunds/${id}`)
 }
 
+const getTrainings = async () => {
+  return http.get<ITraining[]>(`collaborator/training-collaborator`)
+}
+
 const ColaboratorService = {
   update,
   getCurrentUser,
@@ -139,6 +144,7 @@ const ColaboratorService = {
   deletePaymentRequest,
   deleteRefund,
   getRefund,
+  getTrainings,
 }
 
 export default ColaboratorService

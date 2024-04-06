@@ -1,17 +1,9 @@
+import { ITraining } from '@/pages/admin/Training/interfaces'
+import ColaboratorService from '@/services/colaborator.service'
 import { useState, useEffect } from 'react'
 
-interface Training {
-  id: number
-  title: string
-  description: string
-  tutor: string
-  thumbnail?: string
-  createdAt: Date
-  updatedAt: Date
-}
-
 const useListTraining = () => {
-  const [trainings, setTrainings] = useState<Training[]>([])
+  const [trainings, setTrainings] = useState<ITraining[]>([])
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -20,11 +12,9 @@ const useListTraining = () => {
       setIsLoading(true)
 
       try {
-        // Replace this with your actual API call to fetch the training list
-        const response = await fetch('/api/trainings')
-        const data = await response.json()
+        const response = await ColaboratorService.getTrainings()
 
-        setTrainings(data)
+        setTrainings(response.data)
       } catch (error) {
         setError('Failed to fetch trainings')
       } finally {

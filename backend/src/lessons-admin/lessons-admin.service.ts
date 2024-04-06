@@ -44,7 +44,8 @@ export class LessonsAdminService {
   }
 
   update(id: number, updateLessonsAdminDto: UpdateLessonsAdminDto) {
-    return this.lessonsRepository.update(updateLessonsAdminDto, { id });
+    const entity = { ...updateLessonsAdminDto, file: undefined };
+    return this.lessonsRepository.update(entity, { id });
   }
 
   remove(id: number) {

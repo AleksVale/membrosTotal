@@ -37,6 +37,7 @@ import { EditSubModule } from './pages/admin/SubModules/edit'
 import { LessonAdminList } from './pages/admin/Lessons/list'
 import { CreateLesson } from './pages/admin/Lessons/new'
 import { EditLesson } from './pages/admin/Lessons/edit'
+import { ListPaymentRequestsAdmin } from './pages/admin/PaymentsRequest/list'
 
 export const routes = createBrowserRouter([
   {
@@ -58,6 +59,7 @@ export const routes = createBrowserRouter([
       { path: 'meetings/new', element: <CreateMeeting /> },
       { path: 'meetings/:id/e', element: <EditMeeting /> },
       { path: 'payments', element: <ListPaymentAdmin /> },
+      { path: 'payment_requests', element: <ListPaymentRequestsAdmin /> },
       { path: 'payments/new', element: <CreatePaymentAdmin /> },
       { path: 'trainings', element: <TrainingAdminList /> },
       { path: 'trainings/new', element: <CreateTraining /> },

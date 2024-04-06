@@ -5,8 +5,7 @@ import { useSearchParams } from 'react-router-dom'
 import { DataTableColumnHeader } from '../../../../components/DataTableColumnHeader'
 import { PaginationMeta } from '../../../../services/interfaces'
 import { DEFAULT_META_PAGINATION } from '../../../../utils/constants/routes'
-import { Payment, PaymentLabel } from '../../../../utils/interfaces/payment'
-import Paymentservice from '@/services/payment.service'
+
 import {
   Dialog,
   DialogClose,
@@ -26,41 +25,45 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Trash, CheckSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import PaymentRequestservice from '@/services/paymentRequest.service'
+import { PaymentLabel } from '@/utils/interfaces/payment'
+import { IPaymentRequest } from '../interface'
 
-export function useListPayment() {
+export function useListPaymentRequest() {
   const [searchParams] = useSearchParams()
-  const [payments, setPayments] = useState<Payment[]>([])
+  const [paymentRequests, setPaymentRequests] = useState<IPaymentRequest[]>([])
   const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
 
-  const getPayments = useCallback(async () => {
-    const response = await Paymentservice.getPayments(searchParams)
-    setPayments(response.data.data)
+  const getPaymentRequests = useCallback(async () => {
+    const response =
+      await PaymentRequestservice.getPaymentRequests(searchParams)
+    setPaymentRequests(response.data.data)
     setMeta(response.data.meta)
   }, [searchParams])
 
-  const handleConfirmPaidPayment = async (id: number) => {
+  const handleConfirmPaidPaymentRequest = async (id: number) => {
     try {
-      await Paymentservice.finishPayment(id)
-      getPayments()
+      await PaymentRequestservice.finishPaymentRequest(id)
+      getPaymentRequests()
     } catch (error) {
       console.error(error)
     }
   }
 
-  const handleConfirmDeletePayment = async (id: number) => {
+  const handleConfirmDeletePaymentRequest = async (id: number) => {
     try {
-      await Paymentservice.cancelPayment(id)
-      getPayments()
+      await PaymentRequestservice.cancelPaymentRequest(id)
+      getPaymentRequests()
     } catch (error) {
       console.error(error)
     }
   }
 
   useEffect(() => {
-    getPayments()
-  }, [getPayments])
+    getPaymentRequests()
+  }, [getPaymentRequests])
 
-  const columns: ColumnDef<Payment>[] = [
+  const columns: ColumnDef<IPaymentRequest>[] = [
     {
       accessorKey: 'User.fullName',
       header: ({ column }) => (
@@ -80,7 +83,7 @@ export function useListPayment() {
       ),
     },
     {
-      accessorKey: 'PaymentType.label',
+      accessorKey: 'PaymentRequestType.label',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Categoria" />
       ),
@@ -109,7 +112,7 @@ export function useListPayment() {
     {
       id: 'actions',
       cell: ({ row }) => {
-        const paymentRequest = row.original
+        const paymentRequestRequest = row.original
 
         return (
           <Dialog>
@@ -123,19 +126,21 @@ export function useListPayment() {
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem
-                  onClick={() => handleConfirmPaidPayment(paymentRequest.id)}
+                  onClick={() =>
+                    handleConfirmPaidPaymentRequest(paymentRequestRequest.id)
+                  }
                   className="group flex items-center gap-2"
                 >
                   <CheckSquare size={16} className="text-green-300" />
                   <span className="group-hover:text-green-300">
-                    Confirmar pagamento
+                    Confirmar solicitação de pagamento
                   </span>
                 </DropdownMenuItem>
                 <DialogTrigger asChild>
                   <DropdownMenuItem className="group flex items-center gap-2">
                     <Trash size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
-                      Negar pagamento
+                      Negar solicitação de pagamento
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>
@@ -154,7 +159,9 @@ export function useListPayment() {
                   <Button
                     variant={'destructive'}
                     onClick={() =>
-                      handleConfirmDeletePayment(paymentRequest.id)
+                      handleConfirmDeletePaymentRequest(
+                        paymentRequestRequest.id,
+                      )
                     }
                   >
                     Cancelar
@@ -169,7 +176,7 @@ export function useListPayment() {
   ]
   return {
     columns,
-    payments,
+    paymentRequests,
     meta,
   }
 }

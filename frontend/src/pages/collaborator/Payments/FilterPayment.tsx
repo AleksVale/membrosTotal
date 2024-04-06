@@ -36,7 +36,7 @@ export default function FilterPayment() {
       <Collapsible open={isOpen} onOpenChange={setIsOpen}>
         <CollapsibleTrigger asChild>
           <Button
-            className="flex items-center pl-0  text-2xl gap-1 mb-4"
+            className="mb-4 flex items-center  gap-1 pl-0 text-2xl"
             variant={'ghost'}
           >
             Filtros{' '}
@@ -47,7 +47,7 @@ export default function FilterPayment() {
           <Form {...form}>
             <form
               onSubmit={form.handleSubmit(handleSubmitForm)}
-              className="space-y-4 w-full"
+              className="w-full space-y-4"
             >
               <div className="grid grid-cols-3 gap-4">
                 <FormField

@@ -13,9 +13,6 @@ export function useFilterPaymentRequest() {
   const [isOpen, setIsOpen] = useState(true)
   const form = useForm<FilterPaymentRequest>({
     resolver: zodResolver(filterPaymentRequestchema),
-    defaultValues: {
-      status: 'ALL',
-    },
   })
   const [paymentRequestTypeOptions, setPaymentRequestTypeOptions] = useState<
     Autocomplete[]

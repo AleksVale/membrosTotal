@@ -30,10 +30,23 @@ export class PaymentRequestRequestAdminRepository {
   }
 
   async findAll(options: PaymentRequestOptions) {
+    const prismaExtended = this.prisma.$extends({
+      name: 'paymentRequestFullname',
+      result: {
+        user: {
+          fullName: {
+            needs: { firstName: true, lastName: true },
+            compute(user) {
+              return `${user.firstName} ${user.lastName}`;
+            },
+          },
+        },
+      },
+    });
     const paginate = createPaginator({ perPage: options.per_page });
 
     return paginate<PaymentResponseDto, Prisma.PaymentRequestFindManyArgs>(
-      this.prisma.paymentRequest,
+      prismaExtended.paymentRequest,
       {
         where: {
           status: options.status,

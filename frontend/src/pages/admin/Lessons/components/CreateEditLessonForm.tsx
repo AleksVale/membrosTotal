@@ -11,7 +11,7 @@ import { Loader2 } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { CreateModuleDTO } from '../validation'
+import { CreateLessonDTO } from '../validation'
 import { useGoBack } from '@/hooks/useGoBack'
 import { ThumbnailInput } from '@/components/ThumbnailInput'
 import {
@@ -21,26 +21,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useFormModule } from '../hooks/useFormModule'
+import { useFormLesson } from '../hooks/useFormLesson'
 
-interface CreateEditModuleFormProps {
-  form: UseFormReturn<CreateModuleDTO>
-  onSubmitForm: (data: CreateModuleDTO) => void
+interface CreateEditLessonFormProps {
+  form: UseFormReturn<CreateLessonDTO>
+  onSubmitForm: (data: CreateLessonDTO) => void
   isSubmitting: boolean
 }
 
-export function CreateEditModuleForm({
+export function CreateEditLessonForm({
   form,
   onSubmitForm,
   isSubmitting,
-}: Readonly<CreateEditModuleFormProps>) {
+}: Readonly<CreateEditLessonFormProps>) {
   const { goBack } = useGoBack()
-  const { trainingOptions } = useFormModule()
+  const { subModules } = useFormLesson()
   const fileRef = form.register('file')
   const file = form.watch('file')
   let placeholderUrl: string | undefined
 
-  if (file && file[0]) {
+  if (file?.[0]) {
     if (typeof file[0] === 'string') {
       placeholderUrl = file[0]
     } else {
@@ -91,10 +91,23 @@ export function CreateEditModuleForm({
             />
             <FormField
               control={form.control}
-              name="trainingId"
+              name="content"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Treinamento</FormLabel>
+                  <FormLabel>Conteúdo</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Insira o link do conteúdo" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="submoduleId"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Submódulo</FormLabel>
                   <FormControl>
                     <Select
                       value={`${field.value}`}
@@ -102,16 +115,16 @@ export function CreateEditModuleForm({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um treinamento" />
+                          <SelectValue placeholder="Selecione um submódulo" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {trainingOptions.map((training) => (
+                        {subModules.map((submodule) => (
                           <SelectItem
-                            key={training.id}
-                            value={`${training.id}`}
+                            key={submodule.id}
+                            value={`${submodule.id}`}
                           >
-                            {training.label}
+                            {submodule.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -128,10 +141,10 @@ export function CreateEditModuleForm({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição do treinamento</FormLabel>
+                  <FormLabel>Descrição do submódulo</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Descreva os detalhes do treinamento"
+                      placeholder="Descreva os detalhes do submódulo"
                       className="resize-none"
                       {...field}
                     />

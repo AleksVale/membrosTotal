@@ -19,6 +19,12 @@ export const ADMIN_PAGES = {
   listModules: '/admin/modules?page=1&per_page=10',
   createModules: '/admin/modules/new',
   editModule: (id: number) => `/admin/modules/${id}/e`,
+  listSubModules: '/admin/subModules?page=1&per_page=10',
+  createSubModules: '/admin/subModules/new',
+  editSubModule: (id: number) => `/admin/subModules/${id}/e`,
+  listLessons: '/admin/lessons?page=1&per_page=10',
+  createLessons: '/admin/lessons/new',
+  editLesson: (id: number) => `/admin/lessons/${id}/e`,
 }
 
 export const COLLABORATOR_PAGES = {

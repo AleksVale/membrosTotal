@@ -94,6 +94,31 @@ export class AutocompleteService {
             label: value.title,
           }));
           break;
+        case 'modules':
+          response.modules = (
+            await this.prisma.module.findMany({
+              select: {
+                id: true,
+                title: true,
+              },
+            })
+          ).map((value) => ({
+            id: value.id,
+            label: value.title,
+          }));
+        case 'submodules':
+          response.submodules = (
+            await this.prisma.submodule.findMany({
+              select: {
+                id: true,
+                title: true,
+              },
+            })
+          ).map((value) => ({
+            id: value.id,
+            label: value.title,
+          }));
+          break;
         default:
           break;
       }

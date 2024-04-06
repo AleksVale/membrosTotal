@@ -3,7 +3,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { LessonQuery } from './lessons-admin.service';
-import { LessonResponseDTO } from './dto/lessos-response.dto';
+import { LessonResponseDTO } from './dto/lessons-response.dto';
 
 @Injectable()
 export class LessonsRepository {
@@ -40,6 +40,9 @@ export class LessonsRepository {
             contains: options.title,
           },
           submoduleId: options.subModuleId,
+        },
+        include: {
+          submodule: true,
         },
         orderBy: { createdAt: 'asc' },
       },

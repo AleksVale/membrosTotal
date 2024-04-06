@@ -66,6 +66,8 @@ export function AdminLayout() {
               >
                 <MenuLink to={ADMIN_PAGES.listTrainings} label="Treinamentos" />
                 <MenuLink to={ADMIN_PAGES.listModules} label="Módulos" />
+                <MenuLink to={ADMIN_PAGES.listSubModules} label="Submódulos" />
+                <MenuLink to={ADMIN_PAGES.listLessons} label="Aulas" />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Configurações"

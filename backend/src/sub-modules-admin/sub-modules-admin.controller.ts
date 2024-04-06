@@ -8,15 +8,23 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  UploadedFile,
+  HttpStatus,
+  UseInterceptors,
 } from '@nestjs/common';
 import { SubModulesAdminService } from './sub-modules-admin.service';
 import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
-import { SubmoduleDTO } from './dto/sub-modules-response.dto';
+import {
+  GetSubModuleResponse,
+  SubmoduleDTO,
+} from './dto/sub-modules-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { AddPermissionSubModuleAdminDTO } from './dto/add-permissions-subModule-training.dto';
+import { PostResponse } from 'src/utils/post-response.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @Controller('sub-modules-admin')
 export class SubModulesAdminController {
@@ -24,9 +32,30 @@ export class SubModulesAdminController {
     private readonly subModulesAdminService: SubModulesAdminService,
   ) {}
 
+  @Post(':id/file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFile(
+    @UploadedFile() file: Express.Multer.File,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.subModulesAdminService.createFile(file, +id);
+
+    return { success: true };
+  }
+
+  @ApiResponse({ type: PostResponse, status: 201 })
   @Post()
-  create(@Body() createSubModulesAdminDto: CreateSubModuleAdminDTO) {
-    return this.subModulesAdminService.create(createSubModulesAdminDto);
+  async create(
+    @Body() createSubModulesAdminDto: CreateSubModuleAdminDTO,
+  ): Promise<PostResponse> {
+    const subModule = await this.subModulesAdminService.create(
+      createSubModulesAdminDto,
+    );
+    return {
+      id: subModule.id,
+      success: true,
+    };
   }
 
   @ApiOkResponsePaginated(SubmoduleDTO)
@@ -38,18 +67,18 @@ export class SubModulesAdminController {
   findAll(
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
-    @Query('moduleId', ParseIntPipe) moduleId: number,
+    @Query('moduleId') moduleId: number,
     @Query('title') title?: string,
   ) {
     return this.subModulesAdminService.findAll({
-      moduleId,
+      moduleId: moduleId ? +moduleId : undefined,
       page,
       per_page,
       title,
     });
   }
 
-  @ApiResponse({ status: 200, type: SubmoduleDTO })
+  @ApiResponse({ status: 200, type: GetSubModuleResponse })
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.subModulesAdminService.findOne(+id);

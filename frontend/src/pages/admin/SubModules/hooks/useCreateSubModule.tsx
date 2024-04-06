@@ -1,39 +1,38 @@
 import { useForm } from 'react-hook-form'
-import { createTraining, CreateTrainingDTO } from '../validation'
+import { createSubModule, CreateSubModuleDTO } from '../validation'
 import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { toast } from 'react-toastify'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
-import TrainingService from '@/services/training.service'
+import SubModuleService from '@/services/subModule.service'
 
-export function useCreateTraining() {
+export function useCreateSubModule() {
   const navigate = useNavigate()
-  const form = useForm<CreateTrainingDTO>({
-    resolver: zodResolver(createTraining),
+  const form = useForm<CreateSubModuleDTO>({
+    resolver: zodResolver(createSubModule),
     defaultValues: {
       description: '',
       title: '',
-      tutor: '',
     },
   })
 
   const handleSubmitForm = useCallback(
-    async (data: CreateTrainingDTO) => {
-      const response = await TrainingService.createTraining(data)
+    async (data: CreateSubModuleDTO) => {
+      const response = await SubModuleService.createSubModule(data)
       if (response.data.id) {
         try {
-          const fileResponse = await TrainingService.createPhotoTraining(
+          const fileResponse = await SubModuleService.createPhotoSubModule(
             data.file[0],
             response.data.id,
           )
           if (fileResponse.data.success) {
-            toast.success('Treinamento criado com sucesso')
-            navigate(ADMIN_PAGES.listTrainings)
+            toast.success('Submódulo criado com sucesso')
+            navigate(ADMIN_PAGES.listSubModules)
           }
         } catch (error) {
           toast.error('Erro ao enviar a foto, tente editar mais tarde.')
-          navigate(ADMIN_PAGES.listTrainings)
+          navigate(ADMIN_PAGES.listSubModules)
         }
       }
     },

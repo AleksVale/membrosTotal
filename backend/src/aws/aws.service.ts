@@ -46,6 +46,14 @@ export class AwsService {
     return `modules/${moduleId}/thumbnail.${mimeType}`;
   }
 
+  createPhotoKeySubModule(subModuleId: number, mimeType: string) {
+    return `subModules/${subModuleId}/thumbnail.${mimeType}`;
+  }
+
+  createPhotoKeyLesson(lessonId: number, mimeType: string) {
+    return `lessons/${lessonId}/thumbnail.${mimeType}`;
+  }
+
   createPhotoKeyPaymentRequest(
     userId: number,
     paymentRequestId: number,

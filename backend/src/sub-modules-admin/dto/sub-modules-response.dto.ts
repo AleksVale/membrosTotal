@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { LessonResponseDTO } from 'src/lessons-admin/dto/lessos-response.dto';
+import { LessonResponseDTO } from 'src/lessons-admin/dto/lessons-response.dto';
 
 export class SubmoduleDTO {
   @ApiProperty({ type: Number, description: 'Submodule ID' })
@@ -28,4 +28,11 @@ export class SubmoduleDTO {
 
   @ApiProperty({ type: Number, description: 'Module id' })
   moduleId!: number;
+}
+
+export class GetSubModuleResponse {
+  @ApiProperty({ type: SubmoduleDTO })
+  submodule!: SubmoduleDTO;
+  @ApiProperty()
+  stream!: string;
 }

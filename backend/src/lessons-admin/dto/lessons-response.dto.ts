@@ -24,3 +24,10 @@ export class LessonResponseDTO {
 
   submoduleId!: number;
 }
+
+export class GetLessonResponse {
+  @ApiProperty({ type: LessonResponseDTO })
+  lesson!: LessonResponseDTO;
+  @ApiProperty()
+  stream!: string;
+}

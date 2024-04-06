@@ -15,6 +15,8 @@ interface AutocompleteResponse {
   paymentRequest?: Autocomplete[]
   refundTypes?: Autocomplete[]
   trainings?: Autocomplete[]
+  modules?: Autocomplete[]
+  submodules?: Autocomplete[]
 }
 
 const fetchAutocomplete = async (fields: string[]) => {

@@ -31,6 +31,12 @@ import { EditTraining } from './pages/admin/Training/edit'
 import { ModuleAdminList } from './pages/admin/Modules/list'
 import { CreateModule } from './pages/admin/Modules/new'
 import { EditModule } from './pages/admin/Modules/edit'
+import { SubModuleAdminList } from './pages/admin/SubModules/list'
+import { CreateSubModule } from './pages/admin/SubModules/new'
+import { EditSubModule } from './pages/admin/SubModules/edit'
+import { LessonAdminList } from './pages/admin/Lessons/list'
+import { CreateLesson } from './pages/admin/Lessons/new'
+import { EditLesson } from './pages/admin/Lessons/edit'
 
 export const routes = createBrowserRouter([
   {
@@ -59,6 +65,12 @@ export const routes = createBrowserRouter([
       { path: 'modules', element: <ModuleAdminList /> },
       { path: 'modules/new', element: <CreateModule /> },
       { path: 'modules/:id/e', element: <EditModule /> },
+      { path: 'subModules', element: <SubModuleAdminList /> },
+      { path: 'subModules/new', element: <CreateSubModule /> },
+      { path: 'subModules/:id/e', element: <EditSubModule /> },
+      { path: 'lessons', element: <LessonAdminList /> },
+      { path: 'lessons/new', element: <CreateLesson /> },
+      { path: 'lessons/:id/e', element: <EditLesson /> },
       { path: 'permissions', element: <Permissions /> },
     ],
   },

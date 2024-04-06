@@ -43,7 +43,7 @@ export class SubModuleRepository {
         },
         orderBy: { createdAt: 'asc' },
         include: {
-          lessons: true,
+          module: true,
           PermissionUserSubModule: true,
         },
       },

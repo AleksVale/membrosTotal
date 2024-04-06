@@ -11,7 +11,7 @@ import { Loader2 } from 'lucide-react'
 import { UseFormReturn } from 'react-hook-form'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { CreateModuleDTO } from '../validation'
+import { CreateSubModuleDTO } from '../validation'
 import { useGoBack } from '@/hooks/useGoBack'
 import { ThumbnailInput } from '@/components/ThumbnailInput'
 import {
@@ -21,26 +21,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { useFormModule } from '../hooks/useFormModule'
+import { useFormSubModule } from '../hooks/useFormSubModule'
 
 interface CreateEditModuleFormProps {
-  form: UseFormReturn<CreateModuleDTO>
-  onSubmitForm: (data: CreateModuleDTO) => void
+  form: UseFormReturn<CreateSubModuleDTO>
+  onSubmitForm: (data: CreateSubModuleDTO) => void
   isSubmitting: boolean
 }
 
-export function CreateEditModuleForm({
+export function CreateEditSubModuleForm({
   form,
   onSubmitForm,
   isSubmitting,
 }: Readonly<CreateEditModuleFormProps>) {
   const { goBack } = useGoBack()
-  const { trainingOptions } = useFormModule()
+  const { moduleOptions } = useFormSubModule()
   const fileRef = form.register('file')
   const file = form.watch('file')
   let placeholderUrl: string | undefined
 
-  if (file && file[0]) {
+  if (file?.[0]) {
     if (typeof file[0] === 'string') {
       placeholderUrl = file[0]
     } else {
@@ -91,10 +91,10 @@ export function CreateEditModuleForm({
             />
             <FormField
               control={form.control}
-              name="trainingId"
+              name="moduleId"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Treinamento</FormLabel>
+                  <FormLabel>Módulo</FormLabel>
                   <FormControl>
                     <Select
                       value={`${field.value}`}
@@ -102,16 +102,13 @@ export function CreateEditModuleForm({
                     >
                       <FormControl>
                         <SelectTrigger>
-                          <SelectValue placeholder="Selecione um treinamento" />
+                          <SelectValue placeholder="Selecione um módulo" />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {trainingOptions.map((training) => (
-                          <SelectItem
-                            key={training.id}
-                            value={`${training.id}`}
-                          >
-                            {training.label}
+                        {moduleOptions.map((module) => (
+                          <SelectItem key={module.id} value={`${module.id}`}>
+                            {module.label}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -128,10 +125,10 @@ export function CreateEditModuleForm({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição do treinamento</FormLabel>
+                  <FormLabel>Descrição do submódulo</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Descreva os detalhes do treinamento"
+                      placeholder="Descreva os detalhes do submódulo"
                       className="resize-none"
                       {...field}
                     />

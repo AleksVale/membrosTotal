@@ -1,39 +1,39 @@
 import { useForm } from 'react-hook-form'
-import { createTraining, CreateTrainingDTO } from '../validation'
+import { createLesson, CreateLessonDTO } from '../validation'
 import { useNavigate } from 'react-router-dom'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback } from 'react'
 import { toast } from 'react-toastify'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
-import TrainingService from '@/services/training.service'
+import LessonService from '@/services/lesson.service'
 
-export function useCreateTraining() {
+export function useCreateLesson() {
   const navigate = useNavigate()
-  const form = useForm<CreateTrainingDTO>({
-    resolver: zodResolver(createTraining),
+  const form = useForm<CreateLessonDTO>({
+    resolver: zodResolver(createLesson),
     defaultValues: {
       description: '',
       title: '',
-      tutor: '',
+      content: '',
     },
   })
 
   const handleSubmitForm = useCallback(
-    async (data: CreateTrainingDTO) => {
-      const response = await TrainingService.createTraining(data)
+    async (data: CreateLessonDTO) => {
+      const response = await LessonService.createLesson(data)
       if (response.data.id) {
         try {
-          const fileResponse = await TrainingService.createPhotoTraining(
+          const fileResponse = await LessonService.createPhotoLesson(
             data.file[0],
             response.data.id,
           )
           if (fileResponse.data.success) {
-            toast.success('Treinamento criado com sucesso')
-            navigate(ADMIN_PAGES.listTrainings)
+            toast.success('Aula criado com sucesso')
+            navigate(ADMIN_PAGES.listLessons)
           }
         } catch (error) {
           toast.error('Erro ao enviar a foto, tente editar mais tarde.')
-          navigate(ADMIN_PAGES.listTrainings)
+          navigate(ADMIN_PAGES.listLessons)
         }
       }
     },

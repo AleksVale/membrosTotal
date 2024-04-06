@@ -67,7 +67,7 @@ export interface PaymentResponseDto {
   PaymentRequestType: PaymentRequestTypeDto
 }
 
-interface RefundTypeDto {
+export interface RefundTypeDto {
   id: number
   label: string
 }

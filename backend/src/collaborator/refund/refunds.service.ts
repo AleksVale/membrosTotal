@@ -9,8 +9,9 @@ import { AwsService } from 'src/aws/aws.service';
 export interface CollaboratorRefundsOptions {
   per_page: number;
   status?: PaymentStatus;
-  user: number;
+  user?: number;
   page: number;
+  refundTypeId?: number;
 }
 
 @Injectable()

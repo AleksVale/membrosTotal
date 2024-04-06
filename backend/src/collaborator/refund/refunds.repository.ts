@@ -30,14 +30,28 @@ export class RefundsRepository {
   }
 
   async findAll(options: CollaboratorRefundsOptions) {
+    const prismaExtended = this.prisma.$extends({
+      name: 'refundFullname',
+      result: {
+        user: {
+          fullName: {
+            needs: { firstName: true, lastName: true },
+            compute(user) {
+              return `${user.firstName} ${user.lastName}`;
+            },
+          },
+        },
+      },
+    });
     const paginate = createPaginator({ perPage: options.per_page });
 
     return paginate<PaymentResponseDTO, Prisma.RefundFindManyArgs>(
-      this.prisma.refund,
+      prismaExtended.refund,
       {
         where: {
           status: options.status,
           userId: options.user,
+          refundTypeId: options.refundTypeId,
         },
         orderBy: { createdAt: 'asc' },
         include: {

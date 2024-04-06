@@ -24,6 +24,7 @@ import { TrainingAdminModule } from './training-admin/training-admin.module';
 import { TrainingModulesAdminModule } from './training-modules-admin/training-modules-admin.module';
 import { SubModulesAdminModule } from './sub-modules-admin/sub-modules-admin.module';
 import { LessonsAdminModule } from './lessons-admin/lessons-admin.module';
+import { RefundAdminModule } from './refund-admin/refund-admin.module';
 
 @Module({
   imports: [
@@ -62,6 +63,7 @@ import { LessonsAdminModule } from './lessons-admin/lessons-admin.module';
     TrainingModulesAdminModule,
     SubModulesAdminModule,
     LessonsAdminModule,
+    RefundAdminModule,
   ],
   controllers: [AppController],
   providers: [

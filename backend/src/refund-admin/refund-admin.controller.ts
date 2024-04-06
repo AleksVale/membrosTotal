@@ -4,28 +4,26 @@ import {
   Body,
   Patch,
   Param,
+  UseGuards,
+  Query,
   DefaultValuePipe,
   ParseIntPipe,
-  Query,
-  UseGuards,
 } from '@nestjs/common';
-import { PaymentRequestAdminService } from './payment-request-admin.service';
-import { UpdatePaymentRequestAdminDTO } from './dto/update-payment-request-admin.dto';
-import { PaymentStatus } from '@prisma/client';
+import { RefundAdminService } from './refund-admin.service';
+import { UpdatePaymentRequestAdminDTO } from 'src/payment-request-admin/dto/update-payment-request-admin.dto';
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { PaymentResponseDto } from './dto/payment-request-response.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
 import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { PaymentResponseDto } from 'src/payment-request-admin/dto/payment-request-response.dto';
+import { PaymentStatus } from '@prisma/client';
 
-@ApiTags('PaymentRequests')
+@ApiTags('Refunds')
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
-@Controller('payment-request-admin')
-export class PaymentRequestAdminController {
-  constructor(
-    private readonly paymentRequestAdminService: PaymentRequestAdminService,
-  ) {}
+@Controller('refund-admin')
+export class RefundAdminController {
+  constructor(private readonly refundAdminService: RefundAdminService) {}
 
   @ApiQuery({ name: 'page', required: false, type: Number })
   @ApiQuery({ name: 'per_page', required: false, type: Number })
@@ -36,9 +34,9 @@ export class PaymentRequestAdminController {
     enum: PaymentStatus,
   })
   @ApiQuery({ name: 'user', required: false, type: Number })
-  @ApiQuery({ name: 'paymentRequestTypeId', required: false, type: Number })
+  @ApiQuery({ name: 'refundTypeId', required: false, type: Number })
   @ApiOkResponse({
-    description: 'This action returns all paymentRequest for the user',
+    description: 'This action returns all refunds',
     type: PaymentResponseDto,
   })
   @Get()
@@ -47,30 +45,27 @@ export class PaymentRequestAdminController {
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
     @Query('status') status?: PaymentStatus,
     @Query('user') user?: number,
-    @Query('paymentRequestTypeId') paymentRequestTypeId?: number,
+    @Query('refundTypeId') refundTypeId?: number,
   ) {
-    return this.paymentRequestAdminService.findAll({
+    return this.refundAdminService.findAll({
       page,
       per_page,
-      paymentRequestTypeId,
       status,
-      user,
+      user: user ? +user : undefined,
+      refundTypeId: refundTypeId ? +refundTypeId : undefined,
     });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.paymentRequestAdminService.findOne(+id);
+    return this.refundAdminService.findOne(+id);
   }
 
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updatePaymentRequestAdminDto: UpdatePaymentRequestAdminDTO,
+    @Body() updateRefundAdminDto: UpdatePaymentRequestAdminDTO,
   ) {
-    return this.paymentRequestAdminService.update(
-      +id,
-      updatePaymentRequestAdminDto,
-    );
+    return this.refundAdminService.update(+id, updateRefundAdminDto);
   }
 }

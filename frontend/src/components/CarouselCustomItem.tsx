@@ -1,21 +1,21 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-interface CarouselTrainingItemProps {
+interface CarouselItemProps {
   imageUrl?: string
   title: string
-  trainingId: number
+  navigateTo: string
 }
 
-const CarouselTrainingItem: React.FC<CarouselTrainingItemProps> = ({
+const CarouselCustomItem: React.FC<CarouselItemProps> = ({
   imageUrl,
   title,
-  trainingId,
+  navigateTo,
 }) => {
   const isValidImageUrl = imageUrl && imageUrl.length > 0
   return (
     <Link
-      to={`/collaborator/${trainingId}/modules`}
+      to={navigateTo}
       className="m-auto block size-full h-[800px] w-[400px] text-center"
     >
       <img
@@ -28,4 +28,4 @@ const CarouselTrainingItem: React.FC<CarouselTrainingItemProps> = ({
   )
 }
 
-export default CarouselTrainingItem
+export default CarouselCustomItem

@@ -10,7 +10,7 @@ import { TrainingCollaboratorResponseDto } from './dto/training-collaborator-res
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
-@ApiTags('Collaborator/Refunds')
+@ApiTags('Collaborator/Training-Collaborator')
 @Controller('collaborator/training-collaborator')
 export class TrainingCollaboratorController {
   constructor(

@@ -39,6 +39,7 @@ import { CreateLesson } from './pages/admin/Lessons/new'
 import { EditLesson } from './pages/admin/Lessons/edit'
 import { ListPaymentRequestsAdmin } from './pages/admin/PaymentsRequest/list'
 import { ListRefundsAdmin } from './pages/admin/Refunds/list'
+import ModuleList from './pages/collaborator/Modules/list'
 
 export const routes = createBrowserRouter([
   {
@@ -94,6 +95,7 @@ export const routes = createBrowserRouter([
       { path: 'refunds/new', element: <CreateRefunds /> },
       { path: 'refunds/:id/e', element: <EditRefunds /> },
       { path: 'trainings', element: <TrainingList /> },
+      { path: 'trainings/:id/modules', element: <ModuleList /> },
     ],
   },
 ])

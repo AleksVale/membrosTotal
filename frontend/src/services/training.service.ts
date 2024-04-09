@@ -39,12 +39,23 @@ const createPhotoTraining = async (file: File, trainingId: number) => {
   )
 }
 
+const createTrainingPermissions = async (
+  trainings: number[],
+  users: number[],
+) => {
+  return http.post<SuccessResponse>('/training-admin/permissions', {
+    trainings,
+    users,
+  })
+}
+
 const TrainingService = {
   getTrainings,
   createTraining,
   update,
   getTraining,
   createPhotoTraining,
+  createTrainingPermissions,
 }
 
 export default TrainingService

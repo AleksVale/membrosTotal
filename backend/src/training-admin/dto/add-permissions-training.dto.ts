@@ -8,6 +8,12 @@ const addPermissionTrainingSchema = z.object({
       required_error: 'User ID é obrigatório',
     }),
   ),
+  trainings: z.array(
+    z.number({
+      invalid_type_error: 'Training ID deve ser um número',
+      required_error: 'Training ID é obrigatório',
+    }),
+  ),
 });
 
 // class is required for using DTO as a type

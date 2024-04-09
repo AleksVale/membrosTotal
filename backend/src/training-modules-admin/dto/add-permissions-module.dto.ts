@@ -8,6 +8,12 @@ const addPermissionModuleSchema = z.object({
       required_error: 'User ID é obrigatório',
     }),
   ),
+  modules: z.array(
+    z.number({
+      invalid_type_error: 'Module ID deve ser um número',
+      required_error: 'Module ID é obrigatório',
+    }),
+  ),
 });
 
 // class is required for using DTO as a type

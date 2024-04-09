@@ -39,7 +39,7 @@ export function CreateEditPaymentForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitForm)}
-        className="space-y-4 w-full"
+        className="w-full space-y-4"
       >
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
           <FormField
@@ -132,7 +132,7 @@ export function CreateEditPaymentForm({
           <Button type="submit" size={'lg'} disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 size-4 animate-spin" />
                 Carregando
               </>
             ) : (

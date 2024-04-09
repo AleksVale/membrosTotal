@@ -14,6 +14,7 @@ export const ADMIN_PAGES = {
   createTrainings: '/admin/trainings/new',
   editTraining: (id: number) => `/admin/trainings/${id}/e`,
   permissions: '/admin/permissions',
+  trainingPermissions: '/admin/permissions/training',
   listModules: '/admin/modules?page=1&per_page=10',
   createModules: '/admin/modules/new',
   editModule: (id: number) => `/admin/modules/${id}/e`,

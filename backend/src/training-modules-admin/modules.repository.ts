@@ -54,16 +54,26 @@ export class ModuleRepository {
     );
   }
 
-  async addPermission(id: number, users: number[]) {
-    await this.prisma.permissionUserModule.deleteMany({
-      where: { moduleId: id },
-    });
-
+  async addUsersToModule(id: number, users: number[]) {
     await this.prisma.permissionUserModule.createMany({
       data: users.map((userId) => ({
         userId,
         moduleId: id,
       })),
     });
+  }
+
+  async addPermission(modules: number[], users: number[]) {
+    await this.prisma.permissionUserModule.deleteMany({
+      where: {
+        moduleId: {
+          in: modules,
+        },
+      },
+    });
+
+    modules.forEach(
+      async (module) => await this.addUsersToModule(module, users),
+    );
   }
 }

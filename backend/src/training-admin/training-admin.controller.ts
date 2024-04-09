@@ -92,12 +92,11 @@ export class TrainingAdminController {
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })
-  @Post(':id/permissions')
+  @Post('permissions')
   async addPermission(
-    @Param('id') id: string,
     @Body() body: AddPermissionTrainingAdminDTO,
   ): Promise<SuccessResponse> {
-    await this.trainingAdminService.addPermission(+id, body);
+    await this.trainingAdminService.addPermission(body);
     return { success: true };
   }
 }

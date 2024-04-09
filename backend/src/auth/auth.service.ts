@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { AuthenticateDTO } from './dto/authenticate.dto';
 import * as bcrypt from 'bcrypt';
@@ -15,7 +15,7 @@ export class AuthService {
     const { email, password } = authenticateBody;
     const user = await this.userService.findOneAuthentication(email);
     if (!user || !(await bcrypt.compare(password, user.password))) {
-      throw new UnauthorizedException('Credenciais inválidas');
+      throw new BadRequestException('Credenciais inválidas');
     }
     const token = this.jwt.sign({
       id: user.id,

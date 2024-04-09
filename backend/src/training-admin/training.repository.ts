@@ -52,15 +52,26 @@ export class TrainingRepository {
     );
   }
 
-  async addPermission(id: number, users: number[]) {
-    await this.prisma.permissionUserTraining.deleteMany({
-      where: { trainingId: id },
-    });
+  async addUsersToModule(id: number, users: number[]) {
     await this.prisma.permissionUserTraining.createMany({
       data: users.map((userId) => ({
         userId,
         trainingId: id,
       })),
     });
+  }
+
+  async addPermission(trainings: number[], users: number[]) {
+    await this.prisma.permissionUserTraining.deleteMany({
+      where: {
+        trainingId: {
+          in: trainings,
+        },
+      },
+    });
+
+    trainings.forEach(
+      async (module) => await this.addUsersToModule(module, users),
+    );
   }
 }

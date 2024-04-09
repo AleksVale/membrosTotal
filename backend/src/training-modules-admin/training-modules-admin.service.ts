@@ -54,12 +54,9 @@ export class TrainingModulesAdminService {
     return this.moduleRepository.update(updateTrainingModulesAdminDto, { id });
   }
 
-  addPermission(
-    id: number,
-    addPermissionModuleAdminDto: AddPermissionModuleAdminDTO,
-  ) {
+  addPermission(addPermissionModuleAdminDto: AddPermissionModuleAdminDTO) {
     return this.moduleRepository.addPermission(
-      id,
+      addPermissionModuleAdminDto.modules,
       addPermissionModuleAdminDto.users,
     );
   }

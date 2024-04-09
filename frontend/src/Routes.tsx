@@ -40,6 +40,7 @@ import { EditLesson } from './pages/admin/Lessons/edit'
 import { ListPaymentRequestsAdmin } from './pages/admin/PaymentsRequest/list'
 import { ListRefundsAdmin } from './pages/admin/Refunds/list'
 import ModuleList from './pages/collaborator/Modules/list'
+import { TrainingPermissions } from './pages/admin/Permissions/Training'
 
 export const routes = createBrowserRouter([
   {
@@ -77,6 +78,7 @@ export const routes = createBrowserRouter([
       { path: 'lessons/new', element: <CreateLesson /> },
       { path: 'lessons/:id/e', element: <EditLesson /> },
       { path: 'permissions', element: <Permissions /> },
+      { path: 'permissions/training', element: <TrainingPermissions /> },
     ],
   },
   {

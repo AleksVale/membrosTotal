@@ -52,6 +52,7 @@ export function Login() {
       }
     } catch (error) {
       console.error(error)
+      toast.error('Usuário ou senha inválidos')
     }
   }
 
@@ -61,11 +62,11 @@ export function Login() {
   return (
     <>
       <Helmet title="Login" />
-      <section className="flex justify-center items-center p-4 col-span-2">
+      <section className="col-span-2 flex items-center justify-center p-4">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-4 w-3/4"
+            className="w-3/4 space-y-4"
           >
             <FormField
               control={form.control}
@@ -87,7 +88,7 @@ export function Login() {
                 <FormItem>
                   <FormLabel>Senha</FormLabel>
                   <FormControl>
-                    <div className="flex relative">
+                    <div className="relative flex">
                       <Input
                         type={showPassword ? 'text' : 'password'}
                         placeholder="Insira sua senha"
@@ -95,12 +96,12 @@ export function Login() {
                       />
                       {showPassword ? (
                         <EyeOff
-                          className="absolute right-3 top-2 text-primary cursor-pointer"
+                          className="text-primary absolute right-3 top-2 cursor-pointer"
                           onClick={toggleShowPassword}
                         />
                       ) : (
                         <Eye
-                          className="absolute right-3 top-2 text-primary cursor-pointer"
+                          className="text-primary absolute right-3 top-2 cursor-pointer"
                           onClick={toggleShowPassword}
                         />
                       )}
@@ -123,7 +124,7 @@ export function Login() {
               <Button type="submit" size={'lg'} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 size-4 animate-spin" />
                     Carregando
                   </>
                 ) : (

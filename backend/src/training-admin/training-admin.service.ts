@@ -39,12 +39,9 @@ export class TrainingAdminService {
     return this.trainingRepository.update(entity, { id });
   }
 
-  addPermission(
-    id: number,
-    addPermissionTrainingAdminDto: AddPermissionTrainingAdminDTO,
-  ) {
+  addPermission(addPermissionTrainingAdminDto: AddPermissionTrainingAdminDTO) {
     return this.trainingRepository.addPermission(
-      id,
+      addPermissionTrainingAdminDto.trainings,
       addPermissionTrainingAdminDto.users,
     );
   }

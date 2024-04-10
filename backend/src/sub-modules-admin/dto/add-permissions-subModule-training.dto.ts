@@ -8,6 +8,12 @@ const addPermissionSubModuleSchema = z.object({
       required_error: 'User ID é obrigatório',
     }),
   ),
+  submodules: z.array(
+    z.number({
+      invalid_type_error: 'User ID deve ser um número',
+      required_error: 'User ID é obrigatório',
+    }),
+  ),
 });
 
 // class is required for using DTO as a type

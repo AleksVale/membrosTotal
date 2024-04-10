@@ -51,11 +51,10 @@ export class SubModulesAdminService {
   }
 
   addPermission(
-    id: number,
     addPermissionSubModuleAdminDto: AddPermissionSubModuleAdminDTO,
   ) {
     return this.subModulesRepository.addPermission(
-      id,
+      addPermissionSubModuleAdminDto.submodules,
       addPermissionSubModuleAdminDto.users,
     );
   }

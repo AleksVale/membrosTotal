@@ -94,12 +94,11 @@ export class SubModulesAdminController {
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })
-  @Post(':id/permissions')
+  @Post('permissions')
   async addPermission(
-    @Param('id') id: string,
     @Body() body: AddPermissionSubModuleAdminDTO,
   ): Promise<SuccessResponse> {
-    await this.subModulesAdminService.addPermission(+id, body);
+    await this.subModulesAdminService.addPermission(body);
     return { success: true };
   }
 }

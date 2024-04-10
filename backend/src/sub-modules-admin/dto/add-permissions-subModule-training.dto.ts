@@ -10,8 +10,8 @@ const addPermissionSubModuleSchema = z.object({
   ),
   submodules: z.array(
     z.number({
-      invalid_type_error: 'User ID deve ser um número',
-      required_error: 'User ID é obrigatório',
+      invalid_type_error: 'Submódulo ID deve ser um número',
+      required_error: 'Submódulo ID é obrigatório',
     }),
   ),
 });

@@ -41,6 +41,8 @@ import { ListPaymentRequestsAdmin } from './pages/admin/PaymentsRequest/list'
 import { ListRefundsAdmin } from './pages/admin/Refunds/list'
 import ModuleList from './pages/collaborator/Modules/list'
 import { TrainingPermissions } from './pages/admin/Permissions/Training'
+import { ModulesPermission } from './pages/admin/Permissions/Modules'
+import { SubmodulePermissions } from './pages/admin/Permissions/Submodules'
 
 export const routes = createBrowserRouter([
   {
@@ -79,6 +81,8 @@ export const routes = createBrowserRouter([
       { path: 'lessons/:id/e', element: <EditLesson /> },
       { path: 'permissions', element: <Permissions /> },
       { path: 'permissions/training', element: <TrainingPermissions /> },
+      { path: 'permissions/modules', element: <ModulesPermission /> },
+      { path: 'permissions/submodules', element: <SubmodulePermissions /> },
     ],
   },
   {

@@ -40,12 +40,20 @@ const createPhotoModule = async (file: File, moduleId: number) => {
   )
 }
 
+const createModulePermissions = async (modules: number[], users: number[]) => {
+  return http.post<SuccessResponse>('/training-modules-admin/permissions', {
+    modules,
+    users,
+  })
+}
+
 const ModuleService = {
   getModules,
   createModule,
   update,
   getModule,
   createPhotoModule,
+  createModulePermissions,
 }
 
 export default ModuleService

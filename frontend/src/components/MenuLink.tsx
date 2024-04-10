@@ -7,10 +7,16 @@ interface MenuLinkProps {
 }
 export function MenuLink({ to, label, icon }: Readonly<MenuLinkProps>) {
   const { pathname } = useLocation()
+  console.log(to.split('/')[2])
+  console.log(pathname.split('/')[2])
   return (
     <Link
-      data-active={pathname === to.split('?')[0] ? 'true' : 'false'}
-      className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:bg-primary hover:text-primary-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground"
+      data-active={
+        pathname.split('/')[2] === to.split('/')[2].split('?')[0]
+          ? 'true'
+          : 'false'
+      }
+      className="text-muted-foreground hover:bg-primary hover:text-primary-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
       to={to}
     >
       {icon ?? <Dot size={24} />}

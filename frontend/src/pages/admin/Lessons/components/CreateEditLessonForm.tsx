@@ -141,10 +141,10 @@ export function CreateEditLessonForm({
               name="description"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Descrição do submódulo</FormLabel>
+                  <FormLabel>Descrição da aula</FormLabel>
                   <FormControl>
                     <Textarea
-                      placeholder="Descreva os detalhes do submódulo"
+                      placeholder="Descreva os detalhes da aula"
                       className="resize-none"
                       {...field}
                     />

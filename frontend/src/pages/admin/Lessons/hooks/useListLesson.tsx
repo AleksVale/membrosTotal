@@ -1,7 +1,7 @@
 import { PaginationMeta } from '@/services/interfaces'
 import { ADMIN_PAGES, DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
 import { useState, useCallback, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams, Link } from 'react-router-dom'
 import { ILesson } from '../interfaces'
 import {
   Dialog,
@@ -62,6 +62,22 @@ export function useListLesson() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Descrição" />
       ),
+    },
+    {
+      accessorKey: 'content',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Link do conteúdo" />
+      ),
+      cell: ({ row }) => {
+        const original = row.original
+        return (
+          <Button className="p-0" variant={'link'} asChild>
+            <Link to={original.content} target="_blank">
+              {original.content}
+            </Link>
+          </Button>
+        )
+      },
     },
     {
       accessorKey: 'createdAt',

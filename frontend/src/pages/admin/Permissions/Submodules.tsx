@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button'
-import { useTrainingPermission } from './hooks/useTrainingPermission'
 import {
   Form,
   FormControl,
@@ -13,10 +12,11 @@ import { Loader2 } from 'lucide-react'
 import { Autocomplete } from '@/components/ComboBox'
 import { Helmet } from 'react-helmet-async'
 import { BaseHeader } from '@/components/BaseHeader'
+import { useSubmodulePermission } from './hooks/useSubmodulePermission'
 
-export function TrainingPermissions() {
-  const { trainings, users, form, isSubmitting, onSubmitForm } =
-    useTrainingPermission()
+export function SubmodulePermissions() {
+  const { submodules, users, form, isSubmitting, onSubmitForm } =
+    useSubmodulePermission()
   const { goBack } = useGoBack()
   return (
     <div>
@@ -47,13 +47,13 @@ export function TrainingPermissions() {
             />
             <FormField
               control={form.control}
-              name="trainings"
+              name="submodules"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Treinamentos</FormLabel>
+                  <FormLabel>Submódulos</FormLabel>
                   <FormControl>
                     <Autocomplete
-                      options={trainings}
+                      options={submodules}
                       value={field.value}
                       onChange={field.onChange}
                     />

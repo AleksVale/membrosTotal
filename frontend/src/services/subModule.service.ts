@@ -39,12 +39,23 @@ const createPhotoSubModule = async (file: File, subModuleId: number) => {
   )
 }
 
+const createSubmodulePermissions = async (
+  submodules: number[],
+  users: number[],
+) => {
+  return http.post<SuccessResponse>('/sub-modules-admin/permissions', {
+    submodules,
+    users,
+  })
+}
+
 const SubModuleService = {
   getSubModules,
   createSubModule,
   update,
   getSubModule,
   createPhotoSubModule,
+  createSubmodulePermissions,
 }
 
 export default SubModuleService

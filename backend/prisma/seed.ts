@@ -78,7 +78,7 @@ async function main() {
     where: { email: 'alexalexx3@gmail.com' },
   });
   if (!user) {
-    const password = await bcrypt.hash('Alexalexx0', 10);
+    const password = await bcrypt.hash('Administrador132', 10);
     await prisma.user.create({
       data: {
         email: 'alexalexx3@gmail.com',

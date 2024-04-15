@@ -133,6 +133,12 @@ const getModules = async (id?: string) => {
   )
 }
 
+const getSubmodules = async (id?: string) => {
+  return http.get<ITraining[]>(
+    `collaborator/sub-modules-collaborator?trainingId=${id}`,
+  )
+}
+
 const ColaboratorService = {
   update,
   getCurrentUser,
@@ -152,6 +158,7 @@ const ColaboratorService = {
   getRefund,
   getTrainings,
   getModules,
+  getSubmodules,
 }
 
 export default ColaboratorService

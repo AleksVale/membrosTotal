@@ -13,6 +13,9 @@ import { CreatePaymentDTO } from '@/pages/collaborator/Payments/validation'
 import { CreatePaymentRequestDTO } from '@/pages/collaborator/PaymentRequests/validation'
 import { CreateRefundDTO } from '@/pages/collaborator/Refunds/validation'
 import { ITraining } from '@/pages/admin/Training/interfaces'
+import { ISubModule } from '@/pages/admin/SubModules/interfaces'
+import { IModule } from '@/pages/admin/Modules/interfaces'
+import { ILesson } from '@/pages/admin/Lessons/interfaces'
 
 interface CreatePaymentResponse extends SuccessResponse {
   id: number
@@ -128,14 +131,20 @@ const getTrainings = async () => {
 }
 
 const getModules = async (id?: string) => {
-  return http.get<ITraining[]>(
+  return http.get<IModule[]>(
     `collaborator/module-collaborator?trainingId=${id}`,
   )
 }
 
 const getSubmodules = async (id?: string) => {
-  return http.get<ITraining[]>(
-    `collaborator/submodules-collaborator?submoduleId=${id}`,
+  return http.get<ISubModule[]>(
+    `collaborator/submodules-collaborator?moduleId=${id}`,
+  )
+}
+
+const getLessons = async (id?: string) => {
+  return http.get<ILesson[]>(
+    `collaborator/lessons-collaborator?submoduleId=${id}`,
   )
 }
 
@@ -159,6 +168,7 @@ const ColaboratorService = {
   getTrainings,
   getModules,
   getSubmodules,
+  getLessons,
 }
 
 export default ColaboratorService

@@ -28,6 +28,7 @@ import { RefundAdminModule } from './refund-admin/refund-admin.module';
 import { TrainingCollaboratorModule } from './collaborator/training-collaborator/training-collaborator.module';
 import { ModuleCollaboratorModule } from './collaborator/modules-collaborator/modules-collaborator.module';
 import { SubmoduleCollaboratorModule } from './collaborator/submodules-collaborator/submodules-collaborator.module';
+import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/lessons-collaborator.module';
 
 @Module({
   imports: [
@@ -70,6 +71,7 @@ import { SubmoduleCollaboratorModule } from './collaborator/submodules-collabora
     TrainingCollaboratorModule,
     ModuleCollaboratorModule,
     SubmoduleCollaboratorModule,
+    LessonCollaboratorModule,
   ],
   controllers: [AppController],
   providers: [

@@ -11,7 +11,7 @@ import { SubmoduleCollaboratorService } from './submodules-collaborator.service'
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
 @ApiTags('Collaborator/Submodules-Collaborator')
-@Controller('collaborator/submodule-collaborator')
+@Controller('collaborator/submodules-collaborator')
 export class SubmoduleCollaboratorController {
   constructor(
     private readonly submoduleCollaboratorService: SubmoduleCollaboratorService,

@@ -11,9 +11,10 @@ import { BaseHeader } from '@/components/BaseHeader'
 import CarouselCustomItem from '@/components/CarouselCustomItem'
 import { IModule } from '@/pages/admin/Modules/interfaces'
 import useListModule from './hooks/useListModule'
+import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 
 const ModuleList: React.FC = () => {
-  const { modules } = useListModule()
+  const { modules, id } = useListModule()
 
   return (
     <div className="m-auto flex size-full flex-col items-center justify-center">
@@ -29,7 +30,7 @@ const ModuleList: React.FC = () => {
               <CarouselCustomItem
                 imageUrl={module.thumbnail ?? ''}
                 title={module.title}
-                navigateTo={`${module.id}/submodules`}
+                navigateTo={COLLABORATOR_PAGES.subModulesList(id, module.id)}
               />
             </CarouselItem>
           ))}

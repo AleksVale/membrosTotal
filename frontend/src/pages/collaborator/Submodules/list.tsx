@@ -11,14 +11,15 @@ import { BaseHeader } from '@/components/BaseHeader'
 import CarouselCustomItem from '@/components/CarouselCustomItem'
 import { ISubModule } from '@/pages/admin/SubModules/interfaces'
 import useListSubmodule from './hooks/useSubmoduleTraining'
+import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 
 const SubmoduleList: React.FC = () => {
-  const { submodules } = useListSubmodule()
+  const { submodules, id, moduleId } = useListSubmodule()
 
   return (
     <div className="m-auto flex size-full flex-col items-center justify-center">
-      <Helmet title="Treinamentos" />
-      <BaseHeader label="Treinamentos" />
+      <Helmet title="Submódulos" />
+      <BaseHeader label="Submódulos" />
       <Carousel
         opts={{ loop: true, align: 'start' }}
         className="m-auto flex h-full w-2/3 items-center justify-center p-2"
@@ -29,7 +30,11 @@ const SubmoduleList: React.FC = () => {
               <CarouselCustomItem
                 imageUrl={submodule.thumbnail ?? ''}
                 title={submodule.title}
-                navigateTo={`${submodule.id}/lessons`}
+                navigateTo={COLLABORATOR_PAGES.lessonsList(
+                  id,
+                  moduleId,
+                  submodule.id,
+                )}
               />
             </CarouselItem>
           ))}

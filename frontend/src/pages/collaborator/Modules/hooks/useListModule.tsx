@@ -14,11 +14,12 @@ const useListModule = () => {
       setIsLoading(true)
 
       try {
+        console.log('aqui')
         const response = await ColaboratorService.getModules(id)
 
         setModules(response.data)
       } catch (error) {
-        setError('Failed to fetch modules')
+        setError('Failed to fetch submodules')
       } finally {
         setIsLoading(false)
       }
@@ -27,7 +28,7 @@ const useListModule = () => {
     fetchModules()
   }, [id])
 
-  return { modules, isLoading, error }
+  return { modules, isLoading, error, id }
 }
 
 export default useListModule

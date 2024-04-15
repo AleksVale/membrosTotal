@@ -40,6 +40,13 @@ export const COLLABORATOR_PAGES = {
   listRefund: '/collaborator/refunds?page=1&per_page=10',
   newRefund: '/collaborator/refunds/new',
   listTrainings: '/collaborator/trainings',
+  subModulesList: (training: string | undefined, module: number) =>
+    `/collaborator/trainings/${training}/${module}/submodules`,
+  lessonsList: (
+    training: string | undefined,
+    module: string | undefined,
+    submodule: number,
+  ) => `/collaborator/trainings/${training}/${module}/${submodule}/lessons`,
 }
 
 export const AUTH_PAGES = {

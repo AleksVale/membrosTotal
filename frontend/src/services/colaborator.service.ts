@@ -135,7 +135,7 @@ const getModules = async (id?: string) => {
 
 const getSubmodules = async (id?: string) => {
   return http.get<ITraining[]>(
-    `collaborator/sub-modules-collaborator?trainingId=${id}`,
+    `collaborator/submodules-collaborator?submoduleId=${id}`,
   )
 }
 

@@ -43,6 +43,7 @@ import ModuleList from './pages/collaborator/Modules/list'
 import { TrainingPermissions } from './pages/admin/Permissions/Training'
 import { ModulesPermission } from './pages/admin/Permissions/Modules'
 import { SubmodulePermissions } from './pages/admin/Permissions/Submodules'
+import SubmoduleList from './pages/collaborator/Submodules/list'
 
 export const routes = createBrowserRouter([
   {
@@ -102,6 +103,10 @@ export const routes = createBrowserRouter([
       { path: 'refunds/:id/e', element: <EditRefunds /> },
       { path: 'trainings', element: <TrainingList /> },
       { path: 'trainings/:id/modules', element: <ModuleList /> },
+      {
+        path: 'trainings/:id/:moduleId/submodules',
+        element: <SubmoduleList />,
+      },
     ],
   },
 ])

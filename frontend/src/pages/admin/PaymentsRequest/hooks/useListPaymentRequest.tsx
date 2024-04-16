@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button'
 import PaymentRequestservice from '@/services/paymentRequest.service'
 import { PaymentLabel } from '@/utils/interfaces/payment'
 import { IPaymentRequest } from '../interface'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useListPaymentRequest() {
   const [searchParams] = useSearchParams()
@@ -93,7 +94,10 @@ export function useListPaymentRequest() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      accessorFn: (row) => PaymentLabel[row.status],
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={PaymentLabel[original.status]} />
+      },
     },
     {
       accessorKey: 'createdAt',

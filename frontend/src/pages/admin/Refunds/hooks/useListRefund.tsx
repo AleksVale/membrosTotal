@@ -28,6 +28,7 @@ import { Button } from '@/components/ui/button'
 import Refundservice from '@/services/refund.service'
 import { PaymentLabel } from '@/utils/interfaces/payment'
 import { IRefund } from '../interface'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useListRefund() {
   const [searchParams] = useSearchParams()
@@ -92,7 +93,10 @@ export function useListRefund() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      accessorFn: (row) => PaymentLabel[row.status],
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={PaymentLabel[original.status]} />
+      },
     },
     {
       accessorKey: 'createdAt',

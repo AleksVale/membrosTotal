@@ -7,6 +7,7 @@ import { Meeting, MeetingStatus } from '@/services/meeting.service'
 import { PaginationMeta } from '@/services/interfaces'
 import { DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
 import ColaboratorService from '@/services/colaborator.service'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useListColaboratorMeetings() {
   const [searchParams] = useSearchParams()
@@ -68,7 +69,10 @@ export function useListColaboratorMeetings() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      accessorFn: (row) => MeetingStatus[row.status],
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={MeetingStatus[original.status]} />
+      },
     },
     {
       accessorKey: 'createdAt',

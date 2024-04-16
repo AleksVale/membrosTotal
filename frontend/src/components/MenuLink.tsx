@@ -7,8 +7,7 @@ interface MenuLinkProps {
 }
 export function MenuLink({ to, label, icon }: Readonly<MenuLinkProps>) {
   const { pathname } = useLocation()
-  console.log(to.split('/')[2])
-  console.log(pathname.split('/')[2])
+
   return (
     <Link
       data-active={

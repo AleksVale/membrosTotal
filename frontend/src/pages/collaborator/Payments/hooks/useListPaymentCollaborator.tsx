@@ -30,6 +30,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { MoreHorizontal, Edit, Trash } from 'lucide-react'
 import { toast } from 'react-toastify'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useListPaymentCollaborator() {
   const navigate = useNavigate()
@@ -83,7 +84,10 @@ export function useListPaymentCollaborator() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      accessorFn: (row) => PaymentLabel[row.status],
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={PaymentLabel[original.status]} />
+      },
     },
     {
       accessorKey: 'createdAt',

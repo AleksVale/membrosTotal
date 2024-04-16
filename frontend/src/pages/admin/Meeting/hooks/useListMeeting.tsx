@@ -31,6 +31,7 @@ import MeetingService, {
 import { PaginationMeta } from '@/services/interfaces'
 import { ADMIN_PAGES, DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useListMeeting() {
   const [searchParams] = useSearchParams()
@@ -105,7 +106,10 @@ export function useListMeeting() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      accessorFn: (row) => MeetingStatus[row.status],
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={MeetingStatus[original.status]} />
+      },
     },
     {
       accessorKey: 'createdAt',
@@ -130,15 +134,15 @@ export function useListMeeting() {
           <Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <Button variant="ghost" className="size-8 p-0">
                   <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem
-                  className="flex items-center gap-2 group"
+                  className="group flex items-center gap-2"
                   asChild
                 >
                   <Link to={`${ADMIN_PAGES.prefix}/meetings/${meeting.id}/e`}>
@@ -152,7 +156,7 @@ export function useListMeeting() {
                   onClick={() => {
                     handleFinishMeeting(meeting.id)
                   }}
-                  className="flex items-center gap-2 group"
+                  className="group flex items-center gap-2"
                 >
                   <CheckSquareIcon size={16} className="text-emerald-400" />
                   <span className="group-hover:text-emerald-400">
@@ -161,7 +165,7 @@ export function useListMeeting() {
                 </DropdownMenuItem>
 
                 <DialogTrigger asChild>
-                  <DropdownMenuItem className="flex items-center gap-2 group">
+                  <DropdownMenuItem className="group flex items-center gap-2">
                     <X size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
                       Cancelar reunião

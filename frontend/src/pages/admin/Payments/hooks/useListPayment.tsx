@@ -26,6 +26,7 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { MoreHorizontal, Trash, CheckSquare } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useListPayment() {
   const [searchParams] = useSearchParams()
@@ -90,7 +91,10 @@ export function useListPayment() {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Status" />
       ),
-      accessorFn: (row) => PaymentLabel[row.status],
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={PaymentLabel[original.status]} />
+      },
     },
     {
       accessorKey: 'createdAt',

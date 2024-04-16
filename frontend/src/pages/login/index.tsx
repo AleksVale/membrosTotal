@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
@@ -62,7 +62,7 @@ export function Login() {
   return (
     <>
       <Helmet title="Login" />
-      <section className="col-span-2 flex items-center justify-center p-4">
+      <section className="col-span-2 flex items-center justify-center p-4 ">
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -111,16 +111,7 @@ export function Login() {
                 </FormItem>
               )}
             />
-            <div className="flex justify-end gap-3">
-              <Button
-                type="button"
-                variant="outline"
-                size={'lg'}
-                asChild
-                disabled={isSubmitting}
-              >
-                <Link to="/register">Registrar</Link>
-              </Button>
+            <div className="flex justify-end">
               <Button type="submit" size={'lg'} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>

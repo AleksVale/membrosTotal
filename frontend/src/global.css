@@ -61,3 +61,7 @@
     @apply hidden;
   }
 }
+
+.ytp-title {
+  display: none !important;
+}

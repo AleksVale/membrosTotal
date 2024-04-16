@@ -18,8 +18,8 @@ export class LessonCollaboratorService {
     const lessons = await Promise.all(
       result.map(async (lesson) => {
         if (lesson.thumbnail) {
-          const photo = await this.awsService.getPhoto(lesson.thumbnail);
-          return { ...lesson, thumbnail: photo };
+          // const photo = await this.awsService.getPhoto(lesson.thumbnail);
+          return { ...lesson, thumbnail: undefined };
         }
         return lesson;
       }),

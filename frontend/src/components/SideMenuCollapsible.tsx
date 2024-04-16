@@ -15,20 +15,20 @@ export function SideMenuCollapsible({
   children,
   icon,
   title,
-}: ISideMenuCollapsibleProps) {
+}: Readonly<ISideMenuCollapsibleProps>) {
   const [open, setOpen] = useState(false)
   const toggleOpen = () => setOpen((prev) => !prev)
   return (
     <Collapsible className="w-full" open={open} onOpenChange={toggleOpen}>
       <CollapsibleTrigger className="w-full">
-        <span className="flex w-full justify-between items-center">
-          <span className="flex gap-2 items-center">
+        <span className="flex w-full items-center justify-between">
+          <span className="flex items-center gap-2">
             {icon} {title}
           </span>{' '}
           {open ? <ChevronUp /> : <ChevronDown />}
         </span>
       </CollapsibleTrigger>
-      <CollapsibleContent className="flex flex-col pt-2 gap-2">
+      <CollapsibleContent className="flex flex-col gap-2 pt-2">
         {children}
       </CollapsibleContent>
     </Collapsible>

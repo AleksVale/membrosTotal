@@ -2,15 +2,17 @@ import { ILesson } from '@/pages/admin/Lessons/interfaces'
 import ColaboratorService from '@/services/colaborator.service'
 import { useState, useEffect, useCallback } from 'react'
 import ReactPlayer from 'react-player'
-import { useParams } from 'react-router-dom'
+import { useParams, useSearchParams } from 'react-router-dom'
 
 const useListLesson = () => {
   const { submoduleId } = useParams()
+  const [searchParams] = useSearchParams()
   const [lessons, setLessons] = useState<ILesson[]>([])
   const [selectedLesson, setSelectedLesson] = useState<ILesson>()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [videoError, setVideoError] = useState<string | null>(null)
+  const submoduleName = searchParams.get('submoduleName')
 
   useEffect(() => {
     const fetchLessons = async () => {
@@ -55,6 +57,7 @@ const useListLesson = () => {
     handleChangeLesson,
     videoError,
     handleInvalidURL,
+    submoduleName,
   }
 }
 

@@ -9,8 +9,8 @@ export const ListPaymentRequestsAdmin = () => {
 
   return (
     <section>
-      <Helmet title="Solicitação de pagamentos" />
-      <BaseHeader label="Solicitação de pagementos" />
+      <Helmet title="Solicitações de Compras" />
+      <BaseHeader label="Solicitações de Compras" />
       <FilterPaymentRequest />
       <DataTable columns={columns} data={paymentRequests} meta={meta} />
     </section>

@@ -12,9 +12,9 @@ export const ListPayment = () => {
     <section>
       <Helmet title="Pagamentos" />
       <Headerbutton
-        label="Pagametos"
+        label="Solicitações de Pagamento"
         showButton
-        labelButton="Criar pagamento"
+        labelButton="Criar Solicitação"
         navigateTo={COLLABORATOR_PAGES.newPayment}
       />
       <FilterPayment />

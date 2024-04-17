@@ -46,7 +46,9 @@ export const COLLABORATOR_PAGES = {
     training: string | undefined,
     module: string | undefined,
     submodule: number,
-  ) => `/collaborator/trainings/${training}/${module}/${submodule}/lessons`,
+    submoduleName: string,
+  ) =>
+    `/collaborator/trainings/${training}/${module}/${submodule}/lessons?submoduleName=${submoduleName}`,
 }
 
 export const AUTH_PAGES = {

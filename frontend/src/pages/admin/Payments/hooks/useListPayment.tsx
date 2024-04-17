@@ -81,6 +81,12 @@ export function useListPayment() {
       ),
     },
     {
+      accessorKey: 'User.pixKey',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="PIX" />
+      ),
+    },
+    {
       accessorKey: 'PaymentType.label',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Categoria" />

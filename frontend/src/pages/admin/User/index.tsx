@@ -22,13 +22,11 @@ export function ListUser() {
   }, [searchParams])
   const { columns } = useColumnsUser()
   return (
-    <div className="container mx-auto py-2">
+    <div>
       <Helmet title="Usuários" />
       <HeaderUser label="Usuários" showButton />
       <FilterUser />
-      <section>
-        <DataTable columns={columns} data={data} meta={meta} />
-      </section>
+      <DataTable columns={columns} data={data} meta={meta} />
     </div>
   )
 }

@@ -1,4 +1,4 @@
-import { PlayCircle } from 'lucide-react'
+import { BookCheck, PlayCircle } from 'lucide-react'
 import { Button } from './ui/button'
 import { ILesson } from '@/pages/admin/Lessons/interfaces'
 
@@ -21,7 +21,7 @@ export const SidebarLesson = ({
       data-selected={isSelected}
       onClick={() => handleClick(lesson)}
     >
-      <PlayCircle className="group-hover:text-primary " />
+      <BookCheck className="group-hover:text-primary " />
       <span className="group-hover:text-primary">{lesson.title}</span>
     </Button>
   )

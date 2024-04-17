@@ -18,8 +18,8 @@ const ModuleList: React.FC = () => {
 
   return (
     <div className="m-auto flex size-full flex-col items-center justify-center">
-      <Helmet title="Treinamentos" />
-      <BaseHeader label="Treinamentos" />
+      <Helmet title="Módulos" />
+      <BaseHeader label="Módulos" />
       <Carousel
         opts={{ loop: true, align: 'start' }}
         className="m-auto flex h-full w-2/3 items-center justify-center p-2"

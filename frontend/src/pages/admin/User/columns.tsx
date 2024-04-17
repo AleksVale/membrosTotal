@@ -10,7 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Edit, MoreHorizontal, Trash } from 'lucide-react'
+import { BellRing, Edit, MoreHorizontal, PhoneCall, Trash } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { DataTableColumnHeader } from '@/components/DataTableColumnHeader'
@@ -57,7 +57,7 @@ export function useColumnsUser() {
     {
       accessorKey: 'Profile.label',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Perfil" />
+        <DataTableColumnHeader column={column} title="Tipo de Conta" />
       ),
     },
     {
@@ -70,7 +70,7 @@ export function useColumnsUser() {
     {
       accessorKey: 'document',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Documento" />
+        <DataTableColumnHeader column={column} title="CPF" />
       ),
       accessorFn: (row) => formatToDocument(row.document) || '--',
     },
@@ -82,15 +82,9 @@ export function useColumnsUser() {
       accessorFn: (row) => dayjs(row.birthDate).utc(false).format('DD/MM/YYYY'),
     },
     {
-      accessorKey: 'instagram',
-      header: ({ column }) => {
-        return <DataTableColumnHeader column={column} title="Instagram" />
-      },
-    },
-    {
       accessorKey: 'pixKey',
       header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Chave pix" />
+        <DataTableColumnHeader column={column} title="PIX" />
       ),
     },
 
@@ -103,9 +97,9 @@ export function useColumnsUser() {
           <Dialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="h-8 w-8 p-0">
+                <Button variant="ghost" className="size-8 p-0">
                   <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="h-4 w-4" />
+                  <MoreHorizontal className="size-4" />
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -114,7 +108,7 @@ export function useColumnsUser() {
                   onClick={() =>
                     navigate(`${ADMIN_PAGES.prefix}/user/${user.id}/e`)
                   }
-                  className="flex items-center gap-2 group"
+                  className="group flex items-center gap-2"
                 >
                   <Edit size={16} className="text-primary" />
                   <span className="group-hover:text-primary">
@@ -122,7 +116,7 @@ export function useColumnsUser() {
                   </span>
                 </DropdownMenuItem>
                 <DialogTrigger asChild>
-                  <DropdownMenuItem className="flex items-center gap-2 group">
+                  <DropdownMenuItem className="group flex items-center gap-2">
                     <Trash size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
                       Deletar usuário
@@ -130,9 +124,20 @@ export function useColumnsUser() {
                   </DropdownMenuItem>
                 </DialogTrigger>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem>Editar usuário</DropdownMenuItem>
-                <DropdownMenuItem>Enviar um zap</DropdownMenuItem>
-                <DropdownMenuItem>Enviar uma notificação</DropdownMenuItem>
+                <DropdownMenuItem className="group flex items-center gap-2">
+                  <PhoneCall size={16} className="text-lime-500" />
+                  <span className="group-hover:text-lime-500">
+                    {' '}
+                    Enviar um zap{' '}
+                  </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem className="group flex items-center gap-2">
+                  <BellRing size={16} className="text-amber-500" />
+                  <span className="group-hover:text-amber-500">
+                    {' '}
+                    Enviar uma notificação{' '}
+                  </span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <DialogContent>

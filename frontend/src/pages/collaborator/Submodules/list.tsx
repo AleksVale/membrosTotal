@@ -34,6 +34,7 @@ const SubmoduleList: React.FC = () => {
                   id,
                   moduleId,
                   submodule.id,
+                  submodule.title,
                 )}
               />
             </CarouselItem>

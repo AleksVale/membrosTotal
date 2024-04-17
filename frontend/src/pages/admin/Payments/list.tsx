@@ -12,7 +12,7 @@ export const ListPaymentAdmin = () => {
     <section>
       <Helmet title="Pagamentos" />
       <Headerbutton
-        label="Pagametos"
+        label="Solicitações de Pagamento"
         showButton
         labelButton="Criar pagamento"
         navigateTo={ADMIN_PAGES.newPayment}

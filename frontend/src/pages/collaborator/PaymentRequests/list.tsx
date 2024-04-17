@@ -10,11 +10,11 @@ export const ListPaymentRequests = () => {
 
   return (
     <section>
-      <Helmet title="Solicitação de Pagamentos" />
+      <Helmet title="Compras" />
       <Headerbutton
-        label="Solicitação de pagamentos"
+        label="Solicitações de Compra"
         showButton
-        labelButton="Criar solicitação de pagamento"
+        labelButton="Criar Solicitação"
         navigateTo={COLLABORATOR_PAGES.newPaymentRequest}
       />
       <FilterPaymentRequest />

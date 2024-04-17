@@ -14,6 +14,7 @@ const LessonList: React.FC = () => {
     handleChangeLesson,
     videoError,
     handleInvalidURL,
+    submoduleName,
   } = useListLesson()
   const { goBack } = useGoBack()
 
@@ -22,39 +23,45 @@ const LessonList: React.FC = () => {
       <Helmet title="Aulas" />
       <section className="flex w-full gap-2">
         <div className=" h-[calc(100vh-200px)] w-full">
-          {videoError && (
+          {videoError ? (
             <div className=" flex size-full items-center justify-center p-2 text-center text-white">
               {videoError}
             </div>
-          )}
-          <ReactPlayer
-            width={'100%'}
-            height={'100%'}
-            url={selectedLesson?.content}
-            controls={true}
-            config={{
-              youtube: {
-                playerVars: {
-                  modestbranding: 1, // Hide YouTube logo
-                  showinfo: 0, // Hide video title and player actions
-                  rel: 0, // Do not show related videos at the end
+          ) : (
+            <ReactPlayer
+              width={'100%'}
+              height={'100%'}
+              url={selectedLesson?.content}
+              controls={true}
+              config={{
+                youtube: {
+                  playerVars: {
+                    modestbranding: 1, // Hide YouTube logo
+                    showinfo: 0, // Hide video title and player actions
+                    rel: 0, // Do not show related videos at the end
+                  },
                 },
-              },
-            }}
-            fallback={<div>Video não encontrado</div>}
-            onError={handleInvalidURL}
-          />
-          <Button variant={'link'} onClick={goBack} className="p-0">
+              }}
+              fallback={<div>Video não encontrado</div>}
+              onError={handleInvalidURL}
+            />
+          )}
+          <Button
+            variant={'secondary'}
+            onClick={goBack}
+            className="text-primary"
+          >
             <ArrowLeft className="size-4" />
             <span>Voltar</span>
           </Button>
-          <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight">
+          <h3 className="scroll-m-20 pt-5 text-2xl font-semibold tracking-tight">
             {selectedLesson?.title}
           </h3>
+          <p className="text-gray-300">{selectedLesson?.description}</p>
         </div>
         <div className="bg-muted w-4/12 rounded py-3">
           <h4 className="scroll-m-20 text-center text-xl font-semibold tracking-tight">
-            Conteúdos
+            {submoduleName}
           </h4>
           <div>
             {lessons.map((lesson: ILesson) => (

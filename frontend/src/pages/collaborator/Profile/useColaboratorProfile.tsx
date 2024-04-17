@@ -8,6 +8,7 @@ import utc from 'dayjs/plugin/utc'
 import { EditProfileForm, editProfileSchema } from './interfaces'
 import ColaboratorService from '@/services/colaborator.service'
 import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
+import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
 dayjs.extend(utc)
 export function useColaboratorProfile() {
   const [editing, setEditing] = useState(false)
@@ -30,6 +31,7 @@ export function useColaboratorProfile() {
 
   const handleSubmitForm = useCallback(
     async (data: EditProfileForm) => {
+      setEditing(false)
       const response = await ColaboratorService.update(data)
       if (response.data.success) {
         toast.success('Usuário editado com sucesso')
@@ -43,15 +45,15 @@ export function useColaboratorProfile() {
     const { data } = await ColaboratorService.getCurrentUser()
     reset({
       email: data.email,
-      phone: data.phone,
+      phone: formatToPhoneNumber(data.phone),
       firstName: data.firstName,
       lastName: data.lastName,
-      document: data.document,
+      document: formatToDocument(data.document ?? ''),
       birthDate: dayjs(data.birthDate, 'YYYY-MM-DD')
         .utc(false)
         .format('YYYY/MM/DD'),
-      instagram: data.instagram,
-      pixKey: data.pixKey,
+      instagram: data.instagram ?? '',
+      pixKey: data.pixKey ?? '',
     })
   }, [reset])
 

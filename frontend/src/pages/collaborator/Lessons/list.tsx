@@ -4,7 +4,7 @@ import { ILesson } from '@/pages/admin/Lessons/interfaces'
 import useListLesson from './hooks/useLessonTraining'
 import { SidebarLesson } from '@/components/SidebarLesson'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Info } from 'lucide-react'
 import { useGoBack } from '@/hooks/useGoBack'
 import ReactPlayer from 'react-player'
 const LessonList: React.FC = () => {
@@ -20,7 +20,7 @@ const LessonList: React.FC = () => {
 
   return (
     <div className="m-auto flex size-full flex-col items-center">
-      <Helmet title="Aulas" />
+      <Helmet title={selectedLesson?.title} />
       <section className="flex w-full gap-2">
         <div className=" h-[calc(100vh-200px)] w-full">
           {videoError ? (
@@ -46,20 +46,22 @@ const LessonList: React.FC = () => {
               onError={handleInvalidURL}
             />
           )}
-          <Button
-            variant={'secondary'}
-            onClick={goBack}
-            className="text-primary"
-          >
+          <Button variant={'ghost'} onClick={goBack} className="text-primary">
             <ArrowLeft className="size-4" />
-            <span>Voltar</span>
+            <span>Voltar para os conteúdos</span>
           </Button>
-          <h3 className="scroll-m-20 pt-5 text-2xl font-semibold tracking-tight">
+          <h3 className="scroll-m-20 py-5 text-xl font-semibold tracking-tight">
             {selectedLesson?.title}
           </h3>
-          <p className="text-gray-300">{selectedLesson?.description}</p>
+          <div className="display flex items-center gap-1">
+            <Info className="size-3.5 font-semibold" />
+            <span className="text-base font-semibold">Informações da aula</span>
+          </div>
+          <p className="pb-3 pt-1 text-gray-400">
+            {selectedLesson?.description}
+          </p>
         </div>
-        <div className="bg-muted w-4/12 rounded py-3">
+        <div className="bg-muted w-4/12 rounded-xl py-3">
           <h4 className="scroll-m-20 text-center text-xl font-semibold tracking-tight">
             {submoduleName}
           </h4>

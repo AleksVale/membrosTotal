@@ -1,4 +1,4 @@
-import { BookCheck, PlayCircle } from 'lucide-react'
+import { BookCheck } from 'lucide-react'
 import { Button } from './ui/button'
 import { ILesson } from '@/pages/admin/Lessons/interfaces'
 

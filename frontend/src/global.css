@@ -55,7 +55,8 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: "roc-grotesk", sans-serif;
+    font-family: "Montserrat", sans-serif;
+    font-optical-sizing: auto;
     font-weight: 400;
     font-style: normal;
   }

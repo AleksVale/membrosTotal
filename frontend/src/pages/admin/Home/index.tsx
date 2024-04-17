@@ -1,5 +1,11 @@
 import { Link } from 'react-router-dom'
 
 export function Home() {
-  return <Link to={'/admin/user'}>Usuario</Link>
+  return (
+    <div>
+      <Link to={'/admin/user'}>
+        <p>Teste do Vitor</p>
+      </Link>
+    </div>
+  )
 }

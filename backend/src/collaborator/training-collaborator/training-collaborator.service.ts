@@ -15,7 +15,7 @@ export class TrainingCollaboratorService {
     const trainings = await Promise.all(
       result.map(async (training) => {
         if (training.thumbnail) {
-          const photo = await this.awsService.getPhoto(training.thumbnail);
+          const photo = await this.awsService.getStoredObject(training.thumbnail);
           return { ...training, thumbnail: photo };
         }
         return training;

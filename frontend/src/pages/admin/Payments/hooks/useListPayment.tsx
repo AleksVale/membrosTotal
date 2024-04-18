@@ -24,7 +24,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Trash, CheckSquare } from 'lucide-react'
+import { MoreHorizontal, Trash, CheckSquare, DownloadCloud } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/StatusBadge'
 
@@ -43,6 +43,15 @@ export function useListPayment() {
     try {
       await Paymentservice.finishPayment(id)
       getPayments()
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const handleGetSignedURL = async (id: number) => {
+    try {
+      const response = await Paymentservice.getSignedURL(id)
+      window.open(response.data.signedUrl, '_blank')
     } catch (error) {
       console.error(error)
     }
@@ -149,6 +158,15 @@ export function useListPayment() {
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>
+                <DropdownMenuItem
+                  onClick={() => handleGetSignedURL(paymentRequest.id)}
+                  className="group flex items-center gap-2"
+                >
+                  <DownloadCloud size={16} className="text-green-300" />
+                  <span className="group-hover:text-green-300">
+                    Ver comprovante
+                  </span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <DialogContent>

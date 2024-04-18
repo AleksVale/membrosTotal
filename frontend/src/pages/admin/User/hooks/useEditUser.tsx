@@ -8,6 +8,7 @@ import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
+import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
 dayjs.extend(utc)
 export function useEditUser() {
   const navigate = useNavigate()
@@ -45,16 +46,16 @@ export function useEditUser() {
     const { data } = await UserService.getUser(id)
     reset({
       email: data.email,
-      phone: data.phone,
+      phone: formatToPhoneNumber(data.phone),
       profileId: data.Profile.id,
       firstName: data.firstName,
       lastName: data.lastName,
-      document: data.document,
+      document: formatToDocument(data.document ?? ''),
       birthDate: dayjs(data.birthDate, 'YYYY-MM-DD')
         .utc(false)
         .format('YYYY/MM/DD'),
-      instagram: data.instagram,
-      pixKey: data.pixKey,
+      instagram: data.instagram ?? '',
+      pixKey: data.pixKey ?? '',
     })
   }, [id, reset])
 

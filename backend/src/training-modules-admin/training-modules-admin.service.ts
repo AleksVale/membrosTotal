@@ -43,7 +43,7 @@ export class TrainingModulesAdminService {
   async findOne(id: number) {
     const module = await this.moduleRepository.find({ id });
     if (!module) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getPhoto(module.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(module.thumbnail as string);
     return { module, stream: photo };
   }
 

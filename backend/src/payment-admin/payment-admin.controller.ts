@@ -72,6 +72,11 @@ export class PaymentAdminController {
     });
   }
 
+  @Get('signed_url/:id')
+  getSignedURL(@Param('id') id: string) {
+    return this.paymentAdminService.getSignedURL(+id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.paymentAdminService.findOne(+id);

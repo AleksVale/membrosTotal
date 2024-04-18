@@ -70,7 +70,7 @@ export class AwsService {
     return `refunds/${userId}/${paymentRequestId}/refund.${mimeType}`;
   }
 
-  async getPhoto(photoKey: string) {
+  async getStoredObject(photoKey: string) {
     const uploadResult = await getSignedUrl(
       this.s3,
       new GetObjectCommand({

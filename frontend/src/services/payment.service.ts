@@ -1,5 +1,5 @@
 import http from '@/lib/http'
-import { SuccessResponse } from '@/utils/constants/routes'
+import { SignedURLResponse, SuccessResponse } from '@/utils/constants/routes'
 import { PaginatedResponseDto } from './interfaces'
 import { Payment } from '@/utils/interfaces/payment'
 
@@ -31,6 +31,10 @@ const finishPayment = async (id: number) => {
   return http.patch<SuccessResponse>(`/payment-admin/${id}/finish`)
 }
 
+const getSignedURL = async (id: number) => {
+  return http.get<SignedURLResponse>(`/payment-admin/signed_url/${id}`)
+}
+
 const Paymentservice = {
   getPayments,
   createPayment,
@@ -38,6 +42,7 @@ const Paymentservice = {
   finishPayment,
   update,
   get,
+  getSignedURL,
 }
 
 export default Paymentservice

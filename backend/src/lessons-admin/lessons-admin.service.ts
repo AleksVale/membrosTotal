@@ -39,7 +39,7 @@ export class LessonsAdminService {
   async findOne(id: number) {
     const lesson = await this.lessonsRepository.find({ id });
     if (!lesson) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getPhoto(lesson.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(lesson.thumbnail as string);
     return { lesson, stream: photo };
   }
 

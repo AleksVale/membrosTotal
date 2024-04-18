@@ -20,11 +20,16 @@ const update = async (user: CreateUserForm, id: number | string) => {
   return http.patch<SuccessResponse>(`/user/${id}`, user)
 }
 
+const remove = async (id: number | string) => {
+  return http.delete<SuccessResponse>(`/user/${id}`)
+}
+
 const UserService = {
   getUsers,
   createUser,
   update,
   getUser,
+  remove,
 }
 
 export default UserService

@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import dayjs from 'dayjs'
 
-import { User } from './interfaces'
+import { CreateUserForm, User } from './interfaces'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,7 +10,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { BellRing, Edit, MoreHorizontal, PhoneCall, Trash } from 'lucide-react'
+import {
+  BellRing,
+  CheckCircle,
+  Edit,
+  MoreHorizontal,
+  PhoneCall,
+  Trash,
+} from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { DataTableColumnHeader } from '@/components/DataTableColumnHeader'
@@ -25,13 +32,116 @@ import {
 } from '@/components/ui/dialog'
 import { DialogClose } from '@radix-ui/react-dialog'
 import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
-import { ADMIN_PAGES } from '@/utils/constants/routes'
-import { useNavigate } from 'react-router-dom'
+import { ADMIN_PAGES, DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import UserService from '@/services/user.service'
+import { toast } from 'react-toastify'
+import { useCallback, useEffect, useState } from 'react'
+import { PaginationMeta } from '@/services/interfaces'
+import { UserStatus, UserStatusLabel } from '@/utils/interfaces/payment'
+import { StatusBadge } from '@/components/StatusBadge'
 
 export function useColumnsUser() {
   const navigate = useNavigate()
-  const handleConfirmDeleteUser = (id: string) => {
-    console.log('deleting user', id)
+
+  const [searchParams] = useSearchParams()
+  const [data, setData] = useState<User[]>([])
+  const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
+  const getUsers = useCallback(() => {
+    UserService.getUsers(searchParams).then((response) => {
+      setData(response.data.data)
+      setMeta(response.data.meta)
+    })
+  }, [searchParams])
+  useEffect(() => {
+    getUsers()
+  }, [getUsers])
+
+  const handleConfirmDeleteUser = async (id: string) => {
+    const deleted = await UserService.remove(id)
+    if (deleted.data.success) {
+      toast.success('Usuário inativado com sucesso!')
+      getUsers()
+    }
+  }
+
+  const handleActivateUser = async (id: string) => {
+    const updated = await UserService.update(
+      { status: UserStatus.ACTIVE } as CreateUserForm,
+      id,
+    )
+    if (updated.data.success) {
+      toast.success('Usuário ativado com sucesso!')
+      getUsers()
+    }
+  }
+
+  const renderUserOption = (status: UserStatus) => {
+    if (status === UserStatus.ACTIVE) {
+      return (
+        <DialogTrigger asChild>
+          <DropdownMenuItem className="group flex items-center gap-2">
+            <Trash size={16} className="text-destructive" />
+            <span className="group-hover:text-destructive">
+              Inativar usuário
+            </span>
+          </DropdownMenuItem>
+        </DialogTrigger>
+      )
+    }
+    return (
+      <DialogTrigger asChild>
+        <DropdownMenuItem className="group flex items-center gap-2">
+          <CheckCircle size={16} className="text-green-800" />
+          <span className="group-hover:text-green-600">Ativar usuário</span>
+        </DropdownMenuItem>
+      </DialogTrigger>
+    )
+  }
+
+  const renderDialogOption = (user: User) => {
+    if (user.status === UserStatus.ACTIVE) {
+      return (
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Você tem certeza?</DialogTitle>
+            <DialogDescription>
+              Essa ação bloqueará o acesso do usuário a plataforma.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <DialogClose asChild>
+              <Button
+                variant={'destructive'}
+                onClick={() => handleConfirmDeleteUser(user.id)}
+              >
+                Deletar
+              </Button>
+            </DialogClose>
+          </DialogFooter>
+        </DialogContent>
+      )
+    }
+    return (
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Você tem certeza?</DialogTitle>
+          <DialogDescription>
+            Essa ação permitirá o acesso do usuário a plataforma.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button
+              variant={'secondary'}
+              onClick={() => handleActivateUser(user.id)}
+            >
+              Ativar
+            </Button>
+          </DialogClose>
+        </DialogFooter>
+      </DialogContent>
+    )
   }
 
   const columns: ColumnDef<User>[] = [
@@ -87,6 +197,16 @@ export function useColumnsUser() {
         <DataTableColumnHeader column={column} title="PIX" />
       ),
     },
+    {
+      accessorKey: 'status',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Status" />
+      ),
+      cell: ({ row }) => {
+        const original = row.original
+        return <StatusBadge status={UserStatusLabel[original.status]} />
+      },
+    },
 
     {
       id: 'actions',
@@ -115,14 +235,7 @@ export function useColumnsUser() {
                     Editar usuário
                   </span>
                 </DropdownMenuItem>
-                <DialogTrigger asChild>
-                  <DropdownMenuItem className="group flex items-center gap-2">
-                    <Trash size={16} className="text-destructive" />
-                    <span className="group-hover:text-destructive">
-                      Deletar usuário
-                    </span>
-                  </DropdownMenuItem>
-                </DialogTrigger>
+                {renderUserOption(user.status)}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="group flex items-center gap-2">
                   <PhoneCall size={16} className="text-lime-500" />
@@ -140,25 +253,7 @@ export function useColumnsUser() {
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Você tem certeza?</DialogTitle>
-                <DialogDescription>
-                  Essa ação não pode ser desfeita. Você tem certeza que deseja
-                  deletar esse usuário?
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    variant={'destructive'}
-                    onClick={() => handleConfirmDeleteUser(user.id)}
-                  >
-                    Deletar
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
+            {renderDialogOption(user)}
           </Dialog>
         )
       },
@@ -167,5 +262,7 @@ export function useColumnsUser() {
 
   return {
     columns,
+    data,
+    meta,
   }
 }

@@ -1,3 +1,4 @@
+import { UserStatus } from '@/utils/interfaces/payment'
 import dayjs from 'dayjs'
 import { z } from 'zod'
 
@@ -12,6 +13,7 @@ export type User = {
   email: string
   phone: string
   document: string
+  status: UserStatus
   birthDate: string
   instagram: string
   pixKey: string
@@ -31,7 +33,7 @@ export const createUserSchema = z.object({
   phone: z
     .string({ required_error: 'O telefone é obrigatório' })
     .min(11, { message: 'O telefone deve ter pelo menos 3 caracteres' }),
-
+  status: z.nativeEnum(UserStatus).optional(),
   document: z.string().optional(),
   birthDate: z.coerce
     .date({ required_error: 'A data de nascimento é obrigatória' })

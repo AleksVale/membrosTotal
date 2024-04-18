@@ -15,6 +15,16 @@ export enum PaymentLabel {
   ALL = 'Todos',
 }
 
+export enum UserStatusLabel {
+  ACTIVE = 'Ativo',
+  INACTIVE = 'Inativo',
+}
+
+export enum UserStatus {
+  ACTIVE = 'ACTIVE',
+  INACTIVE = 'INACTIVE',
+}
+
 export interface PaymentType {
   id: number
   label: string

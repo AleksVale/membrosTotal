@@ -1,28 +1,28 @@
-import { Button } from '@/components/ui/button'
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form'
-import { useGoBack } from '@/hooks/useGoBack'
-import { Loader2 } from 'lucide-react'
-import { Autocomplete } from '@/components/ComboBox'
+// import { Button } from '@/components/ui/button'
+// import {
+//   Form,
+//   FormControl,
+//   FormField,
+//   FormItem,
+//   FormLabel,
+//   FormMessage,
+// } from '@/components/ui/form'
+// import { useGoBack } from '@/hooks/useGoBack'
+// import { Loader2 } from 'lucide-react'
+// import { Autocomplete } from '@/components/ComboBox'
 import { Helmet } from 'react-helmet-async'
 import { BaseHeader } from '@/components/BaseHeader'
-import { useModulePermission } from './hooks/useModulePermission'
+// import { useModulePermission } from './hooks/useModulePermission'
 
 export function ModulesPermission() {
-  const { modules, users, form, isSubmitting, onSubmitForm } =
-    useModulePermission()
-  const { goBack } = useGoBack()
+  // const { modules, users, form, isSubmitting, onSubmitForm } =
+  //   useModulePermission()
+  // const { goBack } = useGoBack()
   return (
     <div>
       <Helmet title="Adicionar permissões" />
       <BaseHeader label="Adicionar permissões" />
-      <Form {...form}>
+      {/* <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmitForm)}
           className="w-full space-y-4"
@@ -84,7 +84,7 @@ export function ModulesPermission() {
             </Button>
           </div>
         </form>
-      </Form>
+      </Form> */}
     </div>
   )
 }

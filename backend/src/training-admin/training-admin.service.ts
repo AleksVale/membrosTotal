@@ -29,7 +29,7 @@ export class TrainingAdminService {
   async findOne(id: number) {
     const training = await this.trainingRepository.find({ id });
     if (!training) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getPhoto(training.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(training.thumbnail as string);
     return { training, stream: photo };
   }
 

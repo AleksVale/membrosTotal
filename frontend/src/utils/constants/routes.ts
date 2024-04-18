@@ -62,6 +62,10 @@ export interface SuccessResponse {
   success: boolean
 }
 
+export interface SignedURLResponse {
+  signedUrl: string
+}
+
 export const DEFAULT_META_PAGINATION = {
   currentPage: 1,
   lastPage: 1,

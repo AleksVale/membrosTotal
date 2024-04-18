@@ -59,6 +59,15 @@ export class PaymentAdminService {
     return `This action returns a #${id} paymentAdmin`;
   }
 
+  async getSignedURL(id: number) {
+    const payment = await this.paymentRepository.find({ id });
+    if (!payment) throw new BadRequestException('Pagamento não encontrado');
+    const signedUrl = await this.awsService.getStoredObject(
+      payment.photoKey as string,
+    );
+    return { signedUrl };
+  }
+
   update(id: number, updatePaymentAdminDto: UpdatePaymentAdminDto) {
     return this.paymentRepository.update(updatePaymentAdminDto, { id });
   }

@@ -41,7 +41,7 @@ export class SubModulesAdminService {
   async findOne(id: number) {
     const submodule = await this.subModulesRepository.find({ id });
     if (!submodule) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getPhoto(submodule.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(submodule.thumbnail as string);
     return { submodule, stream: photo };
   }
 

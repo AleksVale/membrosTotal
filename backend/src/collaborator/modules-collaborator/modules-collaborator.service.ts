@@ -18,7 +18,7 @@ export class ModuleCollaboratorService {
     const modules = await Promise.all(
       result.map(async (module) => {
         if (module.thumbnail) {
-          const photo = await this.awsService.getPhoto(module.thumbnail);
+          const photo = await this.awsService.getStoredObject(module.thumbnail);
           return { ...module, thumbnail: photo };
         }
         return module;

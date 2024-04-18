@@ -4,6 +4,7 @@ import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-adm
 import { ModuleRepository } from './modules.repository';
 import { AddPermissionModuleAdminDTO } from './dto/add-permissions-module.dto';
 import { AwsService } from 'src/aws/aws.service';
+import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
 export interface TrainingModulesAdminQuery {
   title?: string;
@@ -43,7 +44,9 @@ export class TrainingModulesAdminService {
   async findOne(id: number) {
     const module = await this.moduleRepository.find({ id });
     if (!module) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getStoredObject(module.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(
+      module.thumbnail as string,
+    );
     return { module, stream: photo };
   }
 
@@ -54,10 +57,14 @@ export class TrainingModulesAdminService {
     return this.moduleRepository.update(updateTrainingModulesAdminDto, { id });
   }
 
-  addPermission(addPermissionModuleAdminDto: AddPermissionModuleAdminDTO) {
+  addPermission(
+    moduleId: number,
+    addPermissionModuleAdminDto: AddPermissionAdminDTO,
+  ) {
     return this.moduleRepository.addPermission(
-      addPermissionModuleAdminDto.modules,
-      addPermissionModuleAdminDto.users,
+      moduleId,
+      addPermissionModuleAdminDto.removedUsers,
+      addPermissionModuleAdminDto.addedUsers,
     );
   }
 }

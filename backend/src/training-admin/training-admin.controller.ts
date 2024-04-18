@@ -22,10 +22,10 @@ import { RoleGuard } from 'src/auth/role/role.guard';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 import { GetTrainingResponse, TrainingDTO } from './dto/training-response.dto';
-import { AddPermissionTrainingAdminDTO } from './dto/add-permissions-training.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostResponse } from 'src/utils/post-response.dto';
+import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
@@ -92,11 +92,12 @@ export class TrainingAdminController {
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })
-  @Post('permissions')
+  @Patch('permissions/:id')
   async addPermission(
-    @Body() body: AddPermissionTrainingAdminDTO,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: AddPermissionAdminDTO,
   ): Promise<SuccessResponse> {
-    await this.trainingAdminService.addPermission(body);
+    await this.trainingAdminService.addPermission(id, body);
     return { success: true };
   }
 }

@@ -1,22 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'nestjs-zod/z';
 
-const addPermissionSubModuleSchema = z.object({
-  users: z.array(
-    z.number({
-      invalid_type_error: 'User ID deve ser um número',
-      required_error: 'User ID é obrigatório',
-    }),
-  ),
-  submodules: z.array(
-    z.number({
-      invalid_type_error: 'Submódulo ID deve ser um número',
-      required_error: 'Submódulo ID é obrigatório',
-    }),
-  ),
+const addPermissionSchema = z.object({
+  removedUsers: z.array(z.number()).optional(),
+  addedUsers: z.array(z.number()).optional(),
+  addRelatives: z.boolean().optional(),
 });
 
 // class is required for using DTO as a type
-export class AddPermissionSubModuleAdminDTO extends createZodDto(
-  addPermissionSubModuleSchema,
-) {}
+export class AddPermissionAdminDTO extends createZodDto(addPermissionSchema) {}

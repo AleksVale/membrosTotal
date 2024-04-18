@@ -19,9 +19,9 @@ import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorat
 import { GetModuleResponse, ModuleDTO } from './dto/module-response.dto';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/utils/success-response.dto';
-import { AddPermissionModuleAdminDTO } from './dto/add-permissions-module.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostResponse } from 'src/utils/post-response.dto';
+import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
 @Controller('training-modules-admin')
 export class TrainingModulesAdminController {
@@ -89,11 +89,12 @@ export class TrainingModulesAdminController {
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })
-  @Post('permissions')
+  @Patch('permissions/:id')
   async addPermission(
-    @Body() body: AddPermissionModuleAdminDTO,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: AddPermissionAdminDTO,
   ): Promise<SuccessResponse> {
-    await this.trainingModulesAdminService.addPermission(body);
+    await this.trainingModulesAdminService.addPermission(id, body);
     return { success: true };
   }
 }

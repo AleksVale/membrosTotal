@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
 import { SubModuleRepository } from './sub-modules.repository';
-import { AddPermissionSubModuleAdminDTO } from './dto/add-permissions-subModule-training.dto';
+import { AddPermissionAdminDTO } from './dto/add-permissions-subModule-training.dto';
 import { AwsService } from 'src/aws/aws.service';
 
 export interface SubModulesQuery {
@@ -41,7 +41,9 @@ export class SubModulesAdminService {
   async findOne(id: number) {
     const submodule = await this.subModulesRepository.find({ id });
     if (!submodule) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getStoredObject(submodule.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(
+      submodule.thumbnail as string,
+    );
     return { submodule, stream: photo };
   }
 
@@ -50,12 +52,17 @@ export class SubModulesAdminService {
     return this.subModulesRepository.update(entity, { id });
   }
 
-  addPermission(
-    addPermissionSubModuleAdminDto: AddPermissionSubModuleAdminDTO,
+  async addPermission(
+    submoduleId: number,
+    addPermissionSubModuleAdminDto: AddPermissionAdminDTO,
   ) {
+    const subModule = await this.subModulesRepository.find({ id: submoduleId });
+    if (!subModule) throw new NotFoundException('ID inválido');
+
     return this.subModulesRepository.addPermission(
-      addPermissionSubModuleAdminDto.submodules,
-      addPermissionSubModuleAdminDto.users,
+      submoduleId,
+      addPermissionSubModuleAdminDto.removedUsers,
+      addPermissionSubModuleAdminDto.addedUsers,
     );
   }
 }

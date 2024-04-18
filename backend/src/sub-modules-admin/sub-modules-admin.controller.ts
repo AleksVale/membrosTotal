@@ -22,7 +22,7 @@ import {
   SubmoduleDTO,
 } from './dto/sub-modules-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
-import { AddPermissionSubModuleAdminDTO } from './dto/add-permissions-subModule-training.dto';
+import { AddPermissionAdminDTO } from './dto/add-permissions-subModule-training.dto';
 import { PostResponse } from 'src/utils/post-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 
@@ -94,11 +94,12 @@ export class SubModulesAdminController {
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })
-  @Post('permissions')
+  @Patch('permissions/:id')
   async addPermission(
-    @Body() body: AddPermissionSubModuleAdminDTO,
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: AddPermissionAdminDTO,
   ): Promise<SuccessResponse> {
-    await this.subModulesAdminService.addPermission(body);
+    await this.subModulesAdminService.addPermission(id, body);
     return { success: true };
   }
 }

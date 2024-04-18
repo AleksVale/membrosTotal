@@ -2,8 +2,8 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
 import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
 import { TrainingRepository } from './training.repository';
-import { AddPermissionTrainingAdminDTO } from './dto/add-permissions-training.dto';
 import { AwsService } from 'src/aws/aws.service';
+import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
 export interface TrainingQuery {
   title: string;
@@ -29,7 +29,9 @@ export class TrainingAdminService {
   async findOne(id: number) {
     const training = await this.trainingRepository.find({ id });
     if (!training) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getStoredObject(training.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(
+      training.thumbnail as string,
+    );
     return { training, stream: photo };
   }
 
@@ -39,10 +41,15 @@ export class TrainingAdminService {
     return this.trainingRepository.update(entity, { id });
   }
 
-  addPermission(addPermissionTrainingAdminDto: AddPermissionTrainingAdminDTO) {
+  addPermission(
+    trainingId: number,
+    addPermissionTrainingAdminDto: AddPermissionAdminDTO,
+  ) {
     return this.trainingRepository.addPermission(
-      addPermissionTrainingAdminDto.trainings,
-      addPermissionTrainingAdminDto.users,
+      trainingId,
+      addPermissionTrainingAdminDto.removedUsers,
+      addPermissionTrainingAdminDto.addedUsers,
+      addPermissionTrainingAdminDto.addRelatives,
     );
   }
 

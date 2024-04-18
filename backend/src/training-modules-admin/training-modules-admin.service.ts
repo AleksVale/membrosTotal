@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
 import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
 import { ModuleRepository } from './modules.repository';
-import { AddPermissionModuleAdminDTO } from './dto/add-permissions-module.dto';
 import { AwsService } from 'src/aws/aws.service';
 import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
@@ -13,7 +12,6 @@ export interface TrainingModulesAdminQuery {
   trainingId?: number;
 }
 
-// TODO: realizar validações de dados
 @Injectable()
 export class TrainingModulesAdminService {
   constructor(

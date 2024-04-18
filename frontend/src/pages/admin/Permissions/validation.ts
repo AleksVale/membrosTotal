@@ -1,54 +1,10 @@
 import { z } from 'zod'
 
 export const createPermissionSchema = z.object({
-  users: z.array(
-    z.object({
-      id: z.number(),
-      fullName: z.string(),
-    }),
-  ),
-  trainings: z.array(
-    z.object({
-      id: z.number(),
-      label: z.string(),
-    }),
-  ),
-})
-
-export const createModulePermissionSchema = z.object({
-  users: z.array(
-    z.object({
-      id: z.number(),
-      fullName: z.string(),
-    }),
-  ),
-  modules: z.array(
-    z.object({
-      id: z.number(),
-      label: z.string(),
-    }),
-  ),
-})
-
-export const createSubmodulePermissionSchema = z.object({
-  users: z.array(
-    z.object({
-      id: z.number(),
-      fullName: z.string(),
-    }),
-  ),
-  submodules: z.array(
-    z.object({
-      id: z.number(),
-      label: z.string(),
-    }),
-  ),
+  users: z.array(z.number()),
+  addRelatives: z.boolean(),
 })
 
 export type CreatePermission = z.infer<typeof createPermissionSchema>
-export type CreateModulePermission = z.infer<
-  typeof createModulePermissionSchema
->
-export type CreateSubmodulePermission = z.infer<
-  typeof createSubmodulePermissionSchema
->
+export type CreateModulePermission = z.infer<typeof createPermissionSchema>
+export type CreateSubmodulePermission = z.infer<typeof createPermissionSchema>

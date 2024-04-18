@@ -6,53 +6,70 @@ import { useForm } from 'react-hook-form'
 import { CreatePermission, createPermissionSchema } from '../validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import TrainingService from '@/services/training.service'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
+import { ITraining } from '../../Training/interfaces'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
 
 export function useTrainingPermission() {
+  const { id } = useParams()
   const navigate = useNavigate()
   const [users, setUsers] = useState<Autocomplete[]>([])
-  const [trainings, setTrainings] = useState<Autocomplete[]>([])
+  const [training, setTraining] = useState<ITraining>()
+  const [originalUsers, setOriginalUsers] = useState<number[]>([])
 
   const form = useForm<CreatePermission>({
     resolver: zodResolver(createPermissionSchema),
     defaultValues: {
-      trainings: [],
       users: [],
+      addRelatives: false,
     },
   })
 
+  const { reset } = form
   const onSubmitForm = useCallback(
     async (data: CreatePermission) => {
-      const trainings = data.trainings.map((training) => training.id)
-      const users = data.users.map((user) => user.id)
+      const addedUsers = data.users.filter(
+        (user) => !originalUsers.includes(user),
+      )
+      const removedUsers = originalUsers.filter(
+        (user) => !data.users.includes(user),
+      )
       const response = await TrainingService.createTrainingPermissions(
-        trainings,
-        users,
+        addedUsers,
+        removedUsers,
+        data.addRelatives,
+        id as string,
       )
       if (response.data.success) {
-        navigate(ADMIN_PAGES.permissions)
+        navigate(ADMIN_PAGES.listTrainings)
         toast.success('Permissões adicionadas!')
       }
     },
-    [navigate],
+    [id, navigate, originalUsers],
   )
 
   const fetchAutocomplete = useCallback(async () => {
-    const response = await AutocompleteService.fetchAutocomplete([
-      'users',
-      'trainings',
-    ])
+    const response = await AutocompleteService.fetchAutocomplete(['users'])
     setUsers(response.data.users ?? [])
-    setTrainings(response.data.trainings ?? [])
   }, [])
+
+  const fetchTraining = useCallback(async () => {
+    const training = (await TrainingService.getTraining(id)).data.training
+    const users = training.PermissionUserTraining.map(
+      (permission) => permission.userId,
+    )
+    setOriginalUsers(users)
+    reset({ users, addRelatives: false })
+    setTraining(training)
+  }, [reset, id])
 
   useEffect(() => {
     fetchAutocomplete()
-  }, [fetchAutocomplete])
+    fetchTraining()
+  }, [fetchAutocomplete, fetchTraining])
 
   const { isSubmitting } = form.formState
 
-  return { users, trainings, form, isSubmitting, onSubmitForm }
+  return { users, form, isSubmitting, onSubmitForm, training }
 }

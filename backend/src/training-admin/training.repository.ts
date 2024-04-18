@@ -16,6 +16,9 @@ export class TrainingRepository {
   async find(condition: Prisma.TrainingWhereInput) {
     return await this.prisma.training.findFirst({
       where: condition,
+      include: {
+        PermissionUserTraining: true,
+      },
     });
   }
 

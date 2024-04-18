@@ -5,7 +5,7 @@ import AutocompleteService, {
 import { useForm } from 'react-hook-form'
 import {
   CreateSubmodulePermission,
-  createSubmodulePermissionSchema,
+  createPermissionSchema,
 } from '../validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
@@ -19,19 +19,17 @@ export function useSubmodulePermission() {
   const [submodules, setSubmodules] = useState<Autocomplete[]>([])
 
   const form = useForm<CreateSubmodulePermission>({
-    resolver: zodResolver(createSubmodulePermissionSchema),
+    resolver: zodResolver(createPermissionSchema),
     defaultValues: {
-      submodules: [],
       users: [],
     },
   })
 
   const onSubmitForm = useCallback(
     async (data: CreateSubmodulePermission) => {
-      const submodules = data.submodules.map((submodule) => submodule.id)
-      const users = data.users.map((user) => user.id)
+      const users = data.users.map((user) => user)
       const response = await SubModuleService.createSubmodulePermissions(
-        submodules,
+        [],
         users,
       )
       if (response.data.success) {

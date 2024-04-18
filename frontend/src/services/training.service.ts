@@ -40,12 +40,15 @@ const createPhotoTraining = async (file: File, trainingId: number) => {
 }
 
 const createTrainingPermissions = async (
-  trainings: number[],
-  users: number[],
+  addedUsers: number[],
+  removedUsers: number[],
+  addRelatives: boolean,
+  id: number | string,
 ) => {
-  return http.post<SuccessResponse>('/training-admin/permissions', {
-    trainings,
-    users,
+  return http.patch<SuccessResponse>(`/training-admin/permissions/${id}`, {
+    addedUsers,
+    removedUsers,
+    addRelatives,
   })
 }
 

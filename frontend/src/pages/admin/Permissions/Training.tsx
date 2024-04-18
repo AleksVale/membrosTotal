@@ -3,6 +3,7 @@ import { useTrainingPermission } from './hooks/useTrainingPermission'
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -10,18 +11,20 @@ import {
 } from '@/components/ui/form'
 import { useGoBack } from '@/hooks/useGoBack'
 import { Loader2 } from 'lucide-react'
-import { Autocomplete } from '@/components/ComboBox'
 import { Helmet } from 'react-helmet-async'
 import { BaseHeader } from '@/components/BaseHeader'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Switch } from '@/components/ui/switch'
 
 export function TrainingPermissions() {
-  const { trainings, users, form, isSubmitting, onSubmitForm } =
+  const { training, users, form, isSubmitting, onSubmitForm } =
     useTrainingPermission()
   const { goBack } = useGoBack()
   return (
     <div>
       <Helmet title="Adicionar permissões" />
-      <BaseHeader label="Adicionar permissões" />
+      <BaseHeader label={`Adicionar permissões ${training?.title}`} />
+
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmitForm)}
@@ -31,34 +34,75 @@ export function TrainingPermissions() {
             <FormField
               control={form.control}
               name="users"
-              render={({ field }) => (
+              render={() => (
                 <FormItem>
-                  <FormLabel>Usuários</FormLabel>
-                  <FormControl>
-                    <Autocomplete
-                      options={users}
-                      value={field.value}
-                      onChange={field.onChange}
+                  <div className="mb-4">
+                    <FormLabel className="text-base">
+                      {training?.title}
+                    </FormLabel>
+                    <FormDescription>
+                      Selecione os usuários que terão acesso a este treinamento
+                    </FormDescription>
+                  </div>
+                  {users.map((item) => (
+                    <FormField
+                      key={item.id}
+                      control={form.control}
+                      name="users"
+                      render={({ field }) => {
+                        return (
+                          <FormItem
+                            key={item.id}
+                            className="flex flex-row items-start space-x-3 space-y-0"
+                          >
+                            <FormControl>
+                              <Checkbox
+                                checked={field.value?.some(
+                                  (value) => value === item.id,
+                                )}
+                                onCheckedChange={(checked) => {
+                                  return checked
+                                    ? field.onChange([...field.value, item.id])
+                                    : field.onChange(
+                                        field.value?.filter(
+                                          (value) => value !== item.id,
+                                        ),
+                                      )
+                                }}
+                              />
+                            </FormControl>
+                            <FormLabel className="font-normal">
+                              {item.fullName}
+                            </FormLabel>
+                          </FormItem>
+                        )
+                      }}
                     />
-                  </FormControl>
+                  ))}
                   <FormMessage />
                 </FormItem>
               )}
             />
             <FormField
               control={form.control}
-              name="trainings"
+              name="addRelatives"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Treinamentos</FormLabel>
+                <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                  <div className="space-y-0.5">
+                    <FormLabel className="text-base">
+                      {training?.title}
+                    </FormLabel>
+                    <FormDescription>
+                      Adicionar permissões aos módulos e submódulos relacionados
+                      ao treinamento.
+                    </FormDescription>
+                  </div>
                   <FormControl>
-                    <Autocomplete
-                      options={trainings}
-                      value={field.value}
-                      onChange={field.onChange}
+                    <Switch
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
                     />
                   </FormControl>
-                  <FormMessage />
                 </FormItem>
               )}
             />

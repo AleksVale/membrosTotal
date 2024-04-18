@@ -1,5 +1,12 @@
 import { SuccessResponse } from '@/utils/constants/routes'
 
+export interface PermissionUserTraining {
+  id: number
+  userId: number
+  trainingId: number
+  createdAt: string
+  updatedAt: string
+}
 export interface ITraining {
   id: number
   title: string
@@ -8,6 +15,7 @@ export interface ITraining {
   thumbnail?: string | null
   createdAt: Date
   updatedAt: Date
+  PermissionUserTraining: PermissionUserTraining[]
 }
 
 export interface GetTrainingResponse {

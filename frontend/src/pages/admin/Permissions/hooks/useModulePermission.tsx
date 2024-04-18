@@ -3,10 +3,7 @@ import AutocompleteService, {
   Autocomplete,
 } from '@/services/autocomplete.service'
 import { useForm } from 'react-hook-form'
-import {
-  CreateModulePermission,
-  createModulePermissionSchema,
-} from '../validation'
+import { CreateModulePermission, createPermissionSchema } from '../validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import ModuleService from '@/services/module.service'
 import { useNavigate } from 'react-router-dom'
@@ -19,21 +16,16 @@ export function useModulePermission() {
   const [modules, setModules] = useState<Autocomplete[]>([])
 
   const form = useForm<CreateModulePermission>({
-    resolver: zodResolver(createModulePermissionSchema),
+    resolver: zodResolver(createPermissionSchema),
     defaultValues: {
-      modules: [],
       users: [],
     },
   })
 
   const onSubmitForm = useCallback(
     async (data: CreateModulePermission) => {
-      const modules = data.modules.map((module) => module.id)
-      const users = data.users.map((user) => user.id)
-      const response = await ModuleService.createModulePermissions(
-        modules,
-        users,
-      )
+      const users = data.users.map((user) => user)
+      const response = await ModuleService.createModulePermissions([], users)
       if (response.data.success) {
         navigate(ADMIN_PAGES.permissions)
         toast.success('Permissões adicionadas!')

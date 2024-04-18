@@ -9,6 +9,7 @@ import { DateUtils } from 'src/utils/date';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
 import { MailerService } from '@nestjs-modules/mailer';
+import { UserStatus } from '@prisma/client';
 // import { MailerService } from '@nestjs-modules/mailer';
 
 export interface UserFilter {
@@ -110,11 +111,23 @@ export class UserService {
   }
 
   async findOneAuthentication(email: string) {
-    const user = await this.userRepository.find({ email });
+    const user = await this.userRepository.find({
+      email,
+      status: UserStatus.ACTIVE,
+    });
     return user;
   }
 
   async findAll(options: UserFilter) {
     return await this.userRepository.findAll(options);
+  }
+
+  async remove(id: number) {
+    const user = await this.userRepository.find({ id });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+    return await this.userRepository.update(
+      { status: UserStatus.INACTIVE },
+      { id },
+    );
   }
 }

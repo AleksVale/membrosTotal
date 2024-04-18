@@ -9,6 +9,7 @@ import {
   Query,
   DefaultValuePipe,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDTO } from './dto/create-user.dto';
@@ -83,5 +84,18 @@ export class UserController {
       email,
       profile,
     });
+  }
+
+  @Delete(':id')
+  @ApiResponse({
+    type: SuccessResponse,
+  })
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuccessResponse> {
+    await this.userService.remove(id);
+    return {
+      success: true,
+    };
   }
 }

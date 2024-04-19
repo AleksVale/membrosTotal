@@ -14,6 +14,7 @@ import { useMaskito } from '@maskito/react'
 import { Loader2, Pencil } from 'lucide-react'
 import { Helmet } from 'react-helmet-async'
 import { useColaboratorProfile } from './useColaboratorProfile'
+import { ProfileInput } from '@/components/ProfileInput'
 
 const doocumentMask: MaskitoOptions = {
   mask: [
@@ -65,6 +66,20 @@ export function Profile() {
     handleToggleEditing,
   } = useColaboratorProfile()
 
+  const fileRef = form.register('file')
+  const file = form.watch('file')
+  let placeholderUrl: string | undefined
+
+  if (file?.[0]) {
+    if (typeof file[0] === 'string') {
+      placeholderUrl = file[0]
+    } else {
+      placeholderUrl = URL.createObjectURL(file[0])
+    }
+  } else {
+    placeholderUrl = undefined
+  }
+
   const phoneRef = useMaskito({ options: phoneMask })
   return (
     <div>
@@ -86,6 +101,22 @@ export function Profile() {
           className="bg-muted m-auto w-11/12 justify-center space-y-4 rounded-lg px-8 py-6"
         >
           <fieldset disabled={!editing} className="w-full space-y-4">
+            <FormField
+              control={form.control}
+              name="file"
+              render={() => (
+                <FormItem>
+                  <FormControl>
+                    <ProfileInput
+                      {...fileRef}
+                      id="imageUpload"
+                      placeholder={placeholderUrl}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <div className="grid grid-cols-2 gap-4">
               <FormField
                 control={form.control}

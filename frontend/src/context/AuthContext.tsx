@@ -14,6 +14,8 @@ interface AuthContextType {
   profile: string | null
   login: (email: string, senha: string) => Promise<LoginResponse>
   logout: () => void
+  updateProfilePhoto: (photo: string) => void
+  photo: string | null
 }
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -22,6 +24,7 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   const [token, setToken] = useLocalStorage<string | null>('token', null)
   const [profile, setProfile] = useLocalStorage<string | null>('profile', null)
   const [loading, setLoading] = useState<boolean>(true)
+  const [photo, setPhoto] = useState<string | null>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -39,10 +42,15 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
 
       setToken(token.data.token)
       setProfile(token.data.profile)
+      setPhoto(token.data.photo)
       return token.data
     },
     [setProfile, setToken],
   )
+
+  const updateProfilePhoto = useCallback((photo: string) => {
+    setPhoto(photo)
+  }, [])
 
   const logout = useCallback(() => {
     setToken(null)
@@ -50,8 +58,8 @@ export function AuthProvider({ children }: Readonly<{ children: ReactNode }>) {
   }, [setProfile, setToken])
 
   const value = useMemo(
-    () => ({ token, login, logout, profile }),
-    [token, login, logout, profile],
+    () => ({ token, login, logout, profile, photo, updateProfilePhoto }),
+    [token, login, logout, profile, photo, updateProfilePhoto],
   )
 
   if (loading) {

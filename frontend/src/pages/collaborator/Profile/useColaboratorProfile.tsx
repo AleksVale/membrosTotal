@@ -9,10 +9,12 @@ import { EditProfileForm, editProfileSchema } from './interfaces'
 import ColaboratorService from '@/services/colaborator.service'
 import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
+import { useAuth } from '@/hooks/useAuth'
 dayjs.extend(utc)
 export function useColaboratorProfile() {
   const [editing, setEditing] = useState(false)
   const navigate = useNavigate()
+  const { updateProfilePhoto } = useAuth()
   const form = useForm<EditProfileForm>({
     resolver: zodResolver(editProfileSchema),
     defaultValues: {
@@ -31,11 +33,21 @@ export function useColaboratorProfile() {
 
   const handleSubmitForm = useCallback(
     async (data: EditProfileForm) => {
-      setEditing(false)
-      const response = await ColaboratorService.update(data)
-      if (response.data.success) {
-        toast.success('Usuário editado com sucesso')
-        navigate(COLLABORATOR_PAGES.home)
+      try {
+        setEditing(false)
+        const response = await ColaboratorService.update(data)
+        if (response.data.success) {
+          const photoResponse = await ColaboratorService.createPhotoUser(
+            data.file[0],
+          )
+          if (photoResponse.data.success) {
+            updateProfilePhoto(URL.createObjectURL(data.file[0]))
+            toast.success('Usuário editado com sucesso')
+            navigate(COLLABORATOR_PAGES.home)
+          }
+        }
+      } catch (err) {
+        toast.error('Erro ao editar usuário')
       }
     },
     [navigate],
@@ -44,16 +56,17 @@ export function useColaboratorProfile() {
   const fetchUser = useCallback(async () => {
     const { data } = await ColaboratorService.getCurrentUser()
     reset({
-      email: data.email,
-      phone: formatToPhoneNumber(data.phone),
-      firstName: data.firstName,
-      lastName: data.lastName,
-      document: formatToDocument(data.document ?? ''),
-      birthDate: dayjs(data.birthDate, 'YYYY-MM-DD')
+      email: data.user.email,
+      phone: formatToPhoneNumber(data.user.phone),
+      firstName: data.user.firstName,
+      lastName: data.user.lastName,
+      document: formatToDocument(data.user.document ?? ''),
+      birthDate: dayjs(data.user.birthDate, 'YYYY-MM-DD')
         .utc(false)
         .format('YYYY/MM/DD'),
-      instagram: data.instagram ?? '',
-      pixKey: data.pixKey ?? '',
+      instagram: data.user.instagram ?? '',
+      pixKey: data.user.pixKey ?? '',
+      file: [data.photo ?? ''],
     })
   }, [reset])
 

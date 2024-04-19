@@ -1,6 +1,14 @@
 import dayjs from 'dayjs'
 import { z } from 'zod'
 
+const MAX_FILE_SIZE = 5000000
+const ACCEPTED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+]
+
 export const editProfileSchema = z.object({
   email: z.string().email({ message: 'E-mail inválido' }),
   firstName: z
@@ -19,6 +27,20 @@ export const editProfileSchema = z.object({
     .transform((date) => dayjs(date, 'YYYY-DD-MM').format('YYYY-MM-DD')),
   instagram: z.string().optional(),
   pixKey: z.string().optional(),
+  file: z
+    .any()
+    .refine((files) => {
+      if (!files[0] || typeof files[0] === 'string') {
+        return true
+      }
+      return files?.[0]?.size <= MAX_FILE_SIZE
+    }, `Tamanho máximo: 5MB.`)
+    .refine((files) => {
+      if (!files[0] || typeof files[0] === 'string') {
+        return true
+      }
+      return ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type)
+    }, 'Apenas .jpg, .jpeg, .png e .webp formatos são suportados.'),
 })
 
 export type EditProfileForm = z.infer<typeof editProfileSchema>

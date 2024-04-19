@@ -1,5 +1,5 @@
 import http from '@/lib/http'
-import { User } from '@/pages/admin/User/interfaces'
+import { IGetProfileResponse } from '@/pages/admin/User/interfaces'
 import { EditProfileForm } from '@/pages/collaborator/Profile/interfaces'
 import { SuccessResponse } from '@/utils/constants/routes'
 import { Meeting } from './meeting.service'
@@ -22,7 +22,7 @@ interface CreatePaymentResponse extends SuccessResponse {
 }
 
 const getCurrentUser = async () => {
-  return http.get<User>(`collaborator/user`)
+  return http.get<IGetProfileResponse>(`collaborator/user`)
 }
 
 const update = async (user: EditProfileForm) => {
@@ -82,6 +82,16 @@ const createPhotoPaymentRequest = async (file: File, paymentId: number) => {
       },
     },
   )
+}
+
+const createPhotoUser = async (file: File) => {
+  const formData = new FormData()
+  formData.append('file', file)
+  return http.patch<SuccessResponse>(`collaborator/user/file`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  })
 }
 
 const createPhotoRefund = async (file: File, refundId: number) => {
@@ -169,6 +179,7 @@ const ColaboratorService = {
   getModules,
   getSubmodules,
   getLessons,
+  createPhotoUser,
 }
 
 export default ColaboratorService

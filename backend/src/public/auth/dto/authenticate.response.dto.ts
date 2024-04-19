@@ -15,4 +15,7 @@ export class AuthenticateResponseDTO {
 
   @ApiProperty()
   email!: string;
+
+  @ApiProperty()
+  photo!: string | null;
 }

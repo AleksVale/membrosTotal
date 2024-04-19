@@ -6,6 +6,7 @@ export interface LoginResponse {
   profile: string
   name: string
   email: string
+  photo: string | null
 }
 
 const login = async (email: string, password: string) => {

@@ -13,10 +13,11 @@ import { JSX } from 'react/jsx-runtime'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import { BookOpen, DollarSign, Settings, User2 } from 'lucide-react'
+import { BookOpen, DollarSign, Home, Settings, User2 } from 'lucide-react'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
 import { SideMenuCollapsible } from '@/components/SideMenuCollapsible'
+import { MenuLinkAlone } from '@/components/MenuLinkAlone'
 
 export function AdminLayout() {
   const navigate = useNavigate()
@@ -45,39 +46,13 @@ export function AdminLayout() {
               <DropdownMenuSeparator />
             </div>
           </div>
-          <div className="grid w-16 items-start border-b border-gray-300">
-            <span className="px-5 font-semibold">Área do Colaborador</span>
-          </div>
-          <div className="flex-initial overflow-auto py-5">
-            <nav className="grid items-start gap-2 px-4 text-sm font-medium">
-              <SideMenuCollapsible
-                title="Meu Perfil"
-                icon={<User2 size={20} />}
-              >
-                <MenuLink to={ADMIN_PAGES.listUsers} label="Informações" />
-                <MenuLink to={ADMIN_PAGES.listMeetings} label="Reuniões" />
-              </SideMenuCollapsible>
-              <SideMenuCollapsible
-                title="Solicitações Financeiras"
-                icon={<DollarSign size={20} />}
-              >
-                <MenuLink to={ADMIN_PAGES.listMeetings} label="Pagamentos" />
-                <MenuLink to={ADMIN_PAGES.listMeetings} label="Compras" />
-                <MenuLink to={ADMIN_PAGES.listMeetings} label="Reembolsos" />
-              </SideMenuCollapsible>
-              <SideMenuCollapsible
-                title="Treinamentos"
-                icon={<BookOpen size={20} />}
-              >
-                <MenuLink to={ADMIN_PAGES.listMeetings} label="NOHAU" />
-              </SideMenuCollapsible>
-            </nav>
-          </div>
-          <div className="grid w-16 items-start border-b border-gray-300">
-            <span className="px-5 font-semibold">Área Administrativa</span>
-          </div>
           <div className="flex-1 overflow-auto py-5">
             <nav className="grid items-start gap-2 px-4 text-sm font-medium">
+              <MenuLinkAlone
+                icon={<Home size={20} />}
+                to={ADMIN_PAGES.home}
+                label="Home"
+              />
               <SideMenuCollapsible
                 title="Colaboradores"
                 icon={<User2 size={20} />}

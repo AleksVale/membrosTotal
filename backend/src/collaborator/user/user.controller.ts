@@ -1,4 +1,13 @@
-import { Controller, Get, Body, Patch, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Body,
+  Patch,
+  UseGuards,
+  UseInterceptors,
+  HttpStatus,
+  UploadedFile,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
@@ -6,7 +15,9 @@ import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
 import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { CurrentUser } from 'src/public/auth/current-user-decorator';
 import { TokenPayload } from 'src/public/auth/jwt.strategy';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 
 @Controller('collaborator/user')
 @Roles(['employee'])
@@ -26,6 +37,18 @@ export class UserController {
     @CurrentUser() user: TokenPayload,
   ) {
     await this.userService.update(user.id, updateUserDto);
+    return { success: true };
+  }
+
+  @Patch('file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFile(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: TokenPayload,
+  ) {
+    await this.userService.createFile(file, user);
+
     return { success: true };
   }
 }

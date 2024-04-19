@@ -22,6 +22,11 @@ export type User = {
   Profile: Profile
 }
 
+export interface IGetProfileResponse {
+  user: User
+  photo: string | null
+}
+
 export const createUserSchema = z.object({
   email: z.string().email({ message: 'E-mail inválido' }),
   firstName: z

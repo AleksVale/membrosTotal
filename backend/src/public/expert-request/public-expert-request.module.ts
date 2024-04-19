@@ -7,4 +7,4 @@ import { ExpertRequestRepository } from './expert-request.repository';
   controllers: [ExpertRequestController],
   providers: [ExpertRequestService, ExpertRequestRepository],
 })
-export class ExpertRequestModule {}
+export class PublicExpertRequestModule {}

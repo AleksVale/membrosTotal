@@ -1,4 +1,4 @@
-import { Dot } from 'lucide-react'
+import { ChevronRight } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 interface MenuLinkProps {
   to: string
@@ -18,7 +18,7 @@ export function MenuLink({ to, label, icon }: Readonly<MenuLinkProps>) {
       className="text-muted-foreground hover:bg-primary hover:text-primary-foreground data-[active=true]:bg-primary data-[active=true]:text-primary-foreground flex items-center gap-3 rounded-lg px-3 py-2 transition-all"
       to={to}
     >
-      {icon ?? <Dot size={24} />}
+      {icon ?? <ChevronRight size={14} />}
       {label}
     </Link>
   )

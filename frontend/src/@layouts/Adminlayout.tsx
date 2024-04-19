@@ -13,13 +13,7 @@ import { JSX } from 'react/jsx-runtime'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
 import { ModeToggle } from '@/components/ui/mode-toggle'
-import {
-  BookOpen,
-  ChevronRight,
-  DollarSign,
-  Settings,
-  User2,
-} from 'lucide-react'
+import { BookOpen, DollarSign, Settings, User2 } from 'lucide-react'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
 import { SideMenuCollapsible } from '@/components/SideMenuCollapsible'
@@ -60,46 +54,22 @@ export function AdminLayout() {
                 title="Meu Perfil"
                 icon={<User2 size={20} />}
               >
-                <MenuLink
-                  to={ADMIN_PAGES.listUsers}
-                  label="Informações"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listMeetings}
-                  label="Reuniões"
-                  icon={<ChevronRight size={14} />}
-                />
+                <MenuLink to={ADMIN_PAGES.listUsers} label="Informações" />
+                <MenuLink to={ADMIN_PAGES.listMeetings} label="Reuniões" />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Solicitações Financeiras"
                 icon={<DollarSign size={20} />}
               >
-                <MenuLink
-                  to={ADMIN_PAGES.listMeetings}
-                  label="Pagamentos"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listMeetings}
-                  label="Compras"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listMeetings}
-                  label="Reembolsos"
-                  icon={<ChevronRight size={14} />}
-                />
+                <MenuLink to={ADMIN_PAGES.listMeetings} label="Pagamentos" />
+                <MenuLink to={ADMIN_PAGES.listMeetings} label="Compras" />
+                <MenuLink to={ADMIN_PAGES.listMeetings} label="Reembolsos" />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Treinamentos"
                 icon={<BookOpen size={20} />}
               >
-                <MenuLink
-                  to={ADMIN_PAGES.listMeetings}
-                  label="NOHAU"
-                  icon={<ChevronRight size={14} />}
-                />
+                <MenuLink to={ADMIN_PAGES.listMeetings} label="NOHAU" />
               </SideMenuCollapsible>
             </nav>
           </div>
@@ -112,71 +82,35 @@ export function AdminLayout() {
                 title="Colaboradores"
                 icon={<User2 size={20} />}
               >
+                <MenuLink to={ADMIN_PAGES.listUsers} label="Usuários" />
+                <MenuLink to={ADMIN_PAGES.listMeetings} label="Reuniões" />
                 <MenuLink
-                  to={ADMIN_PAGES.listUsers}
-                  label="Usuários"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listMeetings}
-                  label="Reuniões"
-                  icon={<ChevronRight size={14} />}
+                  to={ADMIN_PAGES.listExperts}
+                  label="Solicitações de Experts"
                 />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Solicitações Financeiras"
                 icon={<DollarSign size={20} />}
               >
-                <MenuLink
-                  to={ADMIN_PAGES.listPayments}
-                  label="Pagamentos"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listPaymentRequest}
-                  label="Compras"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listRefund}
-                  label="Reembolsos"
-                  icon={<ChevronRight size={14} />}
-                />
+                <MenuLink to={ADMIN_PAGES.listPayments} label="Pagamentos" />
+                <MenuLink to={ADMIN_PAGES.listPaymentRequest} label="Compras" />
+                <MenuLink to={ADMIN_PAGES.listRefund} label="Reembolsos" />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Treinamentos"
                 icon={<BookOpen size={20} />}
               >
-                <MenuLink
-                  to={ADMIN_PAGES.listTrainings}
-                  label="Treinamentos"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listModules}
-                  label="Módulos"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listSubModules}
-                  label="Submódulos"
-                  icon={<ChevronRight size={14} />}
-                />
-                <MenuLink
-                  to={ADMIN_PAGES.listLessons}
-                  label="Aulas"
-                  icon={<ChevronRight size={14} />}
-                />
+                <MenuLink to={ADMIN_PAGES.listTrainings} label="Treinamentos" />
+                <MenuLink to={ADMIN_PAGES.listModules} label="Módulos" />
+                <MenuLink to={ADMIN_PAGES.listSubModules} label="Submódulos" />
+                <MenuLink to={ADMIN_PAGES.listLessons} label="Aulas" />
               </SideMenuCollapsible>
               <SideMenuCollapsible
                 title="Configurações"
                 icon={<Settings size={20} />}
               >
-                <MenuLink
-                  to={ADMIN_PAGES.permissions}
-                  label="Permissões"
-                  icon={<ChevronRight size={14} />}
-                />
+                <MenuLink to={ADMIN_PAGES.permissions} label="Permissões" />
               </SideMenuCollapsible>
               <DropdownMenuSeparator />
             </nav>

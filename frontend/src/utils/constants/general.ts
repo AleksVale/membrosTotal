@@ -1,0 +1,17 @@
+export const englishToPortugueseMapping = {
+  id: 'ID',
+  instagram: 'Instagram',
+  youtube: 'YouTube',
+  platforms: 'Plataformas',
+  hasProduct: 'Possui Produto',
+  invoiced: 'Faturado',
+  productLink: 'Link do Produto',
+  budget: 'Orçamento',
+  compromised: 'Comprometido',
+  searching: 'Procurando',
+  diferential: 'Diferencial',
+  extraInfo: 'Informações Extras',
+  whatsapp: 'WhatsApp',
+  createdAt: 'Criado em',
+  updatedAt: 'Atualizado em',
+}

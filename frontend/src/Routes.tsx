@@ -87,7 +87,7 @@ export const routes = createBrowserRouter([
       { path: 'permissions/training/:id', element: <TrainingPermissions /> },
       { path: 'permissions/module/:id', element: <ModulesPermission /> },
       { path: 'permissions/submodule/:id', element: <SubmodulePermissions /> },
-      { path: 'expert', element: <ExpertList /> },
+      { path: 'experts', element: <ExpertList /> },
     ],
   },
   {

@@ -3,7 +3,7 @@ import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
 import { SubModuleRepository } from './sub-modules.repository';
 import { AddPermissionAdminDTO } from './dto/add-permissions-subModule-training.dto';
-import { AwsService } from 'src/aws/aws.service';
+import { AwsService } from 'src/common/aws/aws.service';
 
 export interface SubModulesQuery {
   title?: string;

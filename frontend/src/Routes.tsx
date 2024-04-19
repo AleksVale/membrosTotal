@@ -46,6 +46,7 @@ import { SubmodulePermissions } from './pages/admin/Permissions/Submodules'
 import SubmoduleList from './pages/collaborator/Submodules/list'
 import LessonList from './pages/collaborator/Lessons/list'
 import { Expert } from './pages/expert'
+import { ExpertList } from './pages/admin/Expert/list'
 
 export const routes = createBrowserRouter([
   {
@@ -86,6 +87,7 @@ export const routes = createBrowserRouter([
       { path: 'permissions/training/:id', element: <TrainingPermissions /> },
       { path: 'permissions/module/:id', element: <ModulesPermission /> },
       { path: 'permissions/submodule/:id', element: <SubmodulePermissions /> },
+      { path: 'expert', element: <ExpertList /> },
     ],
   },
   {

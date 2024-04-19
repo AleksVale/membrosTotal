@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
-import { MeetingRepository } from 'src/meetings/meeting.repository';
+import { MeetingRepository } from 'src/admin/meetings/meeting.repository';
 
 interface IFindAllMeetingsColaborator {
   userId: number;

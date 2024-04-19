@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ModuleCollaboratorRepository } from './modules-collaborator.repository';
-import { TokenPayload } from 'src/auth/jwt.strategy';
-import { AwsService } from 'src/aws/aws.service';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
+import { AwsService } from 'src/common/aws/aws.service';
 
 @Injectable()
 export class ModuleCollaboratorService {

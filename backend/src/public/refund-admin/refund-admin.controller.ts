@@ -12,9 +12,9 @@ import {
 import { RefundAdminService } from './refund-admin.service';
 import { UpdatePaymentRequestAdminDTO } from 'src/payment-request-admin/dto/update-payment-request-admin.dto';
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/role/role.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { PaymentResponseDto } from 'src/payment-request-admin/dto/payment-request-response.dto';
 import { PaymentStatus } from '@prisma/client';
 

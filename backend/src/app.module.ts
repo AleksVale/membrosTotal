@@ -7,29 +7,29 @@ import { APP_PIPE } from '@nestjs/core';
 import { ProfileModule } from './profile/profile.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Env, envSchema } from './env';
-import { AuthModule } from './auth/auth.module';
-import { MeetingsModule } from './meetings/meetings.module';
+import { AuthModule } from './public/auth/auth.module';
+import { MeetingsModule } from './admin/meetings/meetings.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { AutocompleteModule } from './autocomplete/autocomplete.module';
+import { AutocompleteModule } from './public/autocomplete/autocomplete.module';
 import { UserModule as CollaboratorUserModule } from './collaborator/user/user.module';
 import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meetings/meetings.module';
 import { PaymentsModule } from './collaborator/payments/payments.module';
-import { PaymentAdminModule } from './payment-admin/payment-admin.module';
-import { AwsModule } from './aws/aws.module';
+import { PaymentAdminModule } from './admin/payment-admin/payment-admin.module';
+import { AwsModule } from './common/aws/aws.module';
 import { PaymentRequestAdminModule } from './payment-request-admin/payment-request-admin.module';
 import { PaymentRequestModule } from './collaborator/payment-request/payment-request.module';
 import { RefundsModule } from './collaborator/refund/refunds.module';
 import { TrainingAdminModule } from './training-admin/training-admin.module';
 import { TrainingModulesAdminModule } from './training-modules-admin/training-modules-admin.module';
 import { SubModulesAdminModule } from './sub-modules-admin/sub-modules-admin.module';
-import { LessonsAdminModule } from './lessons-admin/lessons-admin.module';
-import { RefundAdminModule } from './refund-admin/refund-admin.module';
+import { LessonsAdminModule } from './admin/lessons-admin/lessons-admin.module';
+import { RefundAdminModule } from './public/refund-admin/refund-admin.module';
 import { TrainingCollaboratorModule } from './collaborator/training-collaborator/training-collaborator.module';
 import { ModuleCollaboratorModule } from './collaborator/modules-collaborator/modules-collaborator.module';
 import { SubmoduleCollaboratorModule } from './collaborator/submodules-collaborator/submodules-collaborator.module';
 import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/lessons-collaborator.module';
-import { ExpertRequestModule } from './expert-request/expert-request.module';
+import { ExpertRequestModule } from './public/expert-request/expert-request.module';
 
 @Module({
   imports: [
@@ -45,7 +45,7 @@ import { ExpertRequestModule } from './expert-request/expert-request.module';
     CollaboratorUserModule,
     ColaboratorMeetingsModule,
     MailerModule.forRootAsync({
-      imports: [ConfigModule], // Importa ConfigModule para que o ConfigService esteja disponível
+      imports: [ConfigModule], // Importa ConfigModule para  que o ConfigService esteja disponível
       inject: [ConfigService], // Injeta o ConfigService
       useFactory: async (configService: ConfigService<Env, true>) => ({
         transport: {

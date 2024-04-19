@@ -1,10 +1,10 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/role/role.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { CurrentUser } from 'src/auth/current-user-decorator';
-import { TokenPayload } from 'src/auth/jwt.strategy';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { LessonCollaboratorService } from './lessons-collaborator.service';
 import { LessonsCollaboratorResponseDto } from './dto/lessons-collaborator-response.dto';
 

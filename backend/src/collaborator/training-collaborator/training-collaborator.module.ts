@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TrainingCollaboratorService } from './training-collaborator.service';
 import { TrainingCollaboratorController } from './training-collaborator.controller';
 import { TrainingCollaboratorRepository } from './training-collaborator.repository';
-import { AwsService } from 'src/aws/aws.service';
+import { AwsService } from 'src/common/aws/aws.service';
 
 @Module({
   controllers: [TrainingCollaboratorController],

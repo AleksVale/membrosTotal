@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreateRefundCollaboratorDTO } from './dto/create-refund.dto';
 import { UpdateRefundCollaboratorDTO } from './dto/update-refund.dto';
 import { RefundsRepository } from './refunds.repository';
-import { TokenPayload } from 'src/auth/jwt.strategy';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';
-import { AwsService } from 'src/aws/aws.service';
+import { AwsService } from 'src/common/aws/aws.service';
 
 export interface CollaboratorRefundsOptions {
   per_page: number;

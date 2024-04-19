@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateLessonAdminDTO } from './dto/create-lessons-admin.dto';
 import { UpdateLessonsAdminDto } from './dto/update-lessons-admin.dto';
 import { LessonsRepository } from './lessons.repository';
-import { AwsService } from 'src/aws/aws.service';
+import { AwsService } from 'src/common/aws/aws.service';
 
 export interface LessonQuery {
   title?: string;
@@ -39,7 +39,9 @@ export class LessonsAdminService {
   async findOne(id: number) {
     const lesson = await this.lessonsRepository.find({ id });
     if (!lesson) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getStoredObject(lesson.thumbnail as string);
+    const photo = await this.awsService.getStoredObject(
+      lesson.thumbnail as string,
+    );
     return { lesson, stream: photo };
   }
 

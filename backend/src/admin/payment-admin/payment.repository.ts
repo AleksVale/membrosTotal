@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { IFindAllPaymentAdmin } from './payment-admin.service';
 import { PaymentResponseAdminDTO } from './dto/payment-response-admin.dto';
-import { IFindAllPayment } from '../collaborator/payments/payments.service';
+import { IFindAllPayment } from '../../collaborator/payments/payments.service';
 
 @Injectable()
 export class PaymentRepository {

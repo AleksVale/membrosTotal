@@ -14,9 +14,9 @@ import { UpdatePaymentRequestAdminDTO } from './dto/update-payment-request-admin
 import { PaymentStatus } from '@prisma/client';
 import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { PaymentResponseDto } from './dto/payment-request-response.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RoleGuard } from 'src/auth/role/role.guard';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
 
 @ApiTags('PaymentRequests')
 @UseGuards(JwtAuthGuard, RoleGuard)

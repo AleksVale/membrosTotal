@@ -11,13 +11,13 @@ import {
 } from '@nestjs/common';
 import { MeetingsService } from './meetings.service';
 import { UpdateMeetingDto } from './dto/update-meeting.dto';
-import { CurrentUser } from 'src/auth/current-user-decorator';
-import { TokenPayload } from 'src/auth/jwt.strategy';
-import { RoleGuard } from 'src/auth/role/role.guard';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { MeetingResponseDTO } from 'src/meetings/dto/meeting-response.dto';
+import { MeetingResponseDTO } from 'src/admin/meetings/dto/meeting-response.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])

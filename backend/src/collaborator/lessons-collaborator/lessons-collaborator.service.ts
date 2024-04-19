@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { TokenPayload } from 'src/auth/jwt.strategy';
-import { AwsService } from 'src/aws/aws.service';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
+import { AwsService } from 'src/common/aws/aws.service';
 import { LessonCollaboratorRepository } from './lessons-collaborator.repository';
 
 @Injectable()

@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { CreatePaymentRequestCollaboratorDTO } from './dto/create-payment-request.dto';
 import { UpdatePaymentRequestCollaboratorDTO } from './dto/update-payment-request.dto';
 import { PaymentRequestRequestRepository } from './payment-request.repository';
-import { TokenPayload } from 'src/auth/jwt.strategy';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';
-import { AwsService } from 'src/aws/aws.service';
+import { AwsService } from 'src/common/aws/aws.service';
 
 export interface CollaboratorPaymentRequestOptions {
   per_page: number;

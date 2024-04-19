@@ -2,11 +2,11 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreatePaymentAdminDTO } from './dto/create-payment-admin.dto';
 import { UpdatePaymentAdminDto } from './dto/update-payment-admin.dto';
 import { PaymentRepository } from './payment.repository';
-import { Profile } from '../profile/profile.entity';
-import { TokenPayload } from '../auth/jwt.strategy';
-import { UserService } from '../user/user.service';
+import { Profile } from '../../profile/profile.entity';
+import { TokenPayload } from '../../public/auth/jwt.strategy';
+import { UserService } from '../../user/user.service';
 import { PaymentStatus } from '@prisma/client';
-import { AwsService } from 'src/aws/aws.service';
+import { AwsService } from 'src/common/aws/aws.service';
 
 export interface IFindAllPaymentAdmin {
   page: number;

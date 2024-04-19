@@ -1,4 +1,4 @@
-import { TokenPayload } from 'src/auth/jwt.strategy';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import {
   Controller,
   Get,
@@ -19,13 +19,13 @@ import { PaymentsService } from './payments.service';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CurrentUser } from 'src/auth/current-user-decorator';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from '../../common/decorators/apiResponseDecorator';
 import { PaymentResponseDTO } from './dto/payment-response.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/role/role.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { CreatePaymentResponseDTO } from './dto/create-payment-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 

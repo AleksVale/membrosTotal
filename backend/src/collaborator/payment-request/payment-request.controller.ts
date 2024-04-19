@@ -19,15 +19,15 @@ import { CreatePaymentRequestCollaboratorDTO } from './dto/create-payment-reques
 import { UpdatePaymentRequestCollaboratorDTO } from './dto/update-payment-request.dto';
 import { ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaymentResponseDto } from 'src/payment-request-admin/dto/payment-request-response.dto';
-import { CurrentUser } from 'src/auth/current-user-decorator';
-import { TokenPayload } from 'src/auth/jwt.strategy';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreatePaymentRequestResponseDTO } from './dto/create-payment-request-response.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { RoleGuard } from 'src/auth/role/role.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])

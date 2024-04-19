@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { TokenPayload } from 'src/auth/jwt.strategy';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()

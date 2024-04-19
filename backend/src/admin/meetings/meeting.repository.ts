@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma, StatusMeeting } from '@prisma/client';
-import { DateUtils } from '../utils/date';
+import { DateUtils } from '../../utils/date';
 import { createPaginator } from 'prisma-pagination';
 import { MeetingResponseDTO } from './dto/meeting-response.dto';
 import { IMeetingFilters } from './meetings.service';

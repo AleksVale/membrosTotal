@@ -16,9 +16,9 @@ import {
 import { TrainingAdminService } from './training-admin.service';
 import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
 import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Roles } from 'src/auth/roles/roles.decorator';
-import { RoleGuard } from 'src/auth/role/role.guard';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 import { GetTrainingResponse, TrainingDTO } from './dto/training-response.dto';

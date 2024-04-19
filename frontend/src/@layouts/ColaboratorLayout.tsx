@@ -17,12 +17,14 @@ import {
   BookOpen,
   ChevronRight,
   DollarSign,
+  Home,
   Settings,
   User2,
 } from 'lucide-react'
 import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
 import { SideMenuCollapsible } from '@/components/SideMenuCollapsible'
+import { MenuLinkAlone } from '@/components/MenuLinkAlone'
 
 export function ColaboratorLayout() {
   const navigate = useNavigate()
@@ -52,6 +54,11 @@ export function ColaboratorLayout() {
           </div>
           <div className="flex-1 overflow-auto py-10">
             <nav className="grid items-start gap-2 px-4 text-sm font-medium">
+              <MenuLinkAlone
+                icon={<Home size={20} />}
+                to={COLLABORATOR_PAGES.home}
+                label="Home"
+              />
               <SideMenuCollapsible title="Perfil" icon={<User2 size={20} />}>
                 <MenuLink
                   to={COLLABORATOR_PAGES.profile}

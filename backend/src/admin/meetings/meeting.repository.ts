@@ -112,4 +112,23 @@ export class MeetingRepository {
       },
     });
   }
+
+  async findHomeMeetings(userId: number) {
+    return await this.prisma.meeting.findMany({
+      where: {
+        UserMeeting: {
+          some: {
+            userId,
+          },
+        },
+        date: {
+          gte: new Date(),
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+      take: 5,
+    });
+  }
 }

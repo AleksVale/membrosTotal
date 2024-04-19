@@ -31,6 +31,7 @@ import { SubmoduleCollaboratorModule } from './collaborator/submodules-collabora
 import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/lessons-collaborator.module';
 import { PublicExpertRequestModule } from './public/expert-request/public-expert-request.module';
 import { ExpertRequestModule } from './admin/expert-request/expert-request.module';
+import { HomeModule } from './collaborator/home/home.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { ExpertRequestModule } from './admin/expert-request/expert-request.modul
     LessonCollaboratorModule,
     ExpertRequestModule,
     PublicExpertRequestModule,
+    HomeModule,
   ],
   controllers: [AppController],
   providers: [

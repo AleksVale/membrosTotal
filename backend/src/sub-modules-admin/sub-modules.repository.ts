@@ -20,6 +20,7 @@ export class SubModuleRepository {
   async find(condition: Prisma.SubmoduleWhereInput) {
     return await this.prisma.submodule.findFirst({
       where: condition,
+      include: { PermissionUserSubModule: true },
     });
   }
 
@@ -122,7 +123,7 @@ export class SubModuleRepository {
       }
     }
 
-    if (deletedUsers) {
+    if (deletedUsers && addRelatives) {
       modules?.forEach(
         async (module) =>
           await this.prisma.permissionUserModule.deleteMany({

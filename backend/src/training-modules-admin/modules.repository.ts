@@ -93,6 +93,8 @@ export class ModuleRepository {
           },
         })
       : undefined;
+
+    console.log(submodules);
     if (addedUsers) {
       await this.trainingRepository.addUsersToModule(moduleId, addedUsers);
       if (addRelatives) {
@@ -114,22 +116,24 @@ export class ModuleRepository {
     }
 
     if (deletedUsers) {
-      trainings?.forEach(
-        async (training) =>
-          await this.prisma.permissionUserTraining.deleteMany({
-            where: {
-              trainingId: training.id,
-              userId: {
-                in: deletedUsers,
+      if (addRelatives) {
+        trainings?.forEach(
+          async (training) =>
+            await this.prisma.permissionUserTraining.deleteMany({
+              where: {
+                trainingId: training.id,
+                userId: {
+                  in: deletedUsers,
+                },
               },
-            },
-          }),
-      );
+            }),
+        );
+      }
       submodules?.forEach(
-        async (module) =>
-          await this.prisma.permissionUserModule.deleteMany({
+        async (submodule) =>
+          await this.prisma.permissionUserSubModule.deleteMany({
             where: {
-              moduleId: module.id,
+              submoduleId: submodule.id,
               userId: {
                 in: deletedUsers,
               },

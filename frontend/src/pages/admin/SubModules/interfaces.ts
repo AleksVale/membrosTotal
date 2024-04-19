@@ -1,5 +1,5 @@
 import { SuccessResponse } from '@/utils/constants/routes'
-export interface PermissionUserSubmodule {
+export interface PermissionUserSubModule {
   id: number
   userId: number
   submoduleId: number
@@ -14,7 +14,7 @@ export interface ISubModule {
   thumbnail?: string | null
   createdAt: Date
   updatedAt: Date
-  PermissionUserSubmodule: PermissionUserSubmodule[]
+  PermissionUserSubModule: PermissionUserSubModule[]
 }
 
 export interface GetSubModuleResponse {

@@ -60,7 +60,7 @@ export function useSubmodulePermission() {
 
   const fetchSubmodule = useCallback(async () => {
     const submodule = (await SubModuleService.getSubModule(id)).data.submodule
-    const users = submodule.PermissionUserSubmodule.map(
+    const users = submodule.PermissionUserSubModule.map(
       (permission) => permission.userId,
     )
     setOriginalUsers(users)

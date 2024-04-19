@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { TrainingModulesAdminQuery } from './training-modules-admin.service';
 import { ModuleDTO } from './dto/module-response.dto';
-import { TrainingRepository } from 'src/training-admin/training.repository';
+import { TrainingRepository } from 'src/admin/training-admin/training.repository';
 
 @Injectable()
 export class ModuleRepository {

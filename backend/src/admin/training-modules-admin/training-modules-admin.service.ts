@@ -3,7 +3,7 @@ import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
 import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
 import { ModuleRepository } from './modules.repository';
 import { AwsService } from 'src/common/aws/aws.service';
-import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
 export interface TrainingModulesAdminQuery {
   title?: string;

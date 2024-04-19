@@ -4,7 +4,7 @@ import { UpdatePaymentAdminDto } from './dto/update-payment-admin.dto';
 import { PaymentRepository } from './payment.repository';
 import { Profile } from '../../profile/profile.entity';
 import { TokenPayload } from '../../public/auth/jwt.strategy';
-import { UserService } from '../../user/user.service';
+import { UserService } from '../../admin/user/user.service';
 import { PaymentStatus } from '@prisma/client';
 import { AwsService } from 'src/common/aws/aws.service';
 

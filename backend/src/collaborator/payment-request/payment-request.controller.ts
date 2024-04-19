@@ -18,7 +18,7 @@ import { PaymentRequestService } from './payment-request.service';
 import { CreatePaymentRequestCollaboratorDTO } from './dto/create-payment-request.dto';
 import { UpdatePaymentRequestCollaboratorDTO } from './dto/update-payment-request.dto';
 import { ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { PaymentResponseDto } from 'src/payment-request-admin/dto/payment-request-response.dto';
+import { PaymentResponseDto } from 'src/admin/payment-request-admin/dto/payment-request-response.dto';
 import { CurrentUser } from 'src/public/auth/current-user-decorator';
 import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { PaymentStatus } from '@prisma/client';

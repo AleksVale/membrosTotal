@@ -1,7 +1,7 @@
 // module.dto.ts
 
 import { ApiProperty } from '@nestjs/swagger';
-import { SubmoduleDTO } from 'src/sub-modules-admin/dto/sub-modules-response.dto';
+import { SubmoduleDTO } from 'src/admin/sub-modules-admin/dto/sub-modules-response.dto';
 
 export class ModuleDTO {
   @ApiProperty({ type: Number, description: 'Module ID' })

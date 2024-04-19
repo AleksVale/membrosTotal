@@ -1,7 +1,7 @@
 // training.dto.ts
 
 import { ApiProperty } from '@nestjs/swagger';
-import { ModuleDTO } from 'src/training-modules-admin/dto/module-response.dto';
+import { ModuleDTO } from 'src/admin/training-modules-admin/dto/module-response.dto';
 
 export class TrainingDTO {
   @ApiProperty({ type: Number, description: 'Training ID' })

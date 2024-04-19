@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { UserResponseDTO } from 'src/user/dto/user-response.dto';
+import { UserResponseDTO } from 'src/admin/user/dto/user-response.dto';
 
 class PaymentRequestTypeDto {
   @ApiProperty()

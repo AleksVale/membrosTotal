@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { SubModulesQuery } from './sub-modules-admin.service';
 import { SubmoduleDTO } from './dto/sub-modules-response.dto';
-import { TrainingRepository } from 'src/training-admin/training.repository';
+import { TrainingRepository } from 'src/admin/training-admin/training.repository';
 
 @Injectable()
 export class SubModuleRepository {

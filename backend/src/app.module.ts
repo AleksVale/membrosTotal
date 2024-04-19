@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
+import { UserModule } from './admin/user/user.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { APP_PIPE } from '@nestjs/core';
 import { ProfileModule } from './profile/profile.module';
@@ -17,12 +17,12 @@ import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meet
 import { PaymentsModule } from './collaborator/payments/payments.module';
 import { PaymentAdminModule } from './admin/payment-admin/payment-admin.module';
 import { AwsModule } from './common/aws/aws.module';
-import { PaymentRequestAdminModule } from './payment-request-admin/payment-request-admin.module';
+import { PaymentRequestAdminModule } from './admin/payment-request-admin/payment-request-admin.module';
 import { PaymentRequestModule } from './collaborator/payment-request/payment-request.module';
 import { RefundsModule } from './collaborator/refund/refunds.module';
-import { TrainingAdminModule } from './training-admin/training-admin.module';
-import { TrainingModulesAdminModule } from './training-modules-admin/training-modules-admin.module';
-import { SubModulesAdminModule } from './sub-modules-admin/sub-modules-admin.module';
+import { TrainingAdminModule } from './admin/training-admin/training-admin.module';
+import { TrainingModulesAdminModule } from './admin/training-modules-admin/training-modules-admin.module';
+import { SubModulesAdminModule } from './admin/sub-modules-admin/sub-modules-admin.module';
 import { LessonsAdminModule } from './admin/lessons-admin/lessons-admin.module';
 import { RefundAdminModule } from './public/refund-admin/refund-admin.module';
 import { TrainingCollaboratorModule } from './collaborator/training-collaborator/training-collaborator.module';

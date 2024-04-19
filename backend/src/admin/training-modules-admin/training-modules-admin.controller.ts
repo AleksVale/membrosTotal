@@ -21,7 +21,7 @@ import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostResponse } from 'src/utils/post-response.dto';
-import { AddPermissionAdminDTO } from 'src/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 
 @Controller('training-modules-admin')
 export class TrainingModulesAdminController {

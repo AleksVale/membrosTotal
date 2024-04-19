@@ -11,6 +11,7 @@ import {
   UseInterceptors,
   UploadedFile,
   HttpStatus,
+  Delete,
 } from '@nestjs/common';
 import { TrainingModulesAdminService } from './training-modules-admin.service';
 import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
@@ -96,5 +97,11 @@ export class TrainingModulesAdminController {
   ): Promise<SuccessResponse> {
     await this.trainingModulesAdminService.addPermission(id, body);
     return { success: true };
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.trainingModulesAdminService.delete(+id);
   }
 }

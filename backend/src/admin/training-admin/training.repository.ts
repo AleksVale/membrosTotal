@@ -32,6 +32,10 @@ export class TrainingRepository {
     });
   }
 
+  async remove(where: Prisma.TrainingWhereUniqueInput) {
+    return await this.prisma.training.delete({ where });
+  }
+
   async findAll(options: TrainingQuery) {
     const paginate = createPaginator({ perPage: options.per_page });
 

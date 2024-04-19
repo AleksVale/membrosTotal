@@ -52,6 +52,10 @@ const createSubmodulePermissions = async (
   })
 }
 
+const deleteSubmodule = async (id: number | string) => {
+  return http.delete<SuccessResponse>(`/sub-modules-admin/${id}`)
+}
+
 const SubModuleService = {
   getSubModules,
   createSubModule,
@@ -59,6 +63,7 @@ const SubModuleService = {
   getSubModule,
   createPhotoSubModule,
   createSubmodulePermissions,
+  deleteSubmodule,
 }
 
 export default SubModuleService

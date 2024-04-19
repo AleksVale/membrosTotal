@@ -26,6 +26,7 @@ import {
 import { DataTableColumnHeader } from '@/components/DataTableColumnHeader'
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
+import { toast } from 'react-toastify'
 
 export function useListTraining() {
   const navigate = useNavigate()
@@ -43,6 +44,16 @@ export function useListTraining() {
   useEffect(() => {
     getTrainings()
   }, [getTrainings])
+
+  const handleDeleteTraining = async (id: number) => {
+    try {
+      await TrainingService.deleteTraining(id)
+      toast.success('Treinamento excluído com sucesso')
+      getTrainings()
+    } catch (err) {
+      toast.error('Erro ao excluir treinamento')
+    }
+  }
 
   const columns: ColumnDef<ITraining>[] = [
     {
@@ -108,7 +119,7 @@ export function useListTraining() {
                   <DropdownMenuItem className="group flex items-center gap-2">
                     <Trash size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
-                      Excluir treinamento (será implementado)
+                      Excluir treinamento
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>
@@ -130,14 +141,15 @@ export function useListTraining() {
                 <DialogTitle>Você tem certeza?</DialogTitle>
                 <DialogDescription>
                   Essa ação não pode ser desfeita. Você tem certeza que deseja
-                  negar esse reembolso?
+                  apagar esse treinamento e os módulos e submódulos{' '}
+                  relacionados?
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
                 <DialogClose asChild>
                   <Button
                     variant={'destructive'}
-                    onClick={() => console.log(training.id)}
+                    onClick={() => handleDeleteTraining(training.id)}
                   >
                     Cancelar
                   </Button>

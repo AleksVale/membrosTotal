@@ -56,6 +56,10 @@ const createModulePermissions = async (
   )
 }
 
+const deleteModule = async (id: number | string) => {
+  return http.delete<SuccessResponse>(`/training-modules-admin/${id}`)
+}
+
 const ModuleService = {
   getModules,
   createModule,
@@ -63,6 +67,7 @@ const ModuleService = {
   getModule,
   createPhotoModule,
   createModulePermissions,
+  deleteModule,
 }
 
 export default ModuleService

@@ -37,6 +37,18 @@ export class ModuleRepository {
     });
   }
 
+  remove(where: Prisma.ModuleWhereUniqueInput) {
+    return this.prisma.module.delete({ where });
+  }
+
+  removeByTrainingId(trainingId: number) {
+    return this.prisma.module.deleteMany({
+      where: {
+        trainingId,
+      },
+    });
+  }
+
   async findAll(options: TrainingModulesAdminQuery) {
     const paginate = createPaginator({ perPage: options.per_page });
     return paginate<ModuleDTO, Prisma.ModuleFindManyArgs>(
@@ -94,7 +106,6 @@ export class ModuleRepository {
         })
       : undefined;
 
-    console.log(submodules);
     if (addedUsers) {
       await this.trainingRepository.addUsersToModule(moduleId, addedUsers);
       if (addRelatives) {

@@ -52,6 +52,10 @@ const createTrainingPermissions = async (
   })
 }
 
+const deleteTraining = async (id: number | string) => {
+  return http.delete<SuccessResponse>(`/training-admin/${id}`)
+}
+
 const TrainingService = {
   getTrainings,
   createTraining,
@@ -59,6 +63,7 @@ const TrainingService = {
   getTraining,
   createPhotoTraining,
   createTrainingPermissions,
+  deleteTraining,
 }
 
 export default TrainingService

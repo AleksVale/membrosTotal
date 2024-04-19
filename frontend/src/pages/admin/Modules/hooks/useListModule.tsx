@@ -26,6 +26,7 @@ import { DataTableColumnHeader } from '@/components/DataTableColumnHeader'
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import ModuleService from '@/services/module.service'
+import { toast } from 'react-toastify'
 
 export function useListModule() {
   const navigate = useNavigate()
@@ -39,6 +40,16 @@ export function useListModule() {
     setModule(response.data.data)
     setMeta(response.data.meta)
   }, [searchParams])
+
+  const handleDeleteModule = async (id: number) => {
+    try {
+      await ModuleService.deleteModule(id)
+      toast.success('Treinamento excluído com sucesso')
+      getModules()
+    } catch (err) {
+      toast.error('Erro ao excluir treinamento')
+    }
+  }
 
   useEffect(() => {
     getModules()
@@ -128,14 +139,14 @@ export function useListModule() {
                 <DialogTitle>Você tem certeza?</DialogTitle>
                 <DialogDescription>
                   Essa ação não pode ser desfeita. Você tem certeza que deseja
-                  negar esse reembolso?
+                  apagar esse módulo e os submódulos relacionados?
                 </DialogDescription>
               </DialogHeader>
               <DialogFooter>
                 <DialogClose asChild>
                   <Button
                     variant={'destructive'}
-                    onClick={() => console.log(module.id)}
+                    onClick={() => handleDeleteModule(module.id)}
                   >
                     Cancelar
                   </Button>

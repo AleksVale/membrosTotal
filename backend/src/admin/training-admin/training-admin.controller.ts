@@ -12,6 +12,7 @@ import {
   UseInterceptors,
   HttpStatus,
   UploadedFile,
+  Delete,
 } from '@nestjs/common';
 import { TrainingAdminService } from './training-admin.service';
 import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
@@ -98,6 +99,15 @@ export class TrainingAdminController {
     @Body() body: AddPermissionAdminDTO,
   ): Promise<SuccessResponse> {
     await this.trainingAdminService.addPermission(id, body);
+    return { success: true };
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Delete(':id')
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuccessResponse> {
+    await this.trainingAdminService.delete(id);
     return { success: true };
   }
 }

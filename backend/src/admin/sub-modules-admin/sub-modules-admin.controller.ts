@@ -11,6 +11,7 @@ import {
   UploadedFile,
   HttpStatus,
   UseInterceptors,
+  Delete,
 } from '@nestjs/common';
 import { SubModulesAdminService } from './sub-modules-admin.service';
 import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
@@ -91,6 +92,16 @@ export class SubModulesAdminController {
     @Body() updateSubModulesAdminDto: UpdateSubModulesAdminDto,
   ) {
     return this.subModulesAdminService.update(+id, updateSubModulesAdminDto);
+  }
+
+  //create delete route
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Delete(':id')
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuccessResponse> {
+    await this.subModulesAdminService.delete(id);
+    return { success: true };
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })

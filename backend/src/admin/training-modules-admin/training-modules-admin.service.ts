@@ -4,6 +4,7 @@ import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-adm
 import { ModuleRepository } from './modules.repository';
 import { AwsService } from 'src/common/aws/aws.service';
 import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
 
 export interface TrainingModulesAdminQuery {
   title?: string;
@@ -17,6 +18,7 @@ export class TrainingModulesAdminService {
   constructor(
     private readonly moduleRepository: ModuleRepository,
     private readonly awsService: AwsService,
+    private readonly submoduleRepository: SubModuleRepository,
   ) {}
 
   async create(createTrainingModulesAdminDto: CreateModuleAdminDTO) {
@@ -53,6 +55,15 @@ export class TrainingModulesAdminService {
     updateTrainingModulesAdminDto: UpdateTrainingModulesAdminDto,
   ) {
     return this.moduleRepository.update(updateTrainingModulesAdminDto, { id });
+  }
+
+  async delete(id: number) {
+    await this.submoduleRepository.removeByFK({
+      where: {
+        moduleId: id,
+      },
+    });
+    return this.moduleRepository.remove({ id });
   }
 
   addPermission(

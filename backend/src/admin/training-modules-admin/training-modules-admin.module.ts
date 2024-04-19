@@ -4,6 +4,7 @@ import { TrainingModulesAdminController } from './training-modules-admin.control
 import { ModuleRepository } from './modules.repository';
 import { AwsService } from 'src/common/aws/aws.service';
 import { TrainingRepository } from 'src/admin/training-admin/training.repository';
+import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
 
 @Module({
   controllers: [TrainingModulesAdminController],
@@ -12,6 +13,7 @@ import { TrainingRepository } from 'src/admin/training-admin/training.repository
     ModuleRepository,
     AwsService,
     TrainingRepository,
+    SubModuleRepository,
   ],
 })
 export class TrainingModulesAdminModule {}

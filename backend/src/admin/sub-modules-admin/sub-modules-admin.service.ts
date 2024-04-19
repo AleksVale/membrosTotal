@@ -52,6 +52,10 @@ export class SubModulesAdminService {
     return this.subModulesRepository.update(entity, { id });
   }
 
+  delete(id: number) {
+    return this.subModulesRepository.remove({ id });
+  }
+
   async addPermission(
     submoduleId: number,
     addPermissionSubModuleAdminDto: AddPermissionAdminDTO,

@@ -37,11 +37,23 @@ export class ModuleRepository {
     });
   }
 
-  remove(where: Prisma.ModuleWhereUniqueInput) {
+  async remove(where: Prisma.ModuleWhereUniqueInput) {
+    await this.prisma.permissionUserModule.deleteMany({
+      where: {
+        moduleId: where.id,
+      },
+    });
     return this.prisma.module.delete({ where });
   }
 
-  removeByTrainingId(trainingId: number) {
+  async removeByTrainingId(trainingId: number) {
+    await this.prisma.permissionUserModule.deleteMany({
+      where: {
+        Module: {
+          trainingId,
+        },
+      },
+    });
     return this.prisma.module.deleteMany({
       where: {
         trainingId,

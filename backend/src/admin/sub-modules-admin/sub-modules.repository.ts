@@ -59,10 +59,30 @@ export class SubModuleRepository {
   }
 
   async remove(where: Prisma.SubmoduleWhereUniqueInput) {
+    await this.prisma.permissionUserSubModule.deleteMany({
+      where: {
+        submoduleId: where.id,
+      },
+    });
+    await this.prisma.lesson.deleteMany({
+      where: {
+        submoduleId: where.id,
+      },
+    });
     return await this.prisma.submodule.delete({ where });
   }
 
   async removeByFK(args: Prisma.SubmoduleDeleteManyArgs) {
+    await this.prisma.permissionUserSubModule.deleteMany({
+      where: {
+        Submodule: args.where,
+      },
+    });
+    await this.prisma.lesson.deleteMany({
+      where: {
+        submodule: args.where,
+      },
+    });
     return await this.prisma.submodule.deleteMany(args);
   }
 

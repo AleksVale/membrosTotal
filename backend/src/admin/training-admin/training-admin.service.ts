@@ -46,7 +46,6 @@ export class TrainingAdminService {
   }
 
   async delete(id: number) {
-    await this.moduleRepository.removeByTrainingId(id);
     await this.submoduleRepository.removeByFK({
       where: {
         module: {
@@ -54,6 +53,8 @@ export class TrainingAdminService {
         },
       },
     });
+    await this.moduleRepository.removeByTrainingId(id);
+
     return this.trainingRepository.remove({ id });
   }
 

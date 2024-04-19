@@ -33,6 +33,12 @@ export class TrainingRepository {
   }
 
   async remove(where: Prisma.TrainingWhereUniqueInput) {
+    await this.prisma.permissionUserTraining.deleteMany({
+      where: {
+        trainingId: where.id,
+      },
+    });
+
     return await this.prisma.training.delete({ where });
   }
 

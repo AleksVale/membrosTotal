@@ -319,7 +319,12 @@ export function Expert() {
           />
 
           <div className="flex justify-end gap-2">
-            <Button variant={'secondary'} size={'lg'}>
+            <Button
+              onClick={() => navigate('/')}
+              type="button"
+              variant={'secondary'}
+              size={'lg'}
+            >
               Voltar
             </Button>
             <Button type="submit" size={'lg'} disabled={isSubmitting}>

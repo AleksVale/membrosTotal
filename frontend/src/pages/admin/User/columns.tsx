@@ -239,14 +239,13 @@ export function useColumnsUser() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link
-                    to={`https://api.whatsapp.com/send?phone=${user.phone}&text=Olá%20Colaborador`}
+                    to={`https://wa.me/${user.phone}?text=Olá%20Colaborador`}
                     target="_blank"
                     className="group flex items-center gap-2"
                   >
                     <PhoneCall size={16} className="text-lime-500" />
                     <span className="group-hover:text-lime-500">
-                      {' '}
-                      Enviar um zap{' '}
+                      Enviar um zap
                     </span>
                   </Link>
                 </DropdownMenuItem>

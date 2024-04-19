@@ -148,7 +148,7 @@ export function useListModule() {
                     variant={'destructive'}
                     onClick={() => handleDeleteModule(module.id)}
                   >
-                    Cancelar
+                    Deletar
                   </Button>
                 </DialogClose>
               </DialogFooter>

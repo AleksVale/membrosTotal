@@ -151,7 +151,7 @@ export function useListTraining() {
                     variant={'destructive'}
                     onClick={() => handleDeleteTraining(training.id)}
                   >
-                    Cancelar
+                    Deletar
                   </Button>
                 </DialogClose>
               </DialogFooter>

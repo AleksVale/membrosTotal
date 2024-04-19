@@ -148,7 +148,7 @@ export function useListSubModule() {
                     variant={'destructive'}
                     onClick={() => handleDeleteSubmodule(module.id)}
                   >
-                    Cancelar
+                    Deletar
                   </Button>
                 </DialogClose>
               </DialogFooter>

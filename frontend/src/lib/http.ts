@@ -9,10 +9,15 @@ interface ErrorResponse {
   status: number
 }
 
-// Create a custom Axios instance
-const serverURL = 'http://localhost:5005/api'
-// const serverURL = 'https://membros-api.onrender.com/api'
-// const serverURL = '/api'
+let serverURL
+
+if (process.env.NODE_ENV === 'production') {
+  // Use production URL
+  serverURL = '/api'
+} else {
+  // Use local development URL
+  serverURL = 'http://localhost:5005/api'
+}
 
 const http: AxiosInstance = axios.create({
   baseURL: serverURL,

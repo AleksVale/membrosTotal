@@ -1,5 +1,13 @@
 import { SuccessResponse } from '@/utils/constants/routes'
 
+export interface PermissionUserModule {
+  id: number
+  userId: number
+  moduleId: number
+  createdAt: string
+  updatedAt: string
+}
+
 export interface IModule {
   id: number
   title: string
@@ -8,6 +16,7 @@ export interface IModule {
   thumbnail?: string | null
   createdAt: Date
   updatedAt: Date
+  PermissionUserModule: PermissionUserModule[]
 }
 
 export interface GetModuleResponse {

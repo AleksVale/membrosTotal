@@ -4,10 +4,14 @@ import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { SubModulesQuery } from './sub-modules-admin.service';
 import { SubmoduleDTO } from './dto/sub-modules-response.dto';
+import { TrainingRepository } from 'src/training-admin/training.repository';
 
 @Injectable()
 export class SubModuleRepository {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private readonly trainingRepository: TrainingRepository,
+  ) {}
 
   async create(data: Prisma.SubmoduleUncheckedCreateInput) {
     return await this.prisma.submodule.create({ data });
@@ -53,19 +57,11 @@ export class SubModuleRepository {
     );
   }
 
-  async addUsersToSubmodule(id: number, users: number[]) {
-    await this.prisma.permissionUserSubModule.createMany({
-      data: users.map((userId) => ({
-        userId,
-        submoduleId: id,
-      })),
-    });
-  }
-
   async addPermission(
     submoduleId: number,
     deletedUsers: number[] | undefined,
     addedUsers: number[] | undefined,
+    addRelatives: boolean | undefined,
   ) {
     await this.prisma.permissionUserSubModule.deleteMany({
       where: {
@@ -75,8 +71,80 @@ export class SubModuleRepository {
         },
       },
     });
+
+    const modules = addRelatives
+      ? await this.prisma.module.findMany({
+          where: {
+            submodules: {
+              some: {
+                id: submoduleId,
+              },
+            },
+          },
+        })
+      : undefined;
+
+    const trainings = addRelatives
+      ? await this.prisma.training.findMany({
+          where: {
+            Module: {
+              some: {
+                id: {
+                  in: modules?.map((module) => module.id),
+                },
+              },
+            },
+          },
+        })
+      : undefined;
+
     if (addedUsers) {
-      await this.addUsersToSubmodule(submoduleId, addedUsers);
+      await this.trainingRepository.addUsersToSubmodule(
+        submoduleId,
+        addedUsers,
+      );
+
+      if (addRelatives) {
+        modules?.forEach(
+          async (module) =>
+            await this.trainingRepository.addUsersToModule(
+              module.id,
+              addedUsers,
+            ),
+        );
+        trainings?.forEach(
+          async (training) =>
+            await this.trainingRepository.addUsersToTraining(
+              training.id,
+              addedUsers,
+            ),
+        );
+      }
+    }
+
+    if (deletedUsers) {
+      modules?.forEach(
+        async (module) =>
+          await this.prisma.permissionUserModule.deleteMany({
+            where: {
+              moduleId: module.id,
+              userId: {
+                in: deletedUsers,
+              },
+            },
+          }),
+      );
+      trainings?.forEach(
+        async (training) =>
+          await this.prisma.permissionUserTraining.deleteMany({
+            where: {
+              trainingId: training.id,
+              userId: {
+                in: deletedUsers,
+              },
+            },
+          }),
+      );
     }
   }
 }

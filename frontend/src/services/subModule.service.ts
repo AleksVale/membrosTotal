@@ -40,12 +40,15 @@ const createPhotoSubModule = async (file: File, subModuleId: number) => {
 }
 
 const createSubmodulePermissions = async (
-  submodules: number[],
-  users: number[],
+  addedUsers: number[],
+  removedUsers: number[],
+  addRelatives: boolean,
+  id: number | string,
 ) => {
-  return http.post<SuccessResponse>('/sub-modules-admin/permissions', {
-    submodules,
-    users,
+  return http.patch<SuccessResponse>(`/sub-modules-admin/permissions/${id}`, {
+    addedUsers,
+    removedUsers,
+    addRelatives,
   })
 }
 

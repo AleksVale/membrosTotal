@@ -40,11 +40,20 @@ const createPhotoModule = async (file: File, moduleId: number) => {
   )
 }
 
-const createModulePermissions = async (modules: number[], users: number[]) => {
-  return http.post<SuccessResponse>('/training-modules-admin/permissions', {
-    modules,
-    users,
-  })
+const createModulePermissions = async (
+  addedUsers: number[],
+  removedUsers: number[],
+  addRelatives: boolean,
+  id: number | string,
+) => {
+  return http.patch<SuccessResponse>(
+    `/training-modules-admin/permissions/${id}`,
+    {
+      addedUsers,
+      removedUsers,
+      addRelatives,
+    },
+  )
 }
 
 const ModuleService = {

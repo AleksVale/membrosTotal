@@ -110,6 +110,17 @@ export function useListModule() {
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>
+                <DropdownMenuItem
+                  onClick={() =>
+                    navigate(ADMIN_PAGES.modulesPermissions(module.id))
+                  }
+                  className="group flex items-center gap-2"
+                >
+                  <Edit size={16} className="text-primary-foreground" />
+                  <span className="group-hover:text-primary-foreground">
+                    Editar permissões
+                  </span>
+                </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
             <DialogContent>

@@ -3,17 +3,24 @@ import AutocompleteService, {
   Autocomplete,
 } from '@/services/autocomplete.service'
 import { useForm } from 'react-hook-form'
-import { CreateModulePermission, createPermissionSchema } from '../validation'
+import {
+  CreateModulePermission,
+  CreatePermission,
+  createPermissionSchema,
+} from '../validation'
 import { zodResolver } from '@hookform/resolvers/zod'
 import ModuleService from '@/services/module.service'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { toast } from 'react-toastify'
+import { IModule } from '../../Modules/interfaces'
 
 export function useModulePermission() {
+  const { id } = useParams()
   const navigate = useNavigate()
   const [users, setUsers] = useState<Autocomplete[]>([])
-  const [modules, setModules] = useState<Autocomplete[]>([])
+  const [module, setModule] = useState<IModule>()
+  const [originalUsers, setOriginalUsers] = useState<number[]>([])
 
   const form = useForm<CreateModulePermission>({
     resolver: zodResolver(createPermissionSchema),
@@ -21,33 +28,51 @@ export function useModulePermission() {
       users: [],
     },
   })
+  const { reset } = form
 
   const onSubmitForm = useCallback(
-    async (data: CreateModulePermission) => {
-      const users = data.users.map((user) => user)
-      const response = await ModuleService.createModulePermissions([], users)
+    async (data: CreatePermission) => {
+      const addedUsers = data.users.filter(
+        (user) => !originalUsers.includes(user),
+      )
+      const removedUsers = originalUsers.filter(
+        (user) => !data.users.includes(user),
+      )
+      const response = await ModuleService.createModulePermissions(
+        addedUsers,
+        removedUsers,
+        data.addRelatives,
+        id as string,
+      )
       if (response.data.success) {
-        navigate(ADMIN_PAGES.permissions)
+        navigate(ADMIN_PAGES.listModules)
         toast.success('Permissões adicionadas!')
       }
     },
-    [navigate],
+    [id, navigate, originalUsers],
   )
 
   const fetchAutocomplete = useCallback(async () => {
-    const response = await AutocompleteService.fetchAutocomplete([
-      'users',
-      'modules',
-    ])
+    const response = await AutocompleteService.fetchAutocomplete(['users'])
     setUsers(response.data.users ?? [])
-    setModules(response.data.modules ?? [])
   }, [])
+
+  const fetchModule = useCallback(async () => {
+    const module = (await ModuleService.getModule(id)).data.module
+    const users = module.PermissionUserModule.map(
+      (permission) => permission.userId,
+    )
+    setOriginalUsers(users)
+    reset({ users, addRelatives: false })
+    setModule(module)
+  }, [reset, id])
 
   useEffect(() => {
     fetchAutocomplete()
-  }, [fetchAutocomplete])
+    fetchModule()
+  }, [fetchAutocomplete, fetchModule])
 
   const { isSubmitting } = form.formState
 
-  return { users, modules, form, isSubmitting, onSubmitForm }
+  return { users, module, form, isSubmitting, onSubmitForm }
 }

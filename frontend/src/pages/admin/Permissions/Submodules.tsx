@@ -1,90 +1,27 @@
-// import { Button } from '@/components/ui/button'
-// import {
-//   Form,
-//   FormControl,
-//   FormField,
-//   FormItem,
-//   FormLabel,
-//   FormMessage,
-// } from '@/components/ui/form'
-// import { useGoBack } from '@/hooks/useGoBack'
-// import { Loader2 } from 'lucide-react'
-// import { Autocomplete } from '@/components/ComboBox'
+import { useGoBack } from '@/hooks/useGoBack'
+
 import { Helmet } from 'react-helmet-async'
 import { BaseHeader } from '@/components/BaseHeader'
-// import { useSubmodulePermission } from './hooks/useSubmodulePermission'
+import { useSubmodulePermission } from './hooks/useSubmodulePermission'
+import { PermissionForm } from './PermissionForm'
 
 export function SubmodulePermissions() {
-  // const { submodules, users, form, isSubmitting, onSubmitForm } =
-  //   useSubmodulePermission()
-  // const { goBack } = useGoBack()
+  const { submodule, users, form, isSubmitting, onSubmitForm } =
+    useSubmodulePermission()
+  const { goBack } = useGoBack()
   return (
     <div>
       <Helmet title="Adicionar permissões" />
       <BaseHeader label="Adicionar permissões" />
-      {/* <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmitForm)}
-          className="w-full space-y-4"
-        >
-          <div className="grid grid-cols-1 gap-4">
-            <FormField
-              control={form.control}
-              name="users"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Usuários</FormLabel>
-                  <FormControl>
-                    <Autocomplete
-                      options={users}
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="submodules"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Submódulos</FormLabel>
-                  <FormControl>
-                    <Autocomplete
-                      options={submodules}
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div className="flex justify-end gap-3">
-            <Button
-              type="button"
-              size={'lg'}
-              variant={'secondary'}
-              onClick={goBack}
-            >
-              Cancelar
-            </Button>
-            <Button type="submit" size={'lg'} disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 size-4 animate-spin" />
-                  Carregando
-                </>
-              ) : (
-                <span>Salvar</span>
-              )}
-            </Button>
-          </div>
-        </form>
-      </Form> */}
+      <PermissionForm
+        form={form}
+        goBack={goBack}
+        isSubmitting={isSubmitting}
+        onSubmitForm={onSubmitForm}
+        title={submodule?.title ?? ''}
+        type="submódulo"
+        users={users}
+      />
     </div>
   )
 }

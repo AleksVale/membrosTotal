@@ -63,6 +63,7 @@ export class SubModulesAdminService {
       submoduleId,
       addPermissionSubModuleAdminDto.removedUsers,
       addPermissionSubModuleAdminDto.addedUsers,
+      addPermissionSubModuleAdminDto.addRelatives,
     );
   }
 }

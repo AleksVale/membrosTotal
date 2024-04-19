@@ -63,6 +63,7 @@ export class TrainingModulesAdminService {
       moduleId,
       addPermissionModuleAdminDto.removedUsers,
       addPermissionModuleAdminDto.addedUsers,
+      addPermissionModuleAdminDto.addRelatives,
     );
   }
 }

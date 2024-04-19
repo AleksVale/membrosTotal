@@ -13,7 +13,7 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { useAuth } from '@/hooks/useAuth'
 import { Profile } from '@/utils/constants/profiles'
@@ -111,7 +111,10 @@ export function Login() {
                 </FormItem>
               )}
             />
-            <div className="flex justify-end">
+            <div className="flex justify-end gap-2">
+              <Button variant={'secondary'} asChild size={'lg'}>
+                <Link to="expert">Entre em contato conosco!</Link>
+              </Button>
               <Button type="submit" size={'lg'} disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>

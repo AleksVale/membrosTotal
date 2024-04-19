@@ -45,14 +45,15 @@ import { ModulesPermission } from './pages/admin/Permissions/Modules'
 import { SubmodulePermissions } from './pages/admin/Permissions/Submodules'
 import SubmoduleList from './pages/collaborator/Submodules/list'
 import LessonList from './pages/collaborator/Lessons/list'
+import { Expert } from './pages/expert'
 
 export const routes = createBrowserRouter([
   {
     path: '/',
     element: <DefaultLayout />,
-    errorElement: <NotFound />,
     children: [{ path: '/', element: <Login /> }],
   },
+  { path: '/expert', element: <Expert />, errorElement: <NotFound /> },
   {
     path: '/admin',
     element: <AdminLayout />,

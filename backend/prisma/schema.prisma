@@ -291,3 +291,24 @@ model PermissionUserSubModule {
 
   @@map("permission_user_submodules")
 }
+
+model ExpertRequest {
+  id          Int     @id @default(autoincrement())
+  instagram   String
+  youtube     String?
+  platforms   String
+  hasProduct  String
+  invoiced    Float
+  productLink String?
+  budget      Float
+  compromised String
+  searching   String
+  diferential String
+  extraInfo   String
+  whatsapp    String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("expert_requests")
+}

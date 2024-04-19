@@ -29,6 +29,7 @@ import { TrainingCollaboratorModule } from './collaborator/training-collaborator
 import { ModuleCollaboratorModule } from './collaborator/modules-collaborator/modules-collaborator.module';
 import { SubmoduleCollaboratorModule } from './collaborator/submodules-collaborator/submodules-collaborator.module';
 import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/lessons-collaborator.module';
+import { ExpertRequestModule } from './expert-request/expert-request.module';
 
 @Module({
   imports: [
@@ -72,6 +73,7 @@ import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/le
     ModuleCollaboratorModule,
     SubmoduleCollaboratorModule,
     LessonCollaboratorModule,
+    ExpertRequestModule,
   ],
   controllers: [AppController],
   providers: [

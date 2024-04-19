@@ -33,7 +33,7 @@ import {
 import { DialogClose } from '@radix-ui/react-dialog'
 import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
 import { ADMIN_PAGES, DEFAULT_META_PAGINATION } from '@/utils/constants/routes'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import UserService from '@/services/user.service'
 import { toast } from 'react-toastify'
 import { useCallback, useEffect, useState } from 'react'
@@ -237,12 +237,18 @@ export function useColumnsUser() {
                 </DropdownMenuItem>
                 {renderUserOption(user.status)}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="group flex items-center gap-2">
-                  <PhoneCall size={16} className="text-lime-500" />
-                  <span className="group-hover:text-lime-500">
-                    {' '}
-                    Enviar um zap{' '}
-                  </span>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={`https://api.whatsapp.com/send?phone=${user.phone}&text=Olá%20Colaborador`}
+                    target="_blank"
+                    className="group flex items-center gap-2"
+                  >
+                    <PhoneCall size={16} className="text-lime-500" />
+                    <span className="group-hover:text-lime-500">
+                      {' '}
+                      Enviar um zap{' '}
+                    </span>
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem className="group flex items-center gap-2">
                   <BellRing size={16} className="text-amber-500" />

@@ -1,11 +1,11 @@
 import { Body, Controller, Post } from '@nestjs/common';
-import { ExpertRequestService } from './expert-request.service';
+import { ExpertRequestService } from './public-expert-request.service';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { CreateExpertAdminDTO } from './dto/create-expert-request-dto';
 
 @ApiTags('Expert Request')
-@Controller('expert-request')
+@Controller('public/expert-request')
 export class ExpertRequestController {
   constructor(private readonly expertRequestService: ExpertRequestService) {}
   @ApiResponse({

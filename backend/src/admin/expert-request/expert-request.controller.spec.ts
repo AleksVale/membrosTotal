@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExpertRequestController } from './public-expert-request.controller';
-import { ExpertRequestService } from './public-expert-request.service';
+import { ExpertRequestController } from './expert-request.controller';
+import { ExpertRequestService } from './expert-request.service';
 
 describe('ExpertRequestController', () => {
   let controller: ExpertRequestController;

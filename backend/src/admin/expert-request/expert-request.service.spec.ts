@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ExpertRequestService } from './public-expert-request.service';
+import { ExpertRequestService } from './expert-request.service';
 
 describe('ExpertRequestService', () => {
   let service: ExpertRequestService;

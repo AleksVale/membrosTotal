@@ -1,7 +1,7 @@
 import { ColumnDef } from '@tanstack/react-table'
 import { format } from 'date-fns'
 import { useState, useCallback, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { DataTableColumnHeader } from '../../../../components/DataTableColumnHeader'
 import ColaboratorService from '../../../../services/colaborator.service'
 import { PaginationMeta } from '../../../../services/interfaces'
@@ -14,30 +14,12 @@ import {
   PaymentStatus,
   RefundResponseDto,
 } from '../../../../utils/interfaces/payment'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Button } from '@/components/ui/button'
-import { MoreHorizontal, Edit, Trash } from 'lucide-react'
+
 import { toast } from 'react-toastify'
 import { StatusBadge } from '@/components/StatusBadge'
+import { PaymentDialog } from '@/components/PaymentDialog'
 
 export function useListPaymentRequestCollaborator() {
-  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [payments, setPayments] = useState<RefundResponseDto[]>([])
   const [meta, setMeta] = useState<PaginationMeta>(DEFAULT_META_PAGINATION)
@@ -55,7 +37,7 @@ export function useListPaymentRequestCollaborator() {
   }, [getRefunds])
 
   const handleConfirmDeletePayment = useCallback(
-    async (id: number, status: PaymentStatus) => {
+    async (id: number, status: PaymentStatus, cancelReason: string) => {
       if (status === PaymentStatus.PAID) {
         toast.error('Reembolso já foi pago, não é possível cancelar')
         return
@@ -63,7 +45,7 @@ export function useListPaymentRequestCollaborator() {
         toast.error('Reembolso já foi cancelado')
         return
       }
-      const deleted = await ColaboratorService.deletePaymentRequest(id)
+      const deleted = await ColaboratorService.deleteRefund(id, cancelReason)
       if (deleted.data.success) {
         toast.success('Reembolso cancelado com sucesso')
         getRefunds()
@@ -135,68 +117,12 @@ export function useListPaymentRequestCollaborator() {
         const paymentRequest = row.original
 
         return (
-          <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="size-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() =>
-                    paymentRequest.status === PaymentStatus.PENDING
-                      ? navigate(
-                          `${COLLABORATOR_PAGES.prefix}/refunds/${paymentRequest.id}/e`,
-                        )
-                      : toast.error(
-                          'Reembolso finalizado, não é possível editar',
-                        )
-                  }
-                  className="group flex items-center gap-2"
-                >
-                  <Edit size={16} className="text-primary" />
-                  <span className="group-hover:text-primary">
-                    Editar reembolso
-                  </span>
-                </DropdownMenuItem>
-                <DialogTrigger asChild>
-                  <DropdownMenuItem className="group flex items-center gap-2">
-                    <Trash size={16} className="text-destructive" />
-                    <span className="group-hover:text-destructive">
-                      Cancelar reembolso
-                    </span>
-                  </DropdownMenuItem>
-                </DialogTrigger>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Você tem certeza?</DialogTitle>
-                <DialogDescription>
-                  Essa ação não pode ser desfeita. Você tem certeza que deseja
-                  cancelar esse reembolso?
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    variant={'destructive'}
-                    onClick={() =>
-                      handleConfirmDeletePayment(
-                        paymentRequest.id,
-                        paymentRequest.status,
-                      )
-                    }
-                  >
-                    Cancelar
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <PaymentDialog
+            data={paymentRequest}
+            cancel={handleConfirmDeletePayment}
+            navigateOnEdit={`${COLLABORATOR_PAGES.prefix}/refunds/${paymentRequest.id}/e`}
+            type="reembolso"
+          />
         )
       },
     },

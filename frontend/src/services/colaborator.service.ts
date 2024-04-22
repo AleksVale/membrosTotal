@@ -131,16 +131,22 @@ const getRefunds = async (searchParams: string) => {
   )
 }
 
-const deletePayment = async (id: number) => {
-  return http.delete<SuccessResponse>(`collaborator/payments/${id}`)
+const deletePayment = async (id: number, reason: string) => {
+  return http.delete<SuccessResponse>(`collaborator/payments/${id}`, {
+    data: { reason },
+  })
 }
 
-const deletePaymentRequest = async (id: number) => {
-  return http.delete<SuccessResponse>(`collaborator/payment_requests/${id}`)
+const deletePaymentRequest = async (id: number, reason: string) => {
+  return http.delete<SuccessResponse>(`collaborator/payment_requests/${id}`, {
+    data: { reason },
+  })
 }
 
-const deleteRefund = async (id: number) => {
-  return http.delete<SuccessResponse>(`collaborator/refunds/${id}`)
+const deleteRefund = async (id: number, reason: string) => {
+  return http.delete<SuccessResponse>(`collaborator/refunds/${id}`, {
+    data: { reason },
+  })
 }
 
 const getRefund = async (id: number) => {

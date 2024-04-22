@@ -47,6 +47,7 @@ import SubmoduleList from './pages/collaborator/Submodules/list'
 import LessonList from './pages/collaborator/Lessons/list'
 import { Expert } from './pages/expert'
 import { ExpertList } from './pages/admin/Expert/list'
+import { EditPayment } from './pages/collaborator/Payments/edit'
 
 export const routes = createBrowserRouter([
   {
@@ -100,6 +101,7 @@ export const routes = createBrowserRouter([
       { path: 'meetings', element: <ColaboratorListMeeting /> },
       { path: 'payments', element: <ListPayment /> },
       { path: 'payments/new', element: <CreatePayment /> },
+      { path: 'payments/:id/e', element: <EditPayment /> },
       { path: 'payment_requests', element: <ListPaymentRequests /> },
       { path: 'payment_requests/new', element: <CreatePaymentRequest /> },
       { path: 'refunds', element: <ListRefunds /> },

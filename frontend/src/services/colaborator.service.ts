@@ -41,8 +41,19 @@ const getPayments = async (searchParams: string) => {
   )
 }
 
+const getPayment = async (id?: string) => {
+  return http.get<Payment>(`collaborator/payments/${id}`)
+}
+
 const createPayment = async (payment: CreatePaymentDTO) => {
   return http.post<CreatePaymentResponse>('collaborator/payments', payment)
+}
+
+const updatePayment = async (id: string, payment: CreatePaymentDTO) => {
+  return http.patch<CreatePaymentResponse>(
+    `collaborator/payments/${id}`,
+    payment,
+  )
 }
 
 const createPaymentRequest = async (payment: CreatePaymentRequestDTO) => {
@@ -180,6 +191,8 @@ const ColaboratorService = {
   getSubmodules,
   getLessons,
   createPhotoUser,
+  updatePayment,
+  getPayment,
 }
 
 export default ColaboratorService

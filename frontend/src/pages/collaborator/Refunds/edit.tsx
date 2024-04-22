@@ -7,12 +7,13 @@ export function EditRefunds() {
   const { form, handleSubmitForm, isSubmitting } = useEditRefund()
   return (
     <div>
-      <Helmet title="Novo Reembolso" />
-      <BaseHeader label="Criar Reembolso" />
+      <Helmet title="Editar Reembolso" />
+      <BaseHeader label="Editar Reembolso" />
       <CreateEditPaymentRefund
         form={form}
         isSubmitting={isSubmitting}
         onSubmitForm={handleSubmitForm}
+        isEdit={true}
       />
     </div>
   )

@@ -20,21 +20,15 @@ export function useCreateLesson() {
 
   const handleSubmitForm = useCallback(
     async (data: CreateLessonDTO) => {
-      const response = await LessonService.createLesson(data)
-      if (response.data.id) {
-        try {
-          const fileResponse = await LessonService.createPhotoLesson(
-            data.file[0],
-            response.data.id,
-          )
-          if (fileResponse.data.success) {
-            toast.success('Aula criado com sucesso')
-            navigate(ADMIN_PAGES.listLessons)
-          }
-        } catch (error) {
-          toast.error('Erro ao enviar a foto, tente editar mais tarde.')
+      try {
+        const response = await LessonService.createLesson(data)
+        if (response.data.id) {
+          toast.success('Aula criado com sucesso')
           navigate(ADMIN_PAGES.listLessons)
         }
+      } catch (error) {
+        toast.error('Erro ao criar a aula, tente novamente mais tarde')
+        navigate(ADMIN_PAGES.listLessons)
       }
     },
     [navigate],

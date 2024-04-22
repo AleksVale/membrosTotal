@@ -13,7 +13,6 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { CreateLessonDTO } from '../validation'
 import { useGoBack } from '@/hooks/useGoBack'
-import { ThumbnailInput } from '@/components/ThumbnailInput'
 import {
   Select,
   SelectContent,
@@ -36,44 +35,13 @@ export function CreateEditLessonForm({
 }: Readonly<CreateEditLessonFormProps>) {
   const { goBack } = useGoBack()
   const { subModules } = useFormLesson()
-  const fileRef = form.register('file')
-  const file = form.watch('file')
-  let placeholderUrl: string | undefined
 
-  if (file?.[0]) {
-    if (typeof file[0] === 'string') {
-      placeholderUrl = file[0]
-    } else {
-      placeholderUrl = URL.createObjectURL(file[0])
-    }
-  } else {
-    placeholderUrl = undefined
-  }
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitForm)}
         className="flex w-full space-x-6"
       >
-        <div className="flex items-center justify-center">
-          <FormField
-            control={form.control}
-            name="file"
-            render={() => (
-              <FormItem>
-                <FormLabel>Thumbnail</FormLabel>
-                <FormControl>
-                  <ThumbnailInput
-                    {...fileRef}
-                    id="imageUpload"
-                    placeholder={placeholderUrl}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <div className="flex-1">
           <div className="grid grid-cols-1 space-y-6 pb-6 lg:grid-cols-1">
             <FormField

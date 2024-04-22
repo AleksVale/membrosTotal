@@ -26,12 +26,14 @@ interface CreateEditMeetingFormProps {
   form: UseFormReturn<CreatePaymentDTO>
   onSubmitForm: (data: CreatePaymentDTO) => void
   isSubmitting: boolean
+  isEdit?: boolean
 }
 
 export function CreateEditPaymentForm({
   form,
   onSubmitForm,
   isSubmitting,
+  isEdit = false,
 }: Readonly<CreateEditMeetingFormProps>) {
   const { goBack, paymentTypeOptions } = useFilterPayment()
   const fileRef = form.register('file')
@@ -94,7 +96,7 @@ export function CreateEditPaymentForm({
               <FormItem>
                 <FormLabel>Arquivo</FormLabel>
                 <FormControl>
-                  <Input {...fileRef} id="file" type="file" />
+                  <Input {...fileRef} id="file" type="file" disabled={isEdit} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -112,6 +114,7 @@ export function CreateEditPaymentForm({
                   <Textarea
                     placeholder="Descreva os detalhes do pagamento"
                     className="resize-none"
+                    disabled={isEdit}
                     {...field}
                   />
                 </FormControl>

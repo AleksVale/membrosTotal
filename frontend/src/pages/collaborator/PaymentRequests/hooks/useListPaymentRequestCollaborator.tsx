@@ -12,6 +12,7 @@ import {
 import {
   PaymentLabel,
   PaymentResponseDto,
+  PaymentStatus,
 } from '../../../../utils/interfaces/payment'
 import {
   Dialog,
@@ -54,7 +55,14 @@ export function useListPaymentRequestCollaborator() {
   }, [getPaymentRequests])
 
   const handleConfirmDeletePayment = useCallback(
-    async (id: number) => {
+    async (id: number, status: PaymentStatus) => {
+      if (status === PaymentStatus.PAID) {
+        toast.error('Solicitação já foi paga, não é possível cancelar')
+        return
+      } else if (status === PaymentStatus.CANCELLED) {
+        toast.error('Solicitação já foi cancelada')
+        return
+      }
       const deleted = await ColaboratorService.deletePaymentRequest(id)
       if (deleted.data.success) {
         toast.success('Solicitação cancelada com sucesso')
@@ -139,9 +147,13 @@ export function useListPaymentRequestCollaborator() {
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() =>
-                    navigate(
-                      `${COLLABORATOR_PAGES.prefix}/payment_requests/${paymentRequest.id}/e`,
-                    )
+                    paymentRequest.status === PaymentStatus.PENDING
+                      ? navigate(
+                          `${COLLABORATOR_PAGES.prefix}/payment_requests/${paymentRequest.id}/e`,
+                        )
+                      : toast.error(
+                          'Solicitação finalizada, não é possível editar',
+                        )
                   }
                   className="group flex items-center gap-2"
                 >
@@ -173,7 +185,10 @@ export function useListPaymentRequestCollaborator() {
                   <Button
                     variant={'destructive'}
                     onClick={() =>
-                      handleConfirmDeletePayment(paymentRequest.id)
+                      handleConfirmDeletePayment(
+                        paymentRequest.id,
+                        paymentRequest.status,
+                      )
                     }
                   >
                     Cancelar

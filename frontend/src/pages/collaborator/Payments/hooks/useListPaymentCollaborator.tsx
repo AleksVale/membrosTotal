@@ -9,7 +9,11 @@ import {
   COLLABORATOR_PAGES,
   DEFAULT_META_PAGINATION,
 } from '../../../../utils/constants/routes'
-import { Payment, PaymentLabel } from '../../../../utils/interfaces/payment'
+import {
+  Payment,
+  PaymentLabel,
+  PaymentStatus,
+} from '../../../../utils/interfaces/payment'
 import {
   Dialog,
   DialogClose,
@@ -51,7 +55,14 @@ export function useListPaymentCollaborator() {
   }, [getPayments])
 
   const handleConfirmDeletePayment = useCallback(
-    async (id: number) => {
+    async (id: number, status: PaymentStatus) => {
+      if (status === PaymentStatus.PAID) {
+        toast.error('Pagamento já foi pago, não é possível cancelar')
+        return
+      } else if (status === PaymentStatus.CANCELLED) {
+        toast.error('Pagamento já foi cancelado')
+        return
+      }
       const deleted = await ColaboratorService.deletePayment(id)
       if (deleted.data.success) {
         toast.success('Pagamento cancelado com sucesso')
@@ -121,9 +132,13 @@ export function useListPaymentCollaborator() {
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() =>
-                    navigate(
-                      `${COLLABORATOR_PAGES.prefix}/payments/${payment.id}/e`,
-                    )
+                    payment.status === PaymentStatus.PENDING
+                      ? navigate(
+                          `${COLLABORATOR_PAGES.prefix}/payments/${payment.id}/e`,
+                        )
+                      : toast.error(
+                          'Pagamento já finalizado, não é possível editar',
+                        )
                   }
                   className="group flex items-center gap-2"
                 >
@@ -154,7 +169,9 @@ export function useListPaymentCollaborator() {
                 <DialogClose asChild>
                   <Button
                     variant={'destructive'}
-                    onClick={() => handleConfirmDeletePayment(payment.id)}
+                    onClick={() =>
+                      handleConfirmDeletePayment(payment.id, payment.status)
+                    }
                   >
                     Cancelar
                   </Button>

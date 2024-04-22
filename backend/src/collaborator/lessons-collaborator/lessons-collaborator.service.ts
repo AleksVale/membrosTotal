@@ -15,15 +15,6 @@ export class LessonCollaboratorService {
       user,
       moduleId,
     );
-    const lessons = await Promise.all(
-      result.map(async (lesson) => {
-        if (lesson.thumbnail) {
-          // const photo = await this.awsService.getStoredObject(lesson.thumbnail);
-          return { ...lesson, thumbnail: undefined };
-        }
-        return lesson;
-      }),
-    );
-    return lessons;
+    return result;
   }
 }

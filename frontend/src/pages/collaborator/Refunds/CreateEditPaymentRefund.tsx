@@ -27,12 +27,14 @@ interface CreateEditRefundFormProps {
   form: UseFormReturn<CreateRefundDTO>
   onSubmitForm: (data: CreateRefundDTO) => void
   isSubmitting: boolean
+  isEdit: boolean
 }
 
 export function CreateEditPaymentRefund({
   form,
   onSubmitForm,
   isSubmitting,
+  isEdit = false,
 }: Readonly<CreateEditRefundFormProps>) {
   const { goBack, refundTypeTypeOptions } = useFormRefund()
   const fileRef = form.register('file')
@@ -118,7 +120,7 @@ export function CreateEditPaymentRefund({
               <FormItem>
                 <FormLabel>Comprovante</FormLabel>
                 <FormControl>
-                  <Input {...fileRef} id="file" type="file" />
+                  <Input {...fileRef} disabled={isEdit} id="file" type="file" />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -136,6 +138,7 @@ export function CreateEditPaymentRefund({
                   <Textarea
                     placeholder="Descreva os detalhes do reembolso"
                     className="resize-none"
+                    disabled={isEdit}
                     {...field}
                   />
                 </FormControl>

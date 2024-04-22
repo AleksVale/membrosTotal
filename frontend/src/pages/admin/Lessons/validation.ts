@@ -1,14 +1,5 @@
 import { z } from 'zod'
 
-const MAX_FILE_SIZE = 5000000
-const ACCEPTED_IMAGE_TYPES = [
-  'image/jpeg',
-  'image/jpg',
-  'image/png',
-  'image/webp',
-  'application/pdf',
-]
-
 export const createLesson = z.object({
   title: z
     .string({ required_error: 'Título obrigatório' })
@@ -21,20 +12,6 @@ export const createLesson = z.object({
     invalid_type_error: 'Selecione um módulo',
   }),
   content: z.string().url({ message: 'Insira uma URL válida' }),
-  file: z
-    .any()
-    .refine((files) => {
-      if (!files[0] || typeof files[0] === 'string') {
-        return true
-      }
-      return files?.[0]?.size <= MAX_FILE_SIZE
-    }, `Max image size is 5MB.`)
-    .refine((files) => {
-      if (!files[0] || typeof files[0] === 'string') {
-        return true
-      }
-      return ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type)
-    }, 'Apenas .pdf, .jpg, .jpeg, .png and .webp formatos são suportados.'),
 })
 
 export type CreateLessonDTO = z.infer<typeof createLesson>

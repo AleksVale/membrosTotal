@@ -11,6 +11,7 @@ import {
 } from '../../../../utils/constants/routes'
 import {
   PaymentLabel,
+  PaymentStatus,
   RefundResponseDto,
 } from '../../../../utils/interfaces/payment'
 import {
@@ -54,7 +55,14 @@ export function useListPaymentRequestCollaborator() {
   }, [getRefunds])
 
   const handleConfirmDeletePayment = useCallback(
-    async (id: number) => {
+    async (id: number, status: PaymentStatus) => {
+      if (status === PaymentStatus.PAID) {
+        toast.error('Reembolso já foi pago, não é possível cancelar')
+        return
+      } else if (status === PaymentStatus.CANCELLED) {
+        toast.error('Reembolso já foi cancelado')
+        return
+      }
       const deleted = await ColaboratorService.deletePaymentRequest(id)
       if (deleted.data.success) {
         toast.success('Reembolso cancelado com sucesso')
@@ -139,9 +147,13 @@ export function useListPaymentRequestCollaborator() {
                 <DropdownMenuLabel>Ações</DropdownMenuLabel>
                 <DropdownMenuItem
                   onClick={() =>
-                    navigate(
-                      `${COLLABORATOR_PAGES.prefix}/refunds/${paymentRequest.id}/e`,
-                    )
+                    paymentRequest.status === PaymentStatus.PENDING
+                      ? navigate(
+                          `${COLLABORATOR_PAGES.prefix}/refunds/${paymentRequest.id}/e`,
+                        )
+                      : toast.error(
+                          'Reembolso finalizado, não é possível editar',
+                        )
                   }
                   className="group flex items-center gap-2"
                 >
@@ -173,7 +185,10 @@ export function useListPaymentRequestCollaborator() {
                   <Button
                     variant={'destructive'}
                     onClick={() =>
-                      handleConfirmDeletePayment(paymentRequest.id)
+                      handleConfirmDeletePayment(
+                        paymentRequest.id,
+                        paymentRequest.status,
+                      )
                     }
                   >
                     Cancelar

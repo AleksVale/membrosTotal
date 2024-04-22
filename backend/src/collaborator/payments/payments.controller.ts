@@ -28,6 +28,7 @@ import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { CreatePaymentResponseDTO } from './dto/create-payment-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { DeletePaymentDto } from './dto/delete-payment.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
@@ -90,8 +91,8 @@ export class PaymentsController {
 
   @ApiOkResponse({ type: SuccessResponse })
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    await this.paymentsService.remove(+id);
+  async remove(@Param('id') id: string, @Body() data: DeletePaymentDto) {
+    await this.paymentsService.remove(+id, data);
     return { success: true };
   }
 }

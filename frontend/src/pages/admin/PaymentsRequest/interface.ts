@@ -12,6 +12,7 @@ export interface IPaymentRequest {
   photoKey?: string | null
   status: PaymentStatus
   reason?: string | null
+  approvedPhotoKey: string | null
   paidBy?: number | null
   description: string
   createdAt: Date

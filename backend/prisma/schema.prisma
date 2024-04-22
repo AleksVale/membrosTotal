@@ -112,20 +112,22 @@ model PaymentType {
 }
 
 model Payment {
-  id            Int             @id @default(autoincrement())
-  userId        Int
-  value         Float
-  paymentDate   DateTime?
-  photoKey      String?
-  status        PaymentStatus   @default(PENDING)
-  paidBy        Int?
-  description   String
-  createdAt     DateTime        @default(now())
-  updatedAt     DateTime        @updatedAt
-  User          User            @relation(fields: [userId], references: [id])
-  PaymentType   PaymentType?    @relation(fields: [paymentTypeId], references: [id])
-  paymentTypeId Int?
-  PaymentExpert PaymentExpert[]
+  id               Int             @id @default(autoincrement())
+  userId           Int
+  value            Float
+  paymentDate      DateTime?
+  photoKey         String?
+  status           PaymentStatus   @default(PENDING)
+  reason           String?
+  approvedPhotoKey String?
+  paidBy           Int?
+  description      String
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  User             User            @relation(fields: [userId], references: [id])
+  PaymentType      PaymentType?    @relation(fields: [paymentTypeId], references: [id])
+  paymentTypeId    Int?
+  PaymentExpert    PaymentExpert[]
 
   @@map("payments")
 }
@@ -151,20 +153,21 @@ model RefundType {
 }
 
 model Refund {
-  id           Int           @id @default(autoincrement())
-  userId       Int
-  value        Float
-  refundDate   DateTime?
-  photoKey     String?
-  status       PaymentStatus @default(PENDING)
-  reason       String?
-  paidBy       Int?
-  description  String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  User         User          @relation(fields: [userId], references: [id])
-  RefundType   RefundType?   @relation(fields: [refundTypeId], references: [id])
-  refundTypeId Int?
+  id               Int           @id @default(autoincrement())
+  userId           Int
+  value            Float
+  refundDate       DateTime?
+  photoKey         String?
+  status           PaymentStatus @default(PENDING)
+  reason           String?
+  approvedPhotoKey String?
+  paidBy           Int?
+  description      String
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  User             User          @relation(fields: [userId], references: [id])
+  RefundType       RefundType?   @relation(fields: [refundTypeId], references: [id])
+  refundTypeId     Int?
 
   @@map("refunds")
 }
@@ -185,6 +188,7 @@ model PaymentRequest {
   photoKey             String?
   status               PaymentStatus       @default(PENDING)
   reason               String?
+  approvedPhotoKey     String?
   paidBy               Int?
   description          String
   createdAt            DateTime            @default(now())

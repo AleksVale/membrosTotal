@@ -22,6 +22,12 @@ export class PaymentResponseDTO {
   @ApiProperty()
   status!: string;
 
+  @ApiProperty()
+  reason!: string | null;
+
+  @ApiProperty()
+  approvedPhotoKey!: string | null;
+
   @ApiProperty({ type: Date })
   createdAt!: Date;
 

@@ -47,6 +47,8 @@ export interface Payment {
   photoKey?: string | null
   status: PaymentStatus
   paidBy?: number | null
+  reason: string | null
+  approvedPhotoKey: string | null
   description: string
   createdAt: Date
   updatedAt: Date

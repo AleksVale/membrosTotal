@@ -6,6 +6,7 @@ import { Payment } from './entities/payment.entity';
 import { PaymentStatus } from '@prisma/client';
 import { AwsService } from 'src/common/aws/aws.service';
 import { PaymentRepository } from 'src/admin/payment-admin/payment.repository';
+import { DeletePaymentDto } from './dto/delete-payment.dto';
 
 export interface IFindAllPayment {
   page: number;
@@ -57,9 +58,9 @@ export class PaymentsService {
     return this.paymentRepository.update(updatePaymentDto, { id });
   }
 
-  remove(id: number) {
+  remove(id: number, data: DeletePaymentDto) {
     return this.paymentRepository.update(
-      { status: PaymentStatus.CANCELLED },
+      { status: PaymentStatus.CANCELLED, reason: data.reason },
       { id },
     );
   }

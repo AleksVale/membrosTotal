@@ -20,14 +20,17 @@ import {
 import { Label } from './ui/label'
 import { Input } from './ui/input'
 import { useState } from 'react'
-import { Payment, PaymentStatus } from '@/utils/interfaces/payment'
+import {
+  Payment,
+  PaymentResponseDto,
+  PaymentStatus,
+  RefundResponseDto,
+} from '@/utils/interfaces/payment'
 import { toast } from 'react-toastify'
-import { IRefund } from '@/pages/admin/Refunds/interface'
-import { IPaymentRequest } from '@/pages/admin/PaymentsRequest/interface'
 import { useNavigate } from 'react-router-dom'
 
 interface PaymentDialogProps {
-  data: Payment | IRefund | IPaymentRequest
+  data: Payment | RefundResponseDto | PaymentResponseDto
   cancel: (
     id: number,
     status: PaymentStatus,

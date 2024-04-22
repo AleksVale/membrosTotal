@@ -23,7 +23,7 @@ export function useEditLesson() {
 
   const getLesson = useCallback(async () => {
     const response = await LessonService.getLesson(id)
-    reset({ ...response.data.lesson, file: [response.data.stream] })
+    reset({ ...response.data.lesson })
   }, [id, reset])
 
   useEffect(() => {

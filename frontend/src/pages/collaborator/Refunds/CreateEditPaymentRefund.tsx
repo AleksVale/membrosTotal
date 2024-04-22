@@ -27,7 +27,7 @@ interface CreateEditRefundFormProps {
   form: UseFormReturn<CreateRefundDTO>
   onSubmitForm: (data: CreateRefundDTO) => void
   isSubmitting: boolean
-  isEdit: boolean
+  isEdit?: boolean
 }
 
 export function CreateEditPaymentRefund({

@@ -33,7 +33,11 @@ export class AdminNotificationController {
 
   @Get()
   @ApiOkResponsePaginated(NotificationResponse)
-  findAll(@Query('page') page: number, @Query('per_page') per_page: number, @Query('userId')) {
+  findAll(
+    @Query('page') page: number,
+    @Query('per_page') per_page: number,
+    @Query('userId') userId: number,
+  ) {
     return this.adminNotificationService.findAll();
   }
 

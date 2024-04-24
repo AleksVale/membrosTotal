@@ -54,6 +54,7 @@ model User {
   PermissionUserTraining  PermissionUserTraining[]
   PermissionUserModule    PermissionUserModule[]
   PermissionUserSubModule PermissionUserSubModule[]
+  NotificationUser        NotificationUser[]
 
   @@map("users")
 }
@@ -315,4 +316,28 @@ model ExpertRequest {
   updatedAt DateTime @updatedAt
 
   @@map("expert_requests")
+}
+
+model Notification {
+  id               Int                @id @default(autoincrement())
+  title            String
+  description      String
+  read             Boolean            @default(false)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  NotificationUser NotificationUser[]
+
+  @@map("notifications")
+}
+
+model NotificationUser {
+  id             Int          @id @default(autoincrement())
+  userId         Int
+  notificationId Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  User           User         @relation(fields: [userId], references: [id])
+  Notification   Notification @relation(fields: [notificationId], references: [id])
+
+  @@map("notification_users")
 }

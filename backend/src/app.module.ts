@@ -32,6 +32,8 @@ import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/le
 import { PublicExpertRequestModule } from './public/expert-request/public-expert-request.module';
 import { ExpertRequestModule } from './admin/expert-request/expert-request.module';
 import { HomeModule } from './collaborator/home/home.module';
+import { AdminNotificationModule } from './admin/admin-notification/admin-notification.module';
+import { CollaboratorNotificationModule } from './collaborator/collaborator-notification/collaborator-notification.module';
 
 @Module({
   imports: [
@@ -78,6 +80,8 @@ import { HomeModule } from './collaborator/home/home.module';
     ExpertRequestModule,
     PublicExpertRequestModule,
     HomeModule,
+    AdminNotificationModule,
+    CollaboratorNotificationModule,
   ],
   controllers: [AppController],
   providers: [

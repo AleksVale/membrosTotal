@@ -18,10 +18,10 @@ export function MeetingCard({ meeting }: Readonly<MeetingCardProps>) {
           <p>Título:</p>
           <p>{meeting.title}</p>
         </div>
-        <p>
+        <div>
           <p>Data:</p>
           <p>{meeting.title}</p>
-        </p>
+        </div>
         <div>
           <p>Status:</p>
           <StatusBadge status={MeetingStatus[meeting.status]} />

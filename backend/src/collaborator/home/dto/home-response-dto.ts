@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MeetingResponseDTO } from 'src/admin/meetings/dto/meeting-response.dto';
 
-export class NotificarionResponseDTO {
+export class NotificationResponseDTO {
   @ApiProperty()
   id!: number;
 
@@ -21,4 +21,7 @@ export class NotificarionResponseDTO {
 export class HomeResponseDto {
   @ApiProperty({ type: [MeetingResponseDTO] })
   meetings!: MeetingResponseDTO[];
+
+  @ApiProperty({ type: [NotificationResponseDTO] })
+  notifications!: NotificationResponseDTO[];
 }

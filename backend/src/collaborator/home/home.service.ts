@@ -14,11 +14,8 @@ export class HomeService {
     const meetings = await this.meetingsRepository.findHomeMeetings(
       currentUser.id,
     );
-    const notifications = await this.notificationRepository.findAll({
-      userId: currentUser.id,
-      per_page: 5,
-      page: 1,
-    });
+    const notifications =
+      await this.notificationRepository.findHomeNotifications(currentUser.id);
     return { meetings, notifications };
   }
 }

@@ -1,9 +1,10 @@
 import { BaseHeader } from '@/components/BaseHeader'
 import { useHome } from './useHome'
 import { MeetingCard } from '@/components/MeetingCard'
+import { NotificationCard } from '@/components/NotificationCard'
 
 export default function CollaboratorHome() {
-  const { meetings } = useHome()
+  const { meetings, notifications } = useHome()
   return (
     <div>
       <BaseHeader label="Bem vindo" />
@@ -12,6 +13,9 @@ export default function CollaboratorHome() {
         <MeetingCard meeting={meeting} key={meeting.id} />
       ))}
       <h1>Seus avisos</h1>
+      {notifications.map((notification) => (
+        <NotificationCard notification={notification} key={notification.id} />
+      ))}
     </div>
   )
 }

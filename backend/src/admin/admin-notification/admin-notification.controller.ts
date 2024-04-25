@@ -38,7 +38,11 @@ export class AdminNotificationController {
     @Query('per_page') per_page: number,
     @Query('userId') userId: number,
   ) {
-    return this.adminNotificationService.findAll();
+    return this.adminNotificationService.findAll({
+      page,
+      per_page,
+      userId,
+    });
   }
 
   @ApiResponse({

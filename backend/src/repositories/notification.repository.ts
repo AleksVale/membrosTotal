@@ -4,7 +4,7 @@ import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { NotificationResponse } from 'src/admin/admin-notification/dto/notification-response.dto';
 
-export interface UserFilter {
+export interface UserNotificationFilter {
   userId: number;
   page: number;
   per_page: number;
@@ -34,7 +34,7 @@ export class NotificationRepository {
     });
   }
 
-  async findAll(options: UserFilter) {
+  async findAll(options: UserNotificationFilter) {
     const paginate = createPaginator({ perPage: options.per_page });
 
     return paginate<NotificationResponse, Prisma.NotificationFindManyArgs>(
@@ -60,6 +60,27 @@ export class NotificationRepository {
         page: options.page,
       },
     );
+  }
+
+  async findHomeNotifications(userId: number) {
+    return await this.prisma.notification.findMany({
+      where: {
+        NotificationUser: {
+          some: {
+            userId,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        NotificationUser: {
+          include: {
+            User: true,
+          },
+        },
+      },
+      take: 5,
+    });
   }
 
   async delete(where: Prisma.NotificationWhereUniqueInput) {

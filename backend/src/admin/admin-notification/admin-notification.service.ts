@@ -1,6 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { CreateNotificationAdminDTO } from './dto/create-admin-notification.dto';
-import { NotificationRepository } from 'src/repositories/notification.repository';
+import {
+  NotificationRepository,
+  UserNotificationFilter,
+} from 'src/repositories/notification.repository';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -23,8 +26,8 @@ export class AdminNotificationService {
     return this.notificationRepository.create(entity);
   }
 
-  findAll() {
-    return `This action returns all adminNotification`;
+  findAll(option: UserNotificationFilter) {
+    return this.notificationRepository.findAll(option);
   }
 
   findOne(id: number) {

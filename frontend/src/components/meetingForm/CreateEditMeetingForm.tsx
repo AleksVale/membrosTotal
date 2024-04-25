@@ -32,7 +32,7 @@ export function CreateEditMeetingForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmitForm)}
-        className="space-y-4 w-full"
+        className="w-full space-y-4"
       >
         <div className="grid grid-cols-4 gap-4">
           <FormField
@@ -131,7 +131,7 @@ export function CreateEditMeetingForm({
           <Button type="submit" size={'lg'} disabled={isSubmitting}>
             {isSubmitting ? (
               <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                <Loader2 className="mr-2 size-4 animate-spin" />
                 Carregando
               </>
             ) : (

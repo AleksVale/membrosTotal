@@ -4,7 +4,7 @@ import { MeetingCard } from '@/components/MeetingCard'
 import { NotificationCard } from '@/components/NotificationCard'
 
 export default function CollaboratorHome() {
-  const { meetings, notifications } = useHome()
+  const { meetings, notifications, readNotification } = useHome()
   return (
     <div>
       <BaseHeader label="Bem vindo" />
@@ -14,7 +14,11 @@ export default function CollaboratorHome() {
       ))}
       <h1>Seus avisos</h1>
       {notifications.map((notification) => (
-        <NotificationCard notification={notification} key={notification.id} />
+        <NotificationCard
+          notification={notification}
+          readNotification={readNotification}
+          key={notification.id}
+        />
       ))}
     </div>
   )

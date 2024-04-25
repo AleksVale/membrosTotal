@@ -4,8 +4,7 @@ import { Meeting } from './meeting.service'
 export interface NotificationResponseDTO {
   id: number
   title: string
-  message: string
-  read: boolean
+  description: string
   createdAt: Date
 }
 

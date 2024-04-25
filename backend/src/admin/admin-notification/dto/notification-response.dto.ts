@@ -8,7 +8,5 @@ export class NotificationResponse {
   @ApiProperty()
   description!: string;
   @ApiProperty()
-  read!: boolean;
-  @ApiProperty()
   createdAt!: Date;
 }

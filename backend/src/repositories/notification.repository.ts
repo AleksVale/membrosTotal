@@ -86,4 +86,23 @@ export class NotificationRepository {
   async delete(where: Prisma.NotificationWhereUniqueInput) {
     return await this.prisma.notification.delete({ where });
   }
+
+  async readNotification(notificationId: number, userId: number) {
+    const notificationUser = await this.prisma.notificationUser.findFirst({
+      where: {
+        notificationId: notificationId,
+        userId: userId,
+      },
+    });
+    if (notificationUser) {
+      await this.prisma.notificationUser.update({
+        where: {
+          id: notificationUser.id,
+        },
+        data: {
+          read: true,
+        },
+      });
+    }
+  }
 }

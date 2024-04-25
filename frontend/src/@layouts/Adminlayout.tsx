@@ -86,6 +86,10 @@ export function AdminLayout() {
                 icon={<Settings size={20} />}
               >
                 <MenuLink to={ADMIN_PAGES.permissions} label="Permissões" />
+                <MenuLink
+                  to={ADMIN_PAGES.listNotifications}
+                  label="Notificações"
+                />
               </SideMenuCollapsible>
               <DropdownMenuSeparator />
             </nav>

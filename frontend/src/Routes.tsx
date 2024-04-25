@@ -48,6 +48,8 @@ import LessonList from './pages/collaborator/Lessons/list'
 import { Expert } from './pages/expert'
 import { ExpertList } from './pages/admin/Expert/list'
 import { EditPayment } from './pages/collaborator/Payments/edit'
+import { NotificationList } from './pages/admin/Notification/list'
+import { CreateNotification } from './pages/admin/Notification/new'
 
 export const routes = createBrowserRouter([
   {
@@ -89,6 +91,8 @@ export const routes = createBrowserRouter([
       { path: 'permissions/module/:id', element: <ModulesPermission /> },
       { path: 'permissions/submodule/:id', element: <SubmodulePermissions /> },
       { path: 'experts', element: <ExpertList /> },
+      { path: 'notifications', element: <NotificationList /> },
+      { path: 'notifications/new', element: <CreateNotification /> },
     ],
   },
   {

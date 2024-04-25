@@ -13,7 +13,7 @@ export class AdminNotificationService {
   ) {}
   create(createAdminNotificationDto: CreateNotificationAdminDTO) {
     const entity: Prisma.NotificationUncheckedCreateInput = {
-      description: createAdminNotificationDto.message,
+      description: createAdminNotificationDto.description,
       title: createAdminNotificationDto.title,
       NotificationUser: {
         createMany: {

@@ -27,6 +27,8 @@ export const ADMIN_PAGES = {
   createLessons: '/admin/lessons/new',
   editLesson: (id: number) => `/admin/lessons/${id}/e`,
   listExperts: '/admin/experts?page=1&per_page=10',
+  listNotifications: '/admin/notifications?page=1&per_page=10',
+  createNotification: '/admin/notifications/new',
 }
 
 export const COLLABORATOR_PAGES = {

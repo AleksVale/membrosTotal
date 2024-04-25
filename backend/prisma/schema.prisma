@@ -322,7 +322,6 @@ model Notification {
   id               Int                @id @default(autoincrement())
   title            String
   description      String
-  read             Boolean            @default(false)
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @updatedAt
   NotificationUser NotificationUser[]
@@ -334,6 +333,7 @@ model NotificationUser {
   id             Int          @id @default(autoincrement())
   userId         Int
   notificationId Int
+  read           Boolean      @default(false)
   createdAt      DateTime     @default(now())
   updatedAt      DateTime     @updatedAt
   User           User         @relation(fields: [userId], references: [id])

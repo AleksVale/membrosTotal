@@ -39,13 +39,6 @@ export function useListNotification() {
       ),
     },
     {
-      accessorKey: 'read',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Mensagem" />
-      ),
-      accessorFn: (row) => (row.read ? 'Lida' : 'Não lida'),
-    },
-    {
       accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Criado em" />

@@ -8,7 +8,6 @@ import { AuthenticateResponseDTO } from './dto/authenticate.response.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-  //testess
   @ApiResponse({
     type: AuthenticateResponseDTO,
     status: 201,

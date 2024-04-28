@@ -44,10 +44,10 @@ export function useListSubModule() {
   const handleDeleteSubmodule = async (id: number) => {
     try {
       await SubModuleService.deleteSubmodule(id)
-      toast.success('Treinamento excluído com sucesso')
+      toast.success('Submódulo excluído com sucesso')
       getModules()
     } catch (err) {
-      toast.error('Erro ao excluir treinamento')
+      toast.error('Erro ao excluir submódulo')
     }
   }
 
@@ -60,6 +60,12 @@ export function useListSubModule() {
       accessorKey: 'module.title',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Módulos" />
+      ),
+    },
+    {
+      accessorKey: 'order',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Ordem" />
       ),
     },
     {
@@ -117,7 +123,7 @@ export function useListSubModule() {
                   <DropdownMenuItem className="group flex items-center gap-2">
                     <Trash size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
-                      Excluir submódulo (será implementado)
+                      Excluir submódulo
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>

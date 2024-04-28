@@ -49,6 +49,10 @@ export function CreateEditModuleForm({
   } else {
     placeholderUrl = undefined
   }
+
+  if (trainingOptions.length === 0) {
+    return <Loader2 className="size-4 animate-spin" />
+  }
   return (
     <Form {...form}>
       <form

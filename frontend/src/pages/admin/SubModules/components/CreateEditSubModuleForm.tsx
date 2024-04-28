@@ -49,6 +49,10 @@ export function CreateEditSubModuleForm({
   } else {
     placeholderUrl = undefined
   }
+
+  if (moduleOptions.length === 0) {
+    return <Loader2 className="size-4 animate-spin" />
+  }
   return (
     <Form {...form}>
       <form

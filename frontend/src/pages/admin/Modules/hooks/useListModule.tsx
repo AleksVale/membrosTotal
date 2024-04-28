@@ -44,10 +44,10 @@ export function useListModule() {
   const handleDeleteModule = async (id: number) => {
     try {
       await ModuleService.deleteModule(id)
-      toast.success('Treinamento excluído com sucesso')
+      toast.success('Módulo excluído com sucesso')
       getModules()
     } catch (err) {
-      toast.error('Erro ao excluir treinamento')
+      toast.error('Erro ao excluir módulo')
     }
   }
 
@@ -60,6 +60,12 @@ export function useListModule() {
       accessorKey: 'training.title',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Treinamento" />
+      ),
+    },
+    {
+      accessorKey: 'order',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Ordem" />
       ),
     },
     {
@@ -110,14 +116,14 @@ export function useListModule() {
                 >
                   <Edit size={16} className="text-primary" />
                   <span className="group-hover:text-primary">
-                    Editar treinamento
+                    Editar módulo
                   </span>
                 </DropdownMenuItem>
                 <DialogTrigger asChild>
                   <DropdownMenuItem className="group flex items-center gap-2">
                     <Trash size={16} className="text-destructive" />
                     <span className="group-hover:text-destructive">
-                      Excluir treinamento (será implementado)
+                      Excluir módulo
                     </span>
                   </DropdownMenuItem>
                 </DialogTrigger>

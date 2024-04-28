@@ -52,6 +52,12 @@ export function useListLesson() {
       ),
     },
     {
+      accessorKey: 'order',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Ordem" />
+      ),
+    },
+    {
       accessorKey: 'title',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Título" />

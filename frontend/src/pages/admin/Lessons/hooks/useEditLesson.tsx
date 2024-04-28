@@ -24,7 +24,10 @@ export function useEditLesson() {
 
   const getLesson = useCallback(async () => {
     const response = await LessonService.getLesson(id)
-    reset({ ...response.data.lesson })
+    reset({
+      ...response.data.lesson,
+      submoduleId: response.data.lesson.submoduleId,
+    })
   }, [id, reset])
 
   useEffect(() => {

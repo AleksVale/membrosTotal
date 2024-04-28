@@ -34,7 +34,9 @@ export function CreateEditLessonForm({
   isSubmitting,
 }: Readonly<CreateEditLessonFormProps>) {
   const { goBack } = useGoBack()
-  const { subModules } = useFormLesson()
+  const { subModules, loading } = useFormLesson()
+
+  if (loading) return <Loader2 className="size-4 animate-spin" />
 
   return (
     <Form {...form}>

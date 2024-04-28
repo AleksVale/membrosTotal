@@ -28,9 +28,10 @@ import { Button } from './components/ui/button'
 import { Label } from '@radix-ui/react-label'
 import { Input } from './components/ui/input'
 import { Textarea } from './components/ui/textarea'
+import { IPaymentRequest } from './pages/admin/PaymentsRequest/interface'
 
 interface PaymentDialogProps {
-  data: Payment | RefundResponseDto | PaymentResponseDto
+  data: Payment | RefundResponseDto | PaymentResponseDto | IPaymentRequest
   cancel: (
     id: number,
     status: PaymentStatus,

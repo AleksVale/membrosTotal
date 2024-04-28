@@ -63,8 +63,9 @@ export class AwsService {
     userId: number,
     paymentRequestId: number,
     mimeType: string,
+    type: 'base' | 'finish' = 'base',
   ) {
-    return `payment_requests/${userId}/${paymentRequestId}/payment_request.${mimeType}`;
+    return `payment_requests/${userId}/${paymentRequestId}/${type === 'base' ? 'payment_request' : 'comprovante'}.${mimeType}`;
   }
 
   createPhotoKeyRefunds(

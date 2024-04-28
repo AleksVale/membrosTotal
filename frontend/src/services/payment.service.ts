@@ -32,9 +32,16 @@ const finishPayment = async (id: number, reason: string, file: File) => {
     status: 'CANCELLED',
     reason,
   })
+  const formData = new FormData()
+  formData.append('file', file)
   const fileResponse = await http.post<SuccessResponse>(
     `/payment-admin/${id}/finish/file`,
-    file,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   )
   return fileResponse
 }

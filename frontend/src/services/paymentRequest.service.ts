@@ -1,5 +1,5 @@
 import http from '@/lib/http'
-import { SuccessResponse } from '@/utils/constants/routes'
+import { SignedURLResponse, SuccessResponse } from '@/utils/constants/routes'
 import { PaginatedResponseDto } from './interfaces'
 import { IPaymentRequest } from '@/pages/admin/PaymentsRequest/interface'
 
@@ -23,15 +23,34 @@ const update = async (paymentRequest: unknown, id: string) => {
   )
 }
 
-const cancelPaymentRequest = async (id: number) => {
+const cancelPaymentRequest = async (id: number, cancelReason: string) => {
   return http.patch<SuccessResponse>(`/payment-request-admin/${id}`, {
     status: 'CANCELLED',
-    reason: 'Cancelado pelo administrador',
+    reason: cancelReason,
   })
 }
 
-const finishPaymentRequest = async (id: number) => {
-  return http.patch<SuccessResponse>(`/payment-request-admin/${id}/finish`)
+const finishPaymentRequest = async (id: number, reason: string, file: File) => {
+  await http.patch<SuccessResponse>(`/payment-request-admin/${id}`, {
+    status: 'CANCELLED',
+    reason,
+  })
+  const formData = new FormData()
+  formData.append('file', file)
+  const fileResponse = await http.post<SuccessResponse>(
+    `/payment-request-admin/${id}/finish/file`,
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
+  )
+  return fileResponse
+}
+
+const getSignedURL = async (id: number) => {
+  return http.get<SignedURLResponse>(`/payment-request-admin/signed_url/${id}`)
 }
 
 const PaymentRequestservice = {
@@ -41,6 +60,7 @@ const PaymentRequestservice = {
   finishPaymentRequest,
   update,
   get,
+  getSignedURL,
 }
 
 export default PaymentRequestservice

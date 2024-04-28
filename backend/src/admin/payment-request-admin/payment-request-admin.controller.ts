@@ -8,15 +8,23 @@ import {
   ParseIntPipe,
   Query,
   UseGuards,
+  Post,
+  UseInterceptors,
+  HttpStatus,
+  UploadedFile,
 } from '@nestjs/common';
 import { PaymentRequestAdminService } from './payment-request-admin.service';
 import { UpdatePaymentRequestAdminDTO } from './dto/update-payment-request-admin.dto';
 import { PaymentStatus } from '@prisma/client';
-import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { PaymentResponseDto } from './dto/payment-request-response.dto';
 import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { SuccessResponse } from 'src/utils/success-response.dto';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 
 @ApiTags('PaymentRequests')
 @UseGuards(JwtAuthGuard, RoleGuard)
@@ -72,5 +80,23 @@ export class PaymentRequestAdminController {
       +id,
       updatePaymentRequestAdminDto,
     );
+  }
+
+  @Get('signed_url/:id')
+  getSignedURL(@Param('id') id: string) {
+    return this.paymentRequestAdminService.getSignedURL(+id);
+  }
+
+  @Post(':id/finish/file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFileFinish(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: TokenPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.paymentRequestAdminService.createFileFinish(file, user, +id);
+
+    return { success: true };
   }
 }

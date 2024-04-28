@@ -11,8 +11,20 @@ export class LessonCollaboratorRepository {
       where: {
         submoduleId: submoduleId,
       },
+      include: {
+        UserViewLesson: true,
+      },
       orderBy: {
         order: 'asc',
+      },
+    });
+  }
+
+  async viewLesson(user: TokenPayload, lessonId: number) {
+    return this.prisma.userViewLesson.create({
+      data: {
+        userId: user.id,
+        lessonId: lessonId,
       },
     });
   }

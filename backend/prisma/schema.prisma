@@ -55,6 +55,7 @@ model User {
   PermissionUserModule    PermissionUserModule[]
   PermissionUserSubModule PermissionUserSubModule[]
   NotificationUser        NotificationUser[]
+  UserViewLesson          UserViewLesson[]
 
   @@map("users")
 }
@@ -253,18 +254,31 @@ model Submodule {
 
 // Tabela de Aulas
 model Lesson {
-  id          Int       @id @default(autoincrement())
-  title       String
-  description String?
-  content     String
-  thumbnail   String?
-  submoduleId Int
-  order       Int       @default(0)
-  submodule   Submodule @relation(fields: [submoduleId], references: [id])
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  id             Int              @id @default(autoincrement())
+  title          String
+  description    String?
+  content        String
+  thumbnail      String?
+  submoduleId    Int
+  order          Int              @default(0)
+  submodule      Submodule        @relation(fields: [submoduleId], references: [id])
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  UserViewLesson UserViewLesson[]
 
   @@map("lessons")
+}
+
+model UserViewLesson {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  lessonId  Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  User      User     @relation(fields: [userId], references: [id])
+  Lesson    Lesson   @relation(fields: [lessonId], references: [id])
+
+  @@map("user_view_lessons")
 }
 
 model PermissionUserTraining {

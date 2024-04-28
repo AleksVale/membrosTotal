@@ -2,7 +2,7 @@ import { ADMIN_PAGES } from '@/utils/constants/routes'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { createNotificationchema, CreateNotificationDTO } from '../validation'
 import NotificationService from '@/services/notification.service'
@@ -11,6 +11,7 @@ import AutocompleteService, {
 } from '@/services/autocomplete.service'
 
 export function useCreateNotification() {
+  const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const [userOptions, setUserOptions] = useState<Autocomplete[]>([])
   const form = useForm<CreateNotificationDTO>({
@@ -21,6 +22,8 @@ export function useCreateNotification() {
       users: [],
     },
   })
+
+  const { reset } = form
 
   const handleSubmitForm = useCallback(
     async (data: CreateNotificationDTO) => {
@@ -39,8 +42,19 @@ export function useCreateNotification() {
 
   const fetchUsers = useCallback(async () => {
     const response = await AutocompleteService.fetchAutocomplete(['users'])
+    const userParam = searchParams.get('user')
+    if (userParam) {
+      const user = response.data.users?.find(
+        (user) => user.fullName === userParam,
+      )
+      if (user) {
+        reset({
+          users: [user],
+        })
+      }
+    }
     setUserOptions(response.data.users ?? [])
-  }, [])
+  }, [reset, searchParams])
 
   useEffect(() => {
     fetchUsers()

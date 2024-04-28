@@ -44,7 +44,6 @@ interface PaymentDialogProps {
     file: File,
   ) => Promise<void>
   downloadFile: (id: number) => Promise<void>
-  navigateOnEdit: string
   type: 'pagamento' | 'reembolso' | 'solicitação de compra'
 }
 

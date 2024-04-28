@@ -72,8 +72,9 @@ export class AwsService {
     userId: number,
     paymentRequestId: number,
     mimeType: string,
+    type: 'base' | 'finish' = 'base',
   ) {
-    return `refunds/${userId}/${paymentRequestId}/refund.${mimeType}`;
+    return `refunds/${userId}/${paymentRequestId}/${type === 'base' ? 'refund' : 'Comprovante-de-reembolso'}.${mimeType}`;
   }
 
   createPhotoKeyUser(userId: number, mimeType: string) {

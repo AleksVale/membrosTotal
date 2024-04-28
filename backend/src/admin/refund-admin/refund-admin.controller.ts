@@ -8,15 +8,23 @@ import {
   Query,
   DefaultValuePipe,
   ParseIntPipe,
+  HttpStatus,
+  Post,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
 import { RefundAdminService } from './refund-admin.service';
 import { UpdatePaymentRequestAdminDTO } from 'src/admin/payment-request-admin/dto/update-payment-request-admin.dto';
-import { ApiOkResponse, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiOkResponse, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
 import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { PaymentResponseDto } from 'src/admin/payment-request-admin/dto/payment-request-response.dto';
 import { PaymentStatus } from '@prisma/client';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 
 @ApiTags('Refunds')
 @UseGuards(JwtAuthGuard, RoleGuard)
@@ -67,5 +75,23 @@ export class RefundAdminController {
     @Body() updateRefundAdminDto: UpdatePaymentRequestAdminDTO,
   ) {
     return this.refundAdminService.update(+id, updateRefundAdminDto);
+  }
+
+  @Get('signed_url/:id')
+  getSignedURL(@Param('id') id: string) {
+    return this.refundAdminService.getSignedURL(+id);
+  }
+
+  @Post(':id/finish/file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFileFinish(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: TokenPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.refundAdminService.createFileFinish(file, user, +id);
+
+    return { success: true };
   }
 }

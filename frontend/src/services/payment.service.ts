@@ -1,7 +1,7 @@
 import http from '@/lib/http'
 import { SignedURLResponse, SuccessResponse } from '@/utils/constants/routes'
 import { PaginatedResponseDto } from './interfaces'
-import { Payment } from '@/utils/interfaces/payment'
+import { Payment, PaymentStatus } from '@/utils/interfaces/payment'
 
 const getPayments = async (searchParams: URLSearchParams) => {
   return http.get<PaginatedResponseDto<Payment>>(
@@ -22,14 +22,14 @@ const update = async (payment: unknown, id: string) => {
 
 const cancelPayment = async (id: number, reason: string) => {
   return http.patch<SuccessResponse>(`/payment-admin/${id}`, {
-    status: 'CANCELLED',
+    status: PaymentStatus.CANCELLED,
     reason,
   })
 }
 
 const finishPayment = async (id: number, reason: string, file: File) => {
   await http.patch<SuccessResponse>(`/payment-admin/${id}`, {
-    status: 'CANCELLED',
+    status: PaymentStatus.APPROVED,
     reason,
   })
   const formData = new FormData()

@@ -4,11 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { DataTableColumnHeader } from '../../../../components/DataTableColumnHeader'
 import { PaginationMeta } from '../../../../services/interfaces'
-import {
-  ADMIN_PAGES,
-  DEFAULT_META_PAGINATION,
-} from '../../../../utils/constants/routes'
-
+import { DEFAULT_META_PAGINATION } from '../../../../utils/constants/routes'
 import PaymentRequestservice from '@/services/paymentRequest.service'
 import { PaymentLabel, PaymentStatus } from '@/utils/interfaces/payment'
 import { IPaymentRequest } from '../interface'
@@ -124,6 +120,12 @@ export function useListPaymentRequest() {
       },
     },
     {
+      accessorKey: 'reason',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Descrição" />
+      ),
+    },
+    {
       accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Criado em" />
@@ -147,7 +149,6 @@ export function useListPaymentRequest() {
             cancel={handleConfirmDeletePaymentRequest}
             confirmPaidPayment={handleConfirmPaidPaymentRequest}
             data={paymentRequestRequest}
-            navigateOnEdit={ADMIN_PAGES.listPaymentRequest}
             downloadFile={handleGetSignedURL}
             type="solicitação de compra"
           />

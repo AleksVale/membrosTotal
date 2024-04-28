@@ -24,7 +24,7 @@ import { TrainingAdminModule } from './admin/training-admin/training-admin.modul
 import { TrainingModulesAdminModule } from './admin/training-modules-admin/training-modules-admin.module';
 import { SubModulesAdminModule } from './admin/sub-modules-admin/sub-modules-admin.module';
 import { LessonsAdminModule } from './admin/lessons-admin/lessons-admin.module';
-import { RefundAdminModule } from './public/refund-admin/refund-admin.module';
+import { RefundAdminModule } from './admin/refund-admin/refund-admin.module';
 import { TrainingCollaboratorModule } from './collaborator/training-collaborator/training-collaborator.module';
 import { ModuleCollaboratorModule } from './collaborator/modules-collaborator/modules-collaborator.module';
 import { SubmoduleCollaboratorModule } from './collaborator/submodules-collaborator/submodules-collaborator.module';

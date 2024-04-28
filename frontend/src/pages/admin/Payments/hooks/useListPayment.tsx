@@ -4,10 +4,7 @@ import { useState, useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { DataTableColumnHeader } from '../../../../components/DataTableColumnHeader'
 import { PaginationMeta } from '../../../../services/interfaces'
-import {
-  ADMIN_PAGES,
-  DEFAULT_META_PAGINATION,
-} from '../../../../utils/constants/routes'
+import { DEFAULT_META_PAGINATION } from '../../../../utils/constants/routes'
 import {
   Payment,
   PaymentLabel,
@@ -161,7 +158,6 @@ export function useListPayment() {
             confirmPaidPayment={handleConfirmPaidPayment}
             data={paymentRequest}
             downloadFile={handleGetSignedURL}
-            navigateOnEdit={ADMIN_PAGES.listPayments}
             type="pagamento"
           />
         )

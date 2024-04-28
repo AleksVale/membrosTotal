@@ -249,10 +249,16 @@ export function useColumnsUser() {
                     </span>
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem className="group flex items-center gap-2">
+                <DropdownMenuItem
+                  onClick={() => {
+                    navigate(
+                      `${ADMIN_PAGES.createNotification}?user=${user.firstName} ${user.lastName}`,
+                    )
+                  }}
+                  className="group flex items-center gap-2"
+                >
                   <BellRing size={16} className="text-amber-500" />
                   <span className="group-hover:text-amber-500">
-                    {' '}
                     Enviar uma notificação{' '}
                   </span>
                 </DropdownMenuItem>

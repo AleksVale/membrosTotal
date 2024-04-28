@@ -7,6 +7,9 @@ export const createLesson = z.object({
   description: z
     .string({ required_error: 'Descrição obrigatória' })
     .min(2, { message: 'Descrição obrigatória' }),
+  order: z.coerce
+    .number({ required_error: 'Campo obrigatório' })
+    .min(1, { message: 'Ordem deve ser maior que 0' }),
   submoduleId: z.coerce.number({
     required_error: 'Selecione um módulo',
     invalid_type_error: 'Selecione um módulo',

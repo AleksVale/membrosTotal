@@ -11,6 +11,9 @@ export class LessonCollaboratorRepository {
       where: {
         submoduleId: submoduleId,
       },
+      orderBy: {
+        order: 'asc',
+      },
     });
   }
 }

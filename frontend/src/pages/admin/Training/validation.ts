@@ -19,6 +19,9 @@ export const createTraining = z.object({
   tutor: z
     .string({ required_error: 'Campo obrigatório' })
     .min(2, { message: 'Campo obrigatório' }),
+  order: z.coerce
+    .number({ required_error: 'Campo obrigatório' })
+    .min(1, { message: 'Ordem deve ser maior que 0' }),
   file: z
     .any()
     .refine((files) => {

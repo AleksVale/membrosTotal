@@ -16,6 +16,7 @@ export function useEditTraining() {
       description: '',
       title: '',
       tutor: '',
+      order: 0,
     },
   })
 

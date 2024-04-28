@@ -15,6 +15,7 @@ export function useCreateLesson() {
       description: '',
       title: '',
       content: '',
+      order: 0,
     },
   })
 

@@ -14,6 +14,7 @@ export function useCreateModule() {
     defaultValues: {
       description: '',
       title: '',
+      order: 0,
     },
   })
 

@@ -15,6 +15,7 @@ export function useCreateTraining() {
       description: '',
       title: '',
       tutor: '',
+      order: 0,
     },
   })
 

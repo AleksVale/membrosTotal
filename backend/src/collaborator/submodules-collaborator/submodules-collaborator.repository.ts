@@ -18,6 +18,9 @@ export class SubmoduleCollaboratorRepository {
           },
         },
       },
+      orderBy: {
+        order: 'asc',
+      },
     });
   }
 }

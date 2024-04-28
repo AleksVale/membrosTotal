@@ -31,7 +31,7 @@ export function CreateEditTrainingForm({
   const file = form.watch('file')
   let placeholderUrl: string | undefined
 
-  if (file && file[0]) {
+  if (file?.[0]) {
     if (typeof file[0] === 'string') {
       placeholderUrl = file[0]
     } else {
@@ -75,6 +75,23 @@ export function CreateEditTrainingForm({
                   <FormLabel>Título</FormLabel>
                   <FormControl>
                     <Input placeholder="Insira o título" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="order"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ordem</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Insira a ordem de exibição"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>

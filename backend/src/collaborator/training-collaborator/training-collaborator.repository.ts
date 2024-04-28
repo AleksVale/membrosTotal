@@ -7,19 +7,19 @@ export class TrainingCollaboratorRepository {
   constructor(private prisma: PrismaService) {}
 
   async findAll(user: TokenPayload) {
-    return this.prisma.training
-      .findMany
-      //   {
-      //   where: {
-      //     PermissionUserTraining: {
-      //       some: {
-      //         User: {
-      //           id: user.id,
-      //         },
-      //       },
-      //     },
-      //   },
-      // }
-      ();
+    return this.prisma.training.findMany({
+      where: {
+        PermissionUserTraining: {
+          some: {
+            User: {
+              id: user.id,
+            },
+          },
+        },
+      },
+      orderBy: {
+        order: 'asc',
+      },
+    });
   }
 }

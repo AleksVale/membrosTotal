@@ -7,6 +7,17 @@ export interface InputProps
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
   ({ className, type, ...props }, ref) => {
+    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (type === 'number') {
+        const value = props.value
+        if (value?.toString().length === 1 && value === 0) {
+          e.target.value = e.target.value.replace(/^0+/, '')
+        }
+      }
+      if (props.onChange) {
+        props.onChange(e)
+      }
+    }
     return (
       <input
         type={type}
@@ -16,6 +27,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         )}
         ref={ref}
         {...props}
+        onChange={handleChangeInput}
       />
     )
   },

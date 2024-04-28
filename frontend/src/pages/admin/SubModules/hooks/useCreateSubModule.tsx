@@ -14,6 +14,7 @@ export function useCreateSubModule() {
     defaultValues: {
       description: '',
       title: '',
+      order: 0,
     },
   })
 

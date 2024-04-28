@@ -15,6 +15,7 @@ export function useEditSubModule() {
     defaultValues: {
       description: '',
       title: '',
+      order: 0,
     },
   })
 

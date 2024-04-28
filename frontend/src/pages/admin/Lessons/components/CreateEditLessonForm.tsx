@@ -59,6 +59,23 @@ export function CreateEditLessonForm({
             />
             <FormField
               control={form.control}
+              name="order"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Ordem</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      placeholder="Insira a ordem de exibição"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
               name="content"
               render={({ field }) => (
                 <FormItem>

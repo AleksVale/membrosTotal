@@ -16,6 +16,7 @@ export function useEditLesson() {
       description: '',
       title: '',
       content: '',
+      order: 0,
     },
   })
 

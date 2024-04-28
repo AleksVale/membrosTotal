@@ -53,7 +53,7 @@ export class TrainingRepository {
             contains: options.title,
           },
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { order: 'asc' },
         include: {
           Module: true,
           PermissionUserTraining: true,

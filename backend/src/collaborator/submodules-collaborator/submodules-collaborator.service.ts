@@ -18,7 +18,9 @@ export class SubmoduleCollaboratorService {
     const submodules = await Promise.all(
       result.map(async (submodule) => {
         if (submodule.thumbnail) {
-          const photo = await this.awsService.getStoredObject(submodule.thumbnail);
+          const photo = await this.awsService.getStoredObject(
+            submodule.thumbnail,
+          );
           return { ...submodule, thumbnail: photo };
         }
         return submodule;

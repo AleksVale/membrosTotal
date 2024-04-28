@@ -44,7 +44,7 @@ export class LessonsRepository {
         include: {
           submodule: true,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { order: 'asc' },
       },
       {
         page: options.page,

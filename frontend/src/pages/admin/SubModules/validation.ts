@@ -20,6 +20,9 @@ export const createSubModule = z.object({
     required_error: 'Selecione um módulo',
     invalid_type_error: 'Selecione um módulo',
   }),
+  order: z.coerce
+    .number({ required_error: 'Campo obrigatório' })
+    .min(1, { message: 'Ordem deve ser maior que 0' }),
   file: z
     .any()
     .refine((files) => {

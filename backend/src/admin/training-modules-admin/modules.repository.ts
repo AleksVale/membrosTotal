@@ -72,7 +72,7 @@ export class ModuleRepository {
           },
           trainingId: options.trainingId,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { order: 'asc' },
         include: {
           training: true,
         },

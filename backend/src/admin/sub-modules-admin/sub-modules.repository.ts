@@ -46,7 +46,7 @@ export class SubModuleRepository {
           },
           moduleId: options.moduleId,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { order: 'asc' },
         include: {
           module: true,
           PermissionUserSubModule: true,

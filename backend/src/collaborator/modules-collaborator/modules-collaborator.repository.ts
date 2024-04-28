@@ -10,13 +10,16 @@ export class ModuleCollaboratorRepository {
     return this.prisma.module.findMany({
       where: {
         trainingId: trainingId,
-        // PermissionUserModule: {
-        //   some: {
-        //     User: {
-        //       id: user.id,
-        //     },
-        //   },
-        // },
+        PermissionUserModule: {
+          some: {
+            User: {
+              id: user.id,
+            },
+          },
+        },
+      },
+      orderBy: {
+        order: 'asc',
       },
     });
   }

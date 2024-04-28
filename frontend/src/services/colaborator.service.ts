@@ -175,7 +175,14 @@ const getLessons = async (id?: string) => {
   )
 }
 
+const viewLesson = async (id?: number) => {
+  return http.post<SuccessResponse>(`collaborator/lessons-collaborator`, {
+    id,
+  })
+}
+
 const ColaboratorService = {
+  viewLesson,
   update,
   getCurrentUser,
   getMeetings,

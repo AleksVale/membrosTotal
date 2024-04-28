@@ -4,7 +4,7 @@ import { ILesson } from '@/pages/admin/Lessons/interfaces'
 import useListLesson from './hooks/useLessonTraining'
 import { SidebarLesson } from '@/components/SidebarLesson'
 import { Button } from '@/components/ui/button'
-import { ArrowLeft, Info } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Info } from 'lucide-react'
 import { useGoBack } from '@/hooks/useGoBack'
 import ReactPlayer from 'react-player'
 const LessonList: React.FC = () => {
@@ -15,6 +15,8 @@ const LessonList: React.FC = () => {
     videoError,
     handleInvalidURL,
     submoduleName,
+    handleViewLesson,
+    sawLesson,
   } = useListLesson()
   const { goBack } = useGoBack()
 
@@ -50,9 +52,24 @@ const LessonList: React.FC = () => {
             <ArrowLeft className="size-4" />
             <span>Voltar para os conteúdos</span>
           </Button>
-          <h3 className="scroll-m-20 py-5 text-xl font-semibold tracking-tight">
-            {selectedLesson?.title}
-          </h3>
+          <div className="flex items-center justify-between">
+            <h3 className="scroll-m-20 py-5 text-xl font-semibold tracking-tight">
+              {selectedLesson?.title}
+            </h3>
+            {sawLesson ? (
+              <Button variant={'outline'} className="gap-2">
+                <CheckCircle className="size-3.5" />
+                <span>Aula vista</span>
+              </Button>
+            ) : (
+              <Button
+                onClick={() => handleViewLesson(selectedLesson?.id)}
+                variant={'secondary'}
+              >
+                Marcar como vista
+              </Button>
+            )}
+          </div>
           <div className="display flex items-center gap-1">
             <Info className="size-3.5 font-semibold" />
             <span className="text-base font-semibold">Informações da aula</span>

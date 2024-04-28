@@ -1,5 +1,13 @@
 import { SuccessResponse } from '@/utils/constants/routes'
 
+export interface IUserViewLesson {
+  id: number
+  userId: number
+  lessonId: number
+  createdAt: Date
+  updatedAt: Date
+}
+
 export interface ILesson {
   id: number
   title: string
@@ -9,6 +17,7 @@ export interface ILesson {
   thumbnail?: string | null
   createdAt: Date
   updatedAt: Date
+  UserViewLesson: IUserViewLesson[]
 }
 
 export interface GetLessonResponse {

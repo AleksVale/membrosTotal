@@ -21,6 +21,15 @@ export class LessonCollaboratorRepository {
   }
 
   async viewLesson(user: TokenPayload, lessonId: number) {
+    const alreadyViewed = await this.prisma.userViewLesson.findFirst({
+      where: {
+        userId: user.id,
+        lessonId: lessonId,
+      },
+    });
+    if (alreadyViewed) {
+      return;
+    }
     return this.prisma.userViewLesson.create({
       data: {
         userId: user.id,

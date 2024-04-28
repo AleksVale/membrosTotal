@@ -22,6 +22,10 @@ export class LessonResponseDTO {
   @ApiProperty({ type: String, description: 'Thumbnail URL', required: false })
   thumbnail?: string;
 
+  @ApiProperty({ type: Number, description: 'Order' })
+  order!: number;
+
+  @ApiProperty({ type: Number, description: 'Submodule' })
   submoduleId!: number;
 }
 

@@ -12,6 +12,9 @@ const createLessonSchema = z.object({
     .string({ required_error: 'Conteúdo obrigatório' })
     .url({ message: 'O conteúdo deve ser uma URL válida' }),
   submoduleId: z.number({ required_error: 'O id do submódulo é obrigatório' }),
+  order: z
+    .number({ required_error: 'A ordem é obrigatória' })
+    .min(1, { message: 'A ordem deve ser maior que 0' }),
 });
 
 // create a DTO class using createZodDto

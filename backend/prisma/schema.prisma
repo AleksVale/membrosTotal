@@ -202,10 +202,12 @@ model PaymentRequest {
 }
 
 model Training {
-  id                     Int                      @id @default(autoincrement())
-  title                  String
-  description            String
-  tutor                  String
+  id          Int    @id @default(autoincrement())
+  title       String
+  description String
+  tutor       String
+  order       Int    @default(0)
+
   thumbnail              String?
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @updatedAt
@@ -216,11 +218,13 @@ model Training {
 }
 
 model Module {
-  id                   Int                    @id @default(autoincrement())
-  title                String
-  description          String?
-  thumbnail            String?
-  submodules           Submodule[]
+  id          Int         @id @default(autoincrement())
+  title       String
+  description String?
+  thumbnail   String?
+  submodules  Submodule[]
+  order       Int         @default(0)
+
   trainingId           Int // ID do treinamento pai
   training             Training               @relation(fields: [trainingId], references: [id])
   PermissionUserModule PermissionUserModule[]
@@ -236,6 +240,7 @@ model Submodule {
   title                   String
   description             String?
   thumbnail               String?
+  order                   Int                       @default(0)
   moduleId                Int // ID do módulo pai
   module                  Module                    @relation(fields: [moduleId], references: [id])
   lessons                 Lesson[]
@@ -251,9 +256,10 @@ model Lesson {
   id          Int       @id @default(autoincrement())
   title       String
   description String?
-  content     String // Este campo pode ser uma URL para vídeos, documentos, etc.
+  content     String
   thumbnail   String?
-  submoduleId Int // ID do submódulo pai
+  submoduleId Int
+  order       Int       @default(0)
   submodule   Submodule @relation(fields: [submoduleId], references: [id])
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt

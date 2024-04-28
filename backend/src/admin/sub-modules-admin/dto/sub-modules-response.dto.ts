@@ -28,6 +28,9 @@ export class SubmoduleDTO {
 
   @ApiProperty({ type: Number, description: 'Module id' })
   moduleId!: number;
+
+  @ApiProperty({ type: Number, description: 'Order' })
+  order!: number;
 }
 
 export class GetSubModuleResponse {

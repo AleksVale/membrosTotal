@@ -27,6 +27,9 @@ export class TrainingDTO {
 
   @ApiProperty({ type: [ModuleDTO], description: 'List of modules' })
   modules!: ModuleDTO[];
+
+  @ApiProperty({ type: Number, description: 'Order' })
+  order!: number;
 }
 
 export class GetTrainingResponse {

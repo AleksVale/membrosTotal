@@ -11,6 +11,9 @@ const createTrainingSchema = z.object({
   tutor: z
     .string({ required_error: 'A descrição é obrigatório' })
     .min(3, { message: 'Insira um nome válido' }),
+  order: z
+    .number({ required_error: 'A ordem é obrigatória' })
+    .min(1, { message: 'A ordem deve ser maior que 0' }),
 });
 
 // class is required for using DTO as a type

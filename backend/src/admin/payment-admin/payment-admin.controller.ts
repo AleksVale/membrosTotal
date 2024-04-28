@@ -95,6 +95,19 @@ export class PaymentAdminController {
     return this.paymentAdminService.pay(+id, user);
   }
 
+  @Post(':id/finish/file')
+  @UseInterceptors(FileInterceptor('file'))
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.CREATED })
+  async createFileFinish(
+    @UploadedFile() file: Express.Multer.File,
+    @CurrentUser() user: TokenPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    await this.paymentAdminService.createFileFinish(file, user, +id);
+
+    return { success: true };
+  }
+
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.paymentAdminService.remove(+id);

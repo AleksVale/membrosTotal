@@ -4,29 +4,20 @@ import { useState, useCallback, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { DataTableColumnHeader } from '../../../../components/DataTableColumnHeader'
 import { PaginationMeta } from '../../../../services/interfaces'
-import { DEFAULT_META_PAGINATION } from '../../../../utils/constants/routes'
-import { Payment, PaymentLabel } from '../../../../utils/interfaces/payment'
+import {
+  ADMIN_PAGES,
+  DEFAULT_META_PAGINATION,
+} from '../../../../utils/constants/routes'
+import {
+  Payment,
+  PaymentLabel,
+  PaymentStatus,
+} from '../../../../utils/interfaces/payment'
 import Paymentservice from '@/services/payment.service'
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '@/components/ui/dialog'
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { MoreHorizontal, Trash, CheckSquare, DownloadCloud } from 'lucide-react'
-import { Button } from '@/components/ui/button'
 import { StatusBadge } from '@/components/StatusBadge'
+import { PaymentAdminDialog } from '@/PaymentAdminDialog'
+import { toast } from 'react-toastify'
+import { isAxiosError } from 'axios'
 
 export function useListPayment() {
   const [searchParams] = useSearchParams()
@@ -39,11 +30,29 @@ export function useListPayment() {
     setMeta(response.data.meta)
   }, [searchParams])
 
-  const handleConfirmPaidPayment = async (id: number) => {
+  const handleConfirmPaidPayment = async (
+    id: number,
+    status: PaymentStatus,
+    reason: string,
+    file: File,
+  ) => {
     try {
-      await Paymentservice.finishPayment(id)
+      if (!file) {
+        toast.error('É necessário enviar um comprovante')
+        return
+      }
+      if (status !== PaymentStatus.PENDING) {
+        toast.error(
+          'Não é possível confirmar um pagamento que não está pendente',
+        )
+        return
+      }
+      await Paymentservice.finishPayment(id, reason, file)
       getPayments()
     } catch (error) {
+      isAxiosError(error)
+        ? toast.error(error.response?.data.message)
+        : toast.error('Erro ao confirmar pagamento')
       console.error(error)
     }
   }
@@ -57,9 +66,19 @@ export function useListPayment() {
     }
   }
 
-  const handleConfirmDeletePayment = async (id: number) => {
+  const handleConfirmDeletePayment = async (
+    id: number,
+    status: PaymentStatus,
+    cancelReason: string,
+  ) => {
     try {
-      await Paymentservice.cancelPayment(id)
+      if (status !== PaymentStatus.PENDING) {
+        toast.error(
+          'Não é possível cancelar um pagamento que não está pendente',
+        )
+        return
+      }
+      await Paymentservice.cancelPayment(id, cancelReason)
       getPayments()
     } catch (error) {
       console.error(error)
@@ -112,6 +131,12 @@ export function useListPayment() {
       },
     },
     {
+      accessorKey: 'reason',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Motivo" />
+      ),
+    },
+    {
       accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Criado em" />
@@ -131,66 +156,14 @@ export function useListPayment() {
         const paymentRequest = row.original
 
         return (
-          <Dialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="size-8 p-0">
-                  <span className="sr-only">Open menu</span>
-                  <MoreHorizontal className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                <DropdownMenuItem
-                  onClick={() => handleConfirmPaidPayment(paymentRequest.id)}
-                  className="group flex items-center gap-2"
-                >
-                  <CheckSquare size={16} className="text-green-300" />
-                  <span className="group-hover:text-green-300">
-                    Confirmar pagamento
-                  </span>
-                </DropdownMenuItem>
-                <DialogTrigger asChild>
-                  <DropdownMenuItem className="group flex items-center gap-2">
-                    <Trash size={16} className="text-destructive" />
-                    <span className="group-hover:text-destructive">
-                      Negar pagamento
-                    </span>
-                  </DropdownMenuItem>
-                </DialogTrigger>
-                <DropdownMenuItem
-                  onClick={() => handleGetSignedURL(paymentRequest.id)}
-                  className="group flex items-center gap-2"
-                >
-                  <DownloadCloud size={16} className="text-green-300" />
-                  <span className="group-hover:text-green-300">
-                    Ver comprovante
-                  </span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Você tem certeza?</DialogTitle>
-                <DialogDescription>
-                  Essa ação não pode ser desfeita. Você tem certeza que deseja
-                  negar esse reembolso?
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button
-                    variant={'destructive'}
-                    onClick={() =>
-                      handleConfirmDeletePayment(paymentRequest.id)
-                    }
-                  >
-                    Cancelar
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <PaymentAdminDialog
+            cancel={handleConfirmDeletePayment}
+            confirmPaidPayment={handleConfirmPaidPayment}
+            data={paymentRequest}
+            downloadFile={handleGetSignedURL}
+            navigateOnEdit={ADMIN_PAGES.listPayments}
+            type="pagamento"
+          />
         )
       },
     },

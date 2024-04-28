@@ -99,4 +99,27 @@ export class PaymentAdminService {
     await this.awsService.updatePhoto(file, photoKey);
     return this.paymentRepository.update({ photoKey }, { id: paymentId });
   }
+
+  async createFileFinish(
+    file: Express.Multer.File,
+    user: TokenPayload,
+    paymentId: number,
+  ) {
+    const payment = await this.paymentRepository.find({ id: paymentId });
+    const photoKey = payment?.approvedPhotoKey
+      ? payment.photoKey
+      : this.awsService.createPhotoKeyPayment(
+          user.id,
+          paymentId,
+          file.mimetype.split('/')[1],
+          'finish',
+        );
+    if (photoKey) {
+      await this.awsService.updatePhoto(file, photoKey);
+    }
+    return this.paymentRepository.update(
+      { approvedPhotoKey: photoKey },
+      { id: paymentId },
+    );
+  }
 }

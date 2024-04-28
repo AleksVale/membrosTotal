@@ -34,8 +34,13 @@ export class AwsService {
     return uploadResult;
   }
 
-  createPhotoKeyPayment(userId: number, paymentId: number, mimeType: string) {
-    return `payments/${userId}/${paymentId}/payment.${mimeType}`;
+  createPhotoKeyPayment(
+    userId: number,
+    paymentId: number,
+    mimeType: string,
+    type: 'base' | 'finish' = 'base',
+  ) {
+    return `payments/${userId}/${paymentId}/${type === 'base' ? 'payment' : 'comprovante'}.${mimeType}`;
   }
 
   createPhotoKeyTraining(trainingId: number, mimeType: string) {

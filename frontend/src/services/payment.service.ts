@@ -20,15 +20,23 @@ const update = async (payment: unknown, id: string) => {
   return http.patch<SuccessResponse>(`/payment-admin/${id}`, payment)
 }
 
-const cancelPayment = async (id: number) => {
+const cancelPayment = async (id: number, reason: string) => {
   return http.patch<SuccessResponse>(`/payment-admin/${id}`, {
     status: 'CANCELLED',
-    reason: 'Cancelado pelo administrador',
+    reason,
   })
 }
 
-const finishPayment = async (id: number) => {
-  return http.patch<SuccessResponse>(`/payment-admin/${id}/finish`)
+const finishPayment = async (id: number, reason: string, file: File) => {
+  await http.patch<SuccessResponse>(`/payment-admin/${id}`, {
+    status: 'CANCELLED',
+    reason,
+  })
+  const fileResponse = await http.post<SuccessResponse>(
+    `/payment-admin/${id}/finish/file`,
+    file,
+  )
+  return fileResponse
 }
 
 const getSignedURL = async (id: number) => {

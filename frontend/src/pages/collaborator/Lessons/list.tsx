@@ -66,7 +66,7 @@ const LessonList: React.FC = () => {
                 onClick={() => handleViewLesson(selectedLesson?.id)}
                 variant={'secondary'}
               >
-                Marcar como vista
+                Concluir Aula
               </Button>
             )}
           </div>

@@ -29,6 +29,7 @@ import { Label } from '@radix-ui/react-label'
 import { Input } from './components/ui/input'
 import { Textarea } from './components/ui/textarea'
 import { IPaymentRequest } from './pages/admin/PaymentsRequest/interface'
+import { toast } from 'react-toastify'
 
 interface PaymentDialogProps {
   data: Payment | RefundResponseDto | PaymentResponseDto | IPaymentRequest
@@ -54,7 +55,7 @@ export function PaymentAdminDialog({
   downloadFile,
   confirmPaidPayment,
 }: Readonly<PaymentDialogProps>) {
-  const [reason, setReason] = useState('Cancelado pelo usuário')
+  const [reason, setReason] = useState('')
   const [file, setFile] = useState<File | null>(null)
   const [cancelType, setCancelType] = useState(false)
 
@@ -62,6 +63,15 @@ export function PaymentAdminDialog({
     if (e.target.files) {
       setFile(e.target.files[0])
     }
+  }
+
+  const handleCancel = async (id: number, status: PaymentStatus) => {
+    if (!reason) {
+      toast.error('Por favor infome o motivo do cancelamento.')
+      return
+    }
+    await cancel(id, status, reason)
+    setReason('')
   }
 
   const renderConfirm = () => {
@@ -82,6 +92,7 @@ export function PaymentAdminDialog({
             <Input
               id="reason"
               defaultValue={reason}
+              placeholder="Digite o motivo do cancelamento..."
               className="col-span-3"
               onChange={(e) => setReason(e.target.value)}
             />
@@ -90,7 +101,8 @@ export function PaymentAdminDialog({
             <DialogClose asChild>
               <Button
                 variant={'destructive'}
-                onClick={() => cancel(data.id, data.status, reason)}
+                onClick={() => handleCancel(data.id, data.status)}
+                disabled={!reason}
               >
                 Cancelar
               </Button>

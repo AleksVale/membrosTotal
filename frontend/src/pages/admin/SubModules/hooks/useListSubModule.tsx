@@ -57,17 +57,18 @@ export function useListSubModule() {
 
   const columns: ColumnDef<ISubModule>[] = [
     {
-      accessorKey: 'module.title',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Módulos" />
-      ),
-    },
-    {
       accessorKey: 'order',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Ordem" />
       ),
     },
+    {
+      accessorKey: 'module.title',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Módulos" />
+      ),
+    },
+
     {
       accessorKey: 'title',
       header: ({ column }) => (

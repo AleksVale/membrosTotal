@@ -57,15 +57,15 @@ export function useListModule() {
 
   const columns: ColumnDef<IModule>[] = [
     {
-      accessorKey: 'training.title',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Treinamento" />
-      ),
-    },
-    {
       accessorKey: 'order',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Ordem" />
+      ),
+    },
+    {
+      accessorKey: 'training.title',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Treinamento" />
       ),
     },
     {

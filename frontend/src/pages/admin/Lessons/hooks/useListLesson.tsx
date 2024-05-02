@@ -46,15 +46,15 @@ export function useListLesson() {
 
   const columns: ColumnDef<ILesson>[] = [
     {
-      accessorKey: 'submodule.title',
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="Submódulo" />
-      ),
-    },
-    {
       accessorKey: 'order',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Ordem" />
+      ),
+    },
+    {
+      accessorKey: 'submodule.title',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Submódulo" />
       ),
     },
     {

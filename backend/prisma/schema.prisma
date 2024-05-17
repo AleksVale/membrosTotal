@@ -361,3 +361,16 @@ model NotificationUser {
 
   @@map("notification_users")
 }
+
+model UtmParam {
+  id          Int      @id @default(autoincrement())
+  utmSource   String?  @map("utm_source")
+  utmMedium   String?  @map("utm_medium")
+  utmCampaign String?  @map("utm_campaign")
+  utmTerm     String?  @map("utm_term")
+  utmContent  String?  @map("utm_content")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("utm_params")
+}

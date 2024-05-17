@@ -34,6 +34,7 @@ import { ExpertRequestModule } from './admin/expert-request/expert-request.modul
 import { HomeModule } from './collaborator/home/home.module';
 import { AdminNotificationModule } from './admin/admin-notification/admin-notification.module';
 import { CollaboratorNotificationModule } from './collaborator/collaborator-notification/collaborator-notification.module';
+import { UtmParamModule } from './public/utm-param/utm-param.module';
 
 @Module({
   imports: [
@@ -82,6 +83,7 @@ import { CollaboratorNotificationModule } from './collaborator/collaborator-noti
     HomeModule,
     AdminNotificationModule,
     CollaboratorNotificationModule,
+    UtmParamModule,
   ],
   controllers: [AppController],
   providers: [

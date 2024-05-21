@@ -1,7 +1,7 @@
 import http from '@/lib/http'
 import { CreateUserForm, User } from '@/pages/admin/User/interfaces'
 import { SuccessResponse } from '@/utils/constants/routes'
-import { PaginatedResponseDto } from './interfaces'
+import { IGetPicturesResponse, PaginatedResponseDto } from './interfaces'
 
 const getUsers = async (searchParams: URLSearchParams) => {
   return http.get<PaginatedResponseDto<User>>(
@@ -24,12 +24,17 @@ const remove = async (id: number | string) => {
   return http.delete<SuccessResponse>(`/user/${id}`)
 }
 
+const getProfilePicture = async (id: number | string) => {
+  return http.get<IGetPicturesResponse>(`/collaborator/user/${id}/picture`)
+}
+
 const UserService = {
   getUsers,
   createUser,
   update,
   getUser,
   remove,
+  getProfilePicture,
 }
 
 export default UserService

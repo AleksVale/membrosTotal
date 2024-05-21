@@ -25,11 +25,13 @@ import { COLLABORATOR_PAGES } from '@/utils/constants/routes'
 import { MenuLink } from '@/components/MenuLink'
 import { SideMenuCollapsible } from '@/components/SideMenuCollapsible'
 import { MenuLinkAlone } from '@/components/MenuLinkAlone'
+import { useProfilePicture } from '@/hooks/useProfilePicture'
 
 export function ColaboratorLayout() {
   const navigate = useNavigate()
   const { pathname } = useLocation()
   const { profile, logout, photo } = useAuth()
+  const { logo } = useProfilePicture()
   useEffect(() => {
     if (profile !== Profile.EMPLOYEE) navigate('/')
   }, [profile, navigate, pathname])
@@ -41,7 +43,7 @@ export function ColaboratorLayout() {
           <div className="sidebar flex flex-col items-center justify-center">
             <div className="flex flex-col items-center gap-2 px-6">
               <img
-                src={photo ?? '../src/assets/logo.jpg'}
+                src={photo ?? logo}
                 alt="Foto de Perfil"
                 className="size-28 rounded-full"
               />

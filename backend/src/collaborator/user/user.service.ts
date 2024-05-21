@@ -20,6 +20,14 @@ export class UserService {
     return { user, photo };
   }
 
+  async getPicture(id: number) {
+    const user = await this.userRepository.find({ id });
+    if (!user) throw new BadRequestException('Usuário não encontrado');
+    if (!user.photoKey) return { picture: null };
+    const picture = await this.awsService.getStoredObject(user.photoKey);
+    return { picture };
+  }
+
   async update(id: number, updateUserDto: UpdateUserDto) {
     const entity = {
       ...updateUserDto,

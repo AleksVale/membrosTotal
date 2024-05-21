@@ -18,6 +18,7 @@ import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { GetPictureResponse } from './dto/get-picture-response.dto';
 
 @Controller('collaborator/user')
 @Roles(['employee'])
@@ -50,5 +51,13 @@ export class UserController {
     await this.userService.createFile(file, user);
 
     return { success: true };
+  }
+
+  @ApiResponse({ type: GetPictureResponse, status: HttpStatus.OK })
+  @Get(':id/picture')
+  async getPicture(
+    @CurrentUser() user: TokenPayload,
+  ): Promise<GetPictureResponse> {
+    return this.userService.getPicture(user.id);
   }
 }

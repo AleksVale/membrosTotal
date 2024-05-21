@@ -11,3 +11,7 @@ export interface PaginatedResponseDto<T> {
   data: T[]
   meta: PaginationMeta
 }
+
+export interface IGetPicturesResponse {
+  picture: string | null
+}

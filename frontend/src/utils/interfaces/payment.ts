@@ -4,7 +4,6 @@ export enum PaymentStatus {
   PENDING = 'PENDING',
   PAID = 'PAID',
   CANCELLED = 'CANCELLED',
-  APPROVED = 'APPROVED',
 }
 
 export enum PaymentLabel {

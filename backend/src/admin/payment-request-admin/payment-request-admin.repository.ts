@@ -53,7 +53,7 @@ export class PaymentRequestRequestAdminRepository {
           userId: options.user,
           paymentRequestTypeId: options.paymentRequestTypeId,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: [{ status: 'asc' }, { createdAt: 'asc' }],
         include: {
           PaymentRequestType: true,
           User: true,

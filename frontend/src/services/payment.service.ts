@@ -29,7 +29,7 @@ const cancelPayment = async (id: number, reason: string) => {
 
 const finishPayment = async (id: number, reason: string, file: File) => {
   await http.patch<SuccessResponse>(`/payment-admin/${id}`, {
-    status: PaymentStatus.APPROVED,
+    status: PaymentStatus.PAID,
     reason,
   })
   const formData = new FormData()

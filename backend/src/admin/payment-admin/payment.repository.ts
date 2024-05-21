@@ -44,7 +44,7 @@ export class PaymentRepository {
             },
           },
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: { status: 'asc', createdAt: 'asc' },
         include: {
           PaymentExpert: {
             include: {
@@ -84,7 +84,7 @@ export class PaymentRepository {
           status: options.status,
           userId: options.user,
         },
-        orderBy: { createdAt: 'asc' },
+        orderBy: [{ status: 'asc' }, { createdAt: 'asc' }],
         include: {
           PaymentType: true,
           User: true,

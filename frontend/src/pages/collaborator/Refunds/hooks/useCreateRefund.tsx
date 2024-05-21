@@ -21,7 +21,7 @@ export function useCreateRefund() {
     async (data: CreateRefundDTO) => {
       const response = await ColaboratorService.createRefund(data)
 
-      if (response.data.id) {
+      if (response.data.id && data.file[0]) {
         try {
           const fileResponse = await ColaboratorService.createPhotoRefund(
             data.file[0],

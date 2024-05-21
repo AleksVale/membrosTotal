@@ -21,7 +21,7 @@ export function useCreatePayment() {
     async (data: CreatePaymentDTO) => {
       const response = await ColaboratorService.createPayment(data)
 
-      if (response.data.id) {
+      if (response.data.id && data.file[0]) {
         try {
           const fileResponse = await ColaboratorService.createPhotoPayment(
             data.file[0],

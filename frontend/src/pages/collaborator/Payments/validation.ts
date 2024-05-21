@@ -21,12 +21,15 @@ export const createPaymentchema = z.object({
   file: z
     .any()
     .refine((files) => {
+      if (files.length <= 0) return true
       return files?.[0]?.size <= MAX_FILE_SIZE
     }, `Max image size is 5MB.`)
-    .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
-      'Apenas .pdf, .jpg, .jpeg, .png and .webp formatos são suportados.',
-    ),
+    .refine((files) => {
+      if (files.length <= 0) {
+        return true
+      }
+      return ACCEPTED_IMAGE_TYPES.includes(files[0].type)
+    }, 'Apenas .pdf, .jpg, .jpeg, .png and .webp formatos são suportados.'),
 })
 
 export type CreatePaymentDTO = z.infer<typeof createPaymentchema>

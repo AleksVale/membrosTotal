@@ -34,11 +34,14 @@ export function useCreatePaymentRequest() {
           if (fileResponse.data.success) {
             toast.success('Pagamento criado com sucesso')
             navigate(COLLABORATOR_PAGES.listPaymentRequest)
+            return
           }
         } catch (error) {
           toast.error('Erro ao enviar a foto, tente editar mais tarde.')
           navigate(COLLABORATOR_PAGES.listPaymentRequest)
         }
+        toast.success('Pagamento criado com sucesso')
+        navigate(COLLABORATOR_PAGES.listPaymentRequest)
       }
     },
     [navigate],

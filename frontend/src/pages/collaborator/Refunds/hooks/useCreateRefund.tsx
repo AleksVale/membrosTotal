@@ -30,12 +30,15 @@ export function useCreateRefund() {
           if (fileResponse.data.success) {
             toast.success('Reembolso criado com sucesso')
             navigate(COLLABORATOR_PAGES.listRefund)
+            return
           }
         } catch (error) {
           toast.error('Erro ao enviar a foto, tente editar mais tarde.')
           navigate(COLLABORATOR_PAGES.listRefund)
         }
       }
+      toast.success('Pagamento criado com sucesso')
+      navigate(COLLABORATOR_PAGES.listPayments)
     },
     [navigate],
   )

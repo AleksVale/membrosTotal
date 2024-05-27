@@ -1,3 +1,4 @@
+import { format } from 'date-fns'
 import { Button } from './ui/button'
 import { NotificationResponseDTO } from '@/services/home.service'
 
@@ -10,20 +11,19 @@ export function NotificationCard({
   notification,
   readNotification,
 }: Readonly<NotificationCardProps>) {
+  console.log(notification)
   return (
     <div
-      className="bg-muted-foreground my-2 flex w-full items-center justify-between gap-28 rounded p-6"
+      className="bg-muted-foreground my-2 flex w-full items-center justify-between rounded p-6"
       key={notification.id}
     >
-      <div className="text-muted flex flex-1 justify-between gap-2">
-        <div>
-          <p>Título:</p>
-          <p>{notification.title}</p>
-        </div>
-        <div>
-          <p>Mensagem:</p>
-          <p>{notification.description}</p>
-        </div>
+      <div className="w-full flex-1">
+        <p className="font-bold">Título:</p>
+        <p className="font-bold">{notification.title}</p>
+        <p>Mensagem:</p>
+        <p>{notification.description}</p>
+        <p>Data:</p>
+        <p>{format(notification.createdAt, 'dd/MM/yyyy')}</p>
       </div>
       <Button
         variant={'secondary'}

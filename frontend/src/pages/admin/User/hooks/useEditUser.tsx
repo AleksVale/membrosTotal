@@ -9,6 +9,8 @@ import { toast } from 'react-toastify'
 import dayjs from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { formatToDocument, formatToPhoneNumber } from '@/utils/formatters'
+import { isAxiosError } from 'axios'
+import { ZodError } from 'zod'
 dayjs.extend(utc)
 export function useEditUser() {
   const navigate = useNavigate()
@@ -32,11 +34,24 @@ export function useEditUser() {
 
   const handleSubmitForm = useCallback(
     async (data: CreateUserForm) => {
-      if (!id) return
-      const response = await UserService.update(data, id)
-      if (response.data.success) {
-        toast.success('Usuário editado com sucesso')
-        navigate(ADMIN_PAGES.listUsers)
+      try {
+        if (!id) return
+        const response = await UserService.update(data, id)
+        if (response.data.success) {
+          toast.success('Usuário editado com sucesso')
+          navigate(ADMIN_PAGES.listUsers)
+        }
+      } catch (error) {
+        if (isAxiosError(error)) {
+          const errorMessage = error.response?.data.errors
+          const toastMessage = errorMessage
+            ? error.response?.data.errors
+                .map((error: ZodError) => error.message)
+                .join('\n')
+            : error.response?.data.message
+
+          toast.error(toastMessage)
+        }
       }
     },
     [id, navigate],

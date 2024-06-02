@@ -39,6 +39,30 @@ export function useListNotification() {
       ),
     },
     {
+      id: 'read',
+      header: ({ column }) => (
+        <DataTableColumnHeader column={column} title="Lido por" />
+      ),
+      cell: ({ row }) => {
+        const notification = row.original
+        const readBy = notification.NotificationUser.filter(
+          (notificationUser) => notificationUser.read,
+        ).map(
+          (notificationUser) =>
+            `${notificationUser.User.firstName} ${notificationUser.User.lastName} \n`,
+        )
+        return (
+          <div>
+            {readBy.length > 0 ? (
+              readBy
+            ) : (
+              <p className="text-red-500">Ninguém leu ainda</p>
+            )}
+          </div>
+        )
+      },
+    },
+    {
       accessorKey: 'createdAt',
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="Criado em" />

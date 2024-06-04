@@ -144,7 +144,7 @@ export function useListLesson() {
                 <DialogClose asChild>
                   <Button
                     variant={'destructive'}
-                    onClick={() => console.log(lesson.id)}
+                    onClick={() => LessonService.deleteLesson(lesson.id)}
                   >
                     Excluir
                   </Button>

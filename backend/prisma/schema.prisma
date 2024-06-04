@@ -227,7 +227,7 @@ model Module {
   order       Int         @default(0)
 
   trainingId           Int // ID do treinamento pai
-  training             Training               @relation(fields: [trainingId], references: [id])
+  training             Training               @relation(fields: [trainingId], references: [id], onDelete: Cascade)
   PermissionUserModule PermissionUserModule[]
   createdAt            DateTime               @default(now())
   updatedAt            DateTime               @updatedAt
@@ -243,7 +243,7 @@ model Submodule {
   thumbnail               String?
   order                   Int                       @default(0)
   moduleId                Int // ID do módulo pai
-  module                  Module                    @relation(fields: [moduleId], references: [id])
+  module                  Module                    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   lessons                 Lesson[]
   PermissionUserSubModule PermissionUserSubModule[]
   createdAt               DateTime                  @default(now())
@@ -261,7 +261,7 @@ model Lesson {
   thumbnail      String?
   submoduleId    Int
   order          Int              @default(0)
-  submodule      Submodule        @relation(fields: [submoduleId], references: [id])
+  submodule      Submodule        @relation(fields: [submoduleId], references: [id], onDelete: Cascade)
   createdAt      DateTime         @default(now())
   updatedAt      DateTime         @updatedAt
   UserViewLesson UserViewLesson[]
@@ -275,8 +275,8 @@ model UserViewLesson {
   lessonId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
-  Lesson    Lesson   @relation(fields: [lessonId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
 
   @@map("user_view_lessons")
 }
@@ -287,8 +287,8 @@ model PermissionUserTraining {
   trainingId Int
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  User       User     @relation(fields: [userId], references: [id])
-  Training   Training @relation(fields: [trainingId], references: [id])
+  User       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Training   Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
 
   @@map("permission_user_trainings")
 }
@@ -299,8 +299,8 @@ model PermissionUserModule {
   moduleId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  User      User     @relation(fields: [userId], references: [id])
-  Module    Module   @relation(fields: [moduleId], references: [id])
+  User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Module    Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@map("permission_user_modules")
 }
@@ -311,8 +311,8 @@ model PermissionUserSubModule {
   submoduleId Int
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
-  User        User      @relation(fields: [userId], references: [id])
-  Submodule   Submodule @relation(fields: [submoduleId], references: [id])
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Submodule   Submodule @relation(fields: [submoduleId], references: [id], onDelete: Cascade)
 
   @@map("permission_user_submodules")
 }

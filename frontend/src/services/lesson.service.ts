@@ -40,12 +40,17 @@ const createPhotoLesson = async (file: File, lessonId: number) => {
   )
 }
 
+const deleteLesson = async (id: number | string) => {
+  return http.delete(`/lessons-admin/${id}`)
+}
+
 const LessonService = {
   getLessons,
   createLesson,
   update,
   getLesson,
   createPhotoLesson,
+  deleteLesson,
 }
 
 export default LessonService

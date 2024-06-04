@@ -11,7 +11,6 @@ export function NotificationCard({
   notification,
   readNotification,
 }: Readonly<NotificationCardProps>) {
-  console.log(notification)
   return (
     <div
       className="bg-muted-foreground my-2 flex w-full items-center justify-between rounded p-6"

@@ -26,7 +26,6 @@ export function useEditPayment() {
     try {
       setLoading(true)
       const response = await ColaboratorService.getPayment(id as string)
-      console.log(response)
       reset({
         ...response.data,
         paymentTypeId: response.data.paymentTypeId ?? undefined,

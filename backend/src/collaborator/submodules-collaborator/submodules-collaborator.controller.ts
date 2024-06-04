@@ -24,11 +24,11 @@ export class SubmoduleCollaboratorController {
   @Get()
   findAll(
     @CurrentUser() user: TokenPayload,
-    @Query('submoduleId') submoduleId?: number,
+    @Query('moduleId') moduleId?: number,
   ) {
     return this.submoduleCollaboratorService.findAll(
       user,
-      submoduleId ? +submoduleId : undefined,
+      moduleId ? +moduleId : undefined,
     );
   }
 }

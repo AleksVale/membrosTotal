@@ -14,7 +14,6 @@ const useListModule = () => {
       setIsLoading(true)
 
       try {
-        console.log('aqui')
         const response = await ColaboratorService.getModules(id)
 
         setModules(response.data)

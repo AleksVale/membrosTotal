@@ -29,6 +29,7 @@ export const ADMIN_PAGES = {
   listExperts: '/admin/experts?page=1&per_page=10',
   listNotifications: '/admin/notifications?page=1&per_page=10',
   createNotification: '/admin/notifications/new',
+  resetPassword: (id: string) => `/admin/user/${id}/reset-password`,
 }
 
 export const COLLABORATOR_PAGES = {

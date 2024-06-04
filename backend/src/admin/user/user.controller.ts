@@ -21,6 +21,7 @@ import { Roles } from '../../public/auth/roles/roles.decorator';
 import { UserResponseDTO } from './dto/user-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
+import { CreateNewPasswordDTO } from './dto/update-password.dto';
 
 @Controller('user')
 @Roles(['admin'])
@@ -44,7 +45,7 @@ export class UserController {
 
   @ApiResponse({
     type: SuccessResponse,
-    status: 201,
+    status: 200,
     description: 'The user has been successfully updated.',
   })
   @Patch(':id')
@@ -53,6 +54,22 @@ export class UserController {
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SuccessResponse> {
     await this.userService.update(id, updateUserDTO);
+    return {
+      success: true,
+    };
+  }
+
+  @ApiResponse({
+    type: SuccessResponse,
+    status: 200,
+    description: 'The user password has been successfully updated.',
+  })
+  @Patch('password/:id')
+  async updatePassword(
+    @Body() updateUserDTO: CreateNewPasswordDTO,
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuccessResponse> {
+    await this.userService.updatePassword(id, updateUserDTO.password);
     return {
       success: true,
     };

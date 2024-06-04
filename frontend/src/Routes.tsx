@@ -50,6 +50,7 @@ import { ExpertList } from './pages/admin/Expert/list'
 import { EditPayment } from './pages/collaborator/Payments/edit'
 import { NotificationList } from './pages/admin/Notification/list'
 import { CreateNotification } from './pages/admin/Notification/new'
+import { ResetPassword } from './pages/admin/ResetPassword'
 
 export const routes = createBrowserRouter([
   {
@@ -93,6 +94,7 @@ export const routes = createBrowserRouter([
       { path: 'experts', element: <ExpertList /> },
       { path: 'notifications', element: <NotificationList /> },
       { path: 'notifications/new', element: <CreateNotification /> },
+      { path: 'user/:id/reset-password', element: <ResetPassword /> },
     ],
   },
   {

@@ -16,6 +16,7 @@ import {
   Edit,
   MoreHorizontal,
   PhoneCall,
+  ShieldCheck,
   Trash,
 } from 'lucide-react'
 
@@ -261,6 +262,18 @@ export function useColumnsUser() {
                   <span className="group-hover:text-amber-500">
                     Enviar uma notificação{' '}
                   </span>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link
+                    to={ADMIN_PAGES.resetPassword(user.id)}
+                    target="_blank"
+                    className="group flex items-center gap-2"
+                  >
+                    <ShieldCheck size={16} className="text-primary" />
+                    <span className="group-hover:text-primary">
+                      Alterar senha
+                    </span>
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

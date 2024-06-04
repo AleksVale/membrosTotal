@@ -104,6 +104,13 @@ export class UserService {
     );
   }
 
+  async updatePassword(id: number, password: string) {
+    const user = await this.userRepository.find({ id });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+    const newPassword = await this.hashPassword(password);
+    return await this.userRepository.update({ password: newPassword }, { id });
+  }
+
   async findOne(id: number) {
     const user = await this.userRepository.find({ id });
     if (!user) throw new NotFoundException('Usuário não encontrado');

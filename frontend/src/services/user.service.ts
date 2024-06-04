@@ -28,6 +28,12 @@ const getProfilePicture = async (id: number | string) => {
   return http.get<IGetPicturesResponse>(`/collaborator/user/${id}/picture`)
 }
 
+const resetPassword = async (id: number | string, password: string) => {
+  return http.patch<SuccessResponse>(`/user/password/${id}`, {
+    password,
+  })
+}
+
 const UserService = {
   getUsers,
   createUser,
@@ -35,6 +41,7 @@ const UserService = {
   getUser,
   remove,
   getProfilePicture,
+  resetPassword,
 }
 
 export default UserService

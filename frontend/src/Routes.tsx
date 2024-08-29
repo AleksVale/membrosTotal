@@ -51,6 +51,7 @@ import { EditPayment } from './pages/collaborator/Payments/edit'
 import { NotificationList } from './pages/admin/Notification/list'
 import { CreateNotification } from './pages/admin/Notification/new'
 import { ResetPassword } from './pages/admin/ResetPassword'
+import { MultiStepFormDemo } from './temp/Teste'
 
 export const routes = createBrowserRouter([
   {
@@ -59,6 +60,11 @@ export const routes = createBrowserRouter([
     children: [{ path: '/', element: <Login /> }],
   },
   { path: '/expert', element: <Expert />, errorElement: <NotFound /> },
+  {
+    path: '/vaga-video',
+    element: <MultiStepFormDemo />,
+    errorElement: <NotFound />,
+  },
   {
     path: '/admin',
     element: <AdminLayout />,

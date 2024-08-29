@@ -25,8 +25,23 @@ const LessonList: React.FC = () => {
       <Helmet title={selectedLesson?.title} />
       <section className="flex w-full gap-2">
         <div className=" h-[calc(100vh-200px)] w-full">
-          {videoError ? (
-            <div className=" flex size-full items-center justify-center p-2 text-center text-white">
+          {!selectedLesson?.content.includes('atenavideo') ? (
+            <iframe
+              title="atenaVideo"
+              src="https://www.youtube.com/embed/WXq_S3tNN5o?si=wuNARhurj2JEKIDM"
+              style={{
+                fontFamily: "'Inter', sans-serif",
+                width: '100%',
+                height: '100%',
+                overflow: 'hidden',
+                borderRadius: '10px',
+                objectFit: 'cover',
+              }}
+              frameBorder="0"
+              allowFullScreen
+            ></iframe>
+          ) : videoError ? (
+            <div className="flex size-full items-center justify-center p-2 text-center text-white">
               {videoError}
             </div>
           ) : (
@@ -48,6 +63,7 @@ const LessonList: React.FC = () => {
               onError={handleInvalidURL}
             />
           )}
+
           <Button variant={'ghost'} onClick={goBack} className="text-primary">
             <ArrowLeft className="size-4" />
             <span>Voltar para os conteúdos</span>

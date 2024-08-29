@@ -374,3 +374,25 @@ model UtmParam {
 
   @@map("utm_params")
 }
+
+model Questionario {
+  id                        Int      @id @default(autoincrement())
+  nome                      String
+  email                     String   @unique
+  whatsapp                  String
+  instagram                 String
+  experienciaEdicao         String // SIM ou NÃO
+  experienciaMotionGraphics String // SIM ou NÃO
+  computador                String
+  programaEdicao            String
+  trabalhosAnteriores       String
+  habilidades               String
+  portfolio                 String
+  disponibilidadeImediata   String // SIM ou NÃO
+  pretensaoSalarial         Float
+  disponibilidadeTempo      String
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+
+  @@map("questionarios")
+}

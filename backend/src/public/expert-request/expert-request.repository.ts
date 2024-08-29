@@ -25,4 +25,8 @@ export class ExpertRequestRepository {
       },
     );
   }
+
+  async createVideoJob(data: Prisma.QuestionarioUncheckedCreateInput) {
+    return await this.prisma.questionario.create({ data });
+  }
 }

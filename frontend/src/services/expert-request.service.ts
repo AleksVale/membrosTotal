@@ -2,6 +2,7 @@ import http from '@/lib/http'
 import { ExpertForm } from '@/pages/expert/validation'
 import { SuccessResponse } from '@/utils/constants/routes'
 import { PaginatedResponseDto } from './interfaces'
+import { FormValues } from '@/temp/Teste'
 
 export interface ExpertResponse {
   id: number
@@ -31,9 +32,17 @@ const get = async (searchParams: string) => {
   )
 }
 
+const createVideoJob = async (data: FormValues) => {
+  return http.post<SuccessResponse>(
+    '/public/expert-request/video-job',
+    data.questionario,
+  )
+}
+
 const ExpertRequestService = {
   create,
   get,
+  createVideoJob,
 }
 
 export default ExpertRequestService

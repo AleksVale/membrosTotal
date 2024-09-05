@@ -30,6 +30,7 @@ export const ADMIN_PAGES = {
   listNotifications: '/admin/notifications?page=1&per_page=10',
   createNotification: '/admin/notifications/new',
   resetPassword: (id: string) => `/admin/user/${id}/reset-password`,
+  questionario: '/admin/questionario',
 }
 
 export const COLLABORATOR_PAGES = {

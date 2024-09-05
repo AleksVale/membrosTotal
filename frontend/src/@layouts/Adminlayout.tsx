@@ -90,6 +90,7 @@ export function AdminLayout() {
                   to={ADMIN_PAGES.listNotifications}
                   label="Notificações"
                 />
+                <MenuLink to={ADMIN_PAGES.questionario} label="Vaga vídeo" />
               </SideMenuCollapsible>
               <DropdownMenuSeparator />
             </nav>

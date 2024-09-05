@@ -9,4 +9,11 @@ export class ExpertRequestService {
   async findAll(page: number, per_page: number) {
     return await this.expertRequestRepository.findAll({ page, per_page });
   }
+
+  async findAllVideo(page: number, per_page: number) {
+    return await this.expertRequestRepository.findAllVideoJob({
+      page,
+      per_page,
+    });
+  }
 }

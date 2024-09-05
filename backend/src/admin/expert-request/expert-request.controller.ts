@@ -13,6 +13,7 @@ import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
 import { ExpertResponseDto } from './dto/get-expert-request.dto';
+import { QuestionarioResponseDto } from './dto/get-questionario-request.dto';
 
 @ApiTags('Expert Request')
 @Roles(['admin'])
@@ -27,6 +28,19 @@ export class ExpertRequestController {
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
   ) {
     const response = await this.expertRequestService.findAll(page, per_page);
+    return response;
+  }
+
+  @ApiOkResponsePaginated(QuestionarioResponseDto)
+  @Get('video-job')
+  async findAllVideo(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
+  ) {
+    const response = await this.expertRequestService.findAllVideo(
+      page,
+      per_page,
+    );
     return response;
   }
 }

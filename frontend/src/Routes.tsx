@@ -53,6 +53,7 @@ import { CreateNotification } from './pages/admin/Notification/new'
 import { ResetPassword } from './pages/admin/ResetPassword'
 import { MultiStepFormDemo } from './temp/Teste'
 import { ThankYouPage } from './pages/obrigado'
+import { ListQuestionario } from './pages/admin/Questionario'
 
 export const routes = createBrowserRouter([
   {
@@ -103,6 +104,7 @@ export const routes = createBrowserRouter([
       { path: 'notifications', element: <NotificationList /> },
       { path: 'notifications/new', element: <CreateNotification /> },
       { path: 'user/:id/reset-password', element: <ResetPassword /> },
+      { path: 'questionario', element: <ListQuestionario /> },
     ],
   },
   {

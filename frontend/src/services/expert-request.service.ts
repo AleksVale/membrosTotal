@@ -33,10 +33,11 @@ const get = async (searchParams: string) => {
 }
 
 const createVideoJob = async (data: FormValues) => {
-  return http.post<SuccessResponse>(
-    '/public/expert-request/video-job',
-    data.questionario,
-  )
+  return http.post<SuccessResponse>('/public/expert-request/video-job', {
+    ...data.questionario,
+    ...data.pessoal,
+    ...data.disponibilidade,
+  })
 }
 
 const ExpertRequestService = {

@@ -94,7 +94,7 @@ export function MultiStepFormDemo() {
   }
 
   return (
-    <div className="flex min-h-screen w-full items-center justify-center p-2">
+    <div className="mx-auto flex min-h-screen w-2/3 items-center justify-center p-2">
       <MultiStepForm
         className={'border-primary space-y-10 rounded-xl border p-8'}
         schema={FormSchema}

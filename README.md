@@ -15,3 +15,9 @@ Um sistema para administração interna da empresa.
 
 
 # Dúvidas sobre o projeto pode encaminhar para o email aleksanderribeirovale@gmail.com
+
+![image](https://github.com/user-attachments/assets/302d594a-a890-42d1-ae25-2b986ce70a03)
+
+![image](https://github.com/user-attachments/assets/8597f94f-40fb-414f-88be-9c6d8cf5b6af)
+
+

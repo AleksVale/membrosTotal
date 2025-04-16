@@ -5,12 +5,11 @@ import { UserModule } from './admin/user/user.module';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { APP_PIPE } from '@nestjs/core';
 import { ProfileModule } from './profile/profile.module';
-import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Env, envSchema } from './env';
+import { ConfigModule } from '@nestjs/config';
+import { envSchema } from './env';
 import { AuthModule } from './public/auth/auth.module';
 import { MeetingsModule } from './admin/meetings/meetings.module';
 import { PrismaModule } from './prisma/prisma.module';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { AutocompleteModule } from './public/autocomplete/autocomplete.module';
 import { UserModule as CollaboratorUserModule } from './collaborator/user/user.module';
 import { MeetingsModule as ColaboratorMeetingsModule } from './collaborator/meetings/meetings.module';
@@ -49,19 +48,19 @@ import { UtmParamModule } from './public/utm-param/utm-param.module';
     PrismaModule,
     CollaboratorUserModule,
     ColaboratorMeetingsModule,
-    MailerModule.forRootAsync({
-      imports: [ConfigModule], // Importa ConfigModule para  que o ConfigService esteja disponível
-      inject: [ConfigService], // Injeta o ConfigService
-      useFactory: async (configService: ConfigService<Env, true>) => ({
-        transport: {
-          host: 'smtp.gmail.com',
-          auth: {
-            user: configService.get<string>('MAILER_USERNAME'),
-            pass: configService.get<string>('MAILER_PASSWORD'), // Use o ConfigService para obter a senha do e-mail
-          },
-        },
-      }),
-    }),
+    // MailerModule.forRootAsync({
+    //   imports: [ConfigModule], // Importa ConfigModule para  que o ConfigService esteja disponível
+    //   inject: [ConfigService], // Injeta o ConfigService
+    //   useFactory: async (configService: ConfigService<Env, true>) => ({
+    //     transport: {
+    //       host: 'smtp.gmail.com',
+    //       auth: {
+    //         user: configService.get<string>('MAILER_USERNAME'),
+    //         pass: configService.get<string>('MAILER_PASSWORD'), // Use o ConfigService para obter a senha do e-mail
+    //       },
+    //     },
+    //   }),
+    // }),
     AutocompleteModule,
     PaymentsModule,
     PaymentAdminModule,

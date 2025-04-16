@@ -24,6 +24,7 @@ export class PaymentRequestService {
     createPaymentRequestDto: CreatePaymentRequestCollaboratorDTO,
     user: TokenPayload,
   ) {
+    console.log('aqui');
     const paymentRequest = { ...createPaymentRequestDto, userId: user.id };
     return this.paymentRequestRepository.create(paymentRequest);
   }

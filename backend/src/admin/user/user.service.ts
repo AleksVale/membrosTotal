@@ -8,7 +8,7 @@ import { UserRepository } from './user.repository';
 import { DateUtils } from 'src/utils/date';
 import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
-import { MailerService } from '@nestjs-modules/mailer';
+// import { MailerService } from '@nestjs-modules/mailer';
 import { UserStatus } from '@prisma/client';
 // import { MailerService } from '@nestjs-modules/mailer';
 
@@ -24,7 +24,7 @@ export interface UserFilter {
 export class UserService {
   constructor(
     private userRepository: UserRepository,
-    private mailerService: MailerService,
+    // private mailerService: MailerService,
   ) {}
   private async hashPassword(password: string) {
     const saltRounds = 10;
@@ -53,20 +53,20 @@ export class UserService {
       document: this.normalize(createUserDTO.document),
       phone: this.normalize(createUserDTO.phone),
     });
-    this.mailerService
-      .sendMail({
-        to: user.email, // list of receivers
-        from: 'vitor@vtn.business', // sender address
-        subject: 'Bem vindo ao membros', // Subject line
-        text: 'Bem vindo', // plaintext body
-        html: '<b>Bem vindo ao membros vai la fazer login</b>', // HTML body content
-      })
-      .then(() => {
-        console.log('aqio');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // this.mailerService
+    //   .sendMail({
+    //     to: user.email, // list of receivers
+    //     from: 'vitor@vtn.business', // sender address
+    //     subject: 'Bem vindo ao membros', // Subject line
+    //     text: 'Bem vindo', // plaintext body
+    //     html: '<b>Bem vindo ao membros vai la fazer login</b>', // HTML body content
+    //   })
+    //   .then(() => {
+    //     console.log('aqio');
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
     return user;
   }
 

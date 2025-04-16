@@ -21,7 +21,7 @@ async function bootstrap() {
     .addTag('MEMBROS')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api-docs', app, document);
+  SwaggerModule.setup('docs', app, document);
 
   app.setGlobalPrefix('api');
   const port = configService.get('PORT', { infer: true });

@@ -6,18 +6,12 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    # Only use env_file to avoid conflicts
+    env_file:
+      - backend/.env
+    # Additional environment variables that aren't in .env file
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=${DATABASE_URL}
-      - PORT=3000
-      - ACCESS_KEY_ID=${ACCESS_KEY_ID}
-      - SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}
-      - BUCKET=${BUCKET}
-      - JWT_EXPIRATION_TIME=${JWT_EXPIRATION_TIME}
-      - JWT_PRIVATE_KEY=${JWT_PRIVATE_KEY}
-      - JWT_PUBLIC_KEY=${JWT_PUBLIC_KEY}
-      - MAILER_USERNAME=${MAILER_USERNAME}
-      - MAILER_PASSWORD=${MAILER_PASSWORD}
     restart: unless-stopped
 
   frontend:

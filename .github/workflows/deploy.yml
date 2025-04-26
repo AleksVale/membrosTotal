@@ -58,6 +58,6 @@ jobs:
             mkdir -p /opt/membrosTotal
             tar -xzf /tmp/membros-deployment.tar.gz -C /opt/membrosTotal
             cd /opt/membrosTotal/deploy-package
-            docker-compose build
-            docker-compose up -d
+            docker compose build
+            docker compose up -d
             docker system prune -af

@@ -8,7 +8,7 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:123456@postgres:5432/membros
+      - DATABASE_URL={DATABASE_URL}
       - PORT=3000
       - ACCESS_KEY_ID=${ACCESS_KEY_ID}
       - SECRET_ACCESS_KEY=${SECRET_ACCESS_KEY}

@@ -1,23 +1,101 @@
 # Membros Total
 
-## Projeto desenvolvido em React e Nest.js, utilizando banco de dados postgresql
+This repository contains both backend and frontend code for the Membros Total application.
 
-Um sistema para administração interna da empresa.
-- Gerenciamento de pagamentos com integração ao R2 da cloudfare para armazenamento de arquivos
-- Gerenciamento de reuniões entre colaboradores
-- Divisão de acesso por roles, ex: admin, colaborador
-- Gerenciamento de usuários pelo administrador
-- Área de treinamento com divisões entre treinamento -> módulo -> submódulo -> aula
-- Documentado com o swagger junto do nestjs
-- AINDA não possui testes
+## Local Development
 
+### Prerequisites
 
+- Docker and Docker Compose
+- Node.js 18+
+- npm or yarn
 
+### Running with Docker
 
-# Dúvidas sobre o projeto pode encaminhar para o email aleksanderribeirovale@gmail.com
+To run the entire application stack using Docker:
 
-![image](https://github.com/user-attachments/assets/302d594a-a890-42d1-ae25-2b986ce70a03)
+```bash
+docker-compose up -d
+```
 
-![image](https://github.com/user-attachments/assets/8597f94f-40fb-414f-88be-9c6d8cf5b6af)
+This will start:
+- Frontend: accessible at http://localhost
+- Backend API: accessible at http://localhost:3000
+- PostgreSQL database: accessible at localhost:5432
 
+To stop all services:
 
+```bash
+docker-compose down
+```
+
+### Running without Docker
+
+#### Backend
+
+```bash
+cd backend
+npm install
+npm run start:dev
+```
+
+#### Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+## CI/CD Workflows
+
+This project uses GitHub Actions for continuous integration and deployment.
+
+### PR Checks
+
+Whenever a pull request is created against the `main` or `develop` branches, the following checks are automatically run:
+
+- Backend:
+  - Linting
+  - Unit tests (without database integration)
+  - Build check
+
+- Frontend:
+  - Linting
+  - Build check
+
+### Deployment
+
+When changes are pushed to the `main` branch, the application is automatically deployed:
+
+1. Environment files are created from GitHub secrets
+2. The entire project (including Dockerfiles) is packaged
+3. The package is transferred to the production server via SCP
+4. Docker images are built locally on the server
+5. Services are started using Docker Compose
+
+## Environment Variables
+
+For local development, create `.env` files in both backend and frontend directories with the required variables.
+
+### Backend Environment Variables
+
+```
+DATABASE_URL=postgresql://postgres:123456@localhost:5432/membros
+PORT=3000
+ACCESS_KEY_ID=your_aws_access_key
+SECRET_ACCESS_KEY=your_aws_secret_key
+BUCKET=your_s3_bucket
+JWT_EXPIRATION_TIME=8h
+JWT_PRIVATE_KEY=your_jwt_private_key
+JWT_PUBLIC_KEY=your_jwt_public_key
+MAILER_USERNAME=your_email_username
+MAILER_PASSWORD=your_email_password
+```
+
+## Project Structure
+
+- `/backend` - NestJS API
+- `/frontend` - React/Vite frontend
+- `/docker-compose.yml` - Docker Compose configuration
+- `/.github/workflows` - CI/CD workflow definitions

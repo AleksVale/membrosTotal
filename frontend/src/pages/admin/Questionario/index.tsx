@@ -10,7 +10,7 @@ export function ListQuestionario() {
     <div>
       <Helmet title="Vaga Vídeo" />
       <HeaderUser label="Vaga Vídeo" />
-      <div className="max-w-screen-2xl overflow-hidden py-12">
+      <div className="max-w-(--breakpoint-2xl) overflow-hidden py-12">
         <DataTable columns={columns} data={data} meta={meta} />
       </div>
     </div>

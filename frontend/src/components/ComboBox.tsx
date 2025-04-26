@@ -69,7 +69,7 @@ export function Autocomplete({
               <Badge key={framework.id} variant="secondary">
                 {framework.label ?? framework.fullName}
                 <button
-                  className="ring-offset-background focus:ring-ring ml-1 rounded-full outline-none focus:ring-2 focus:ring-offset-2"
+                  className="ring-offset-background focus:ring-ring ml-1 rounded-full outline-hidden focus:ring-2 focus:ring-offset-2"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                       handleUnselect(framework)
@@ -94,13 +94,13 @@ export function Autocomplete({
             onBlur={() => setOpen(false)}
             onFocus={() => setOpen(true)}
             placeholder="Selecione os usuários"
-            className="placeholder:text-muted-foreground ml-2 flex-1 bg-transparent outline-none"
+            className="placeholder:text-muted-foreground ml-2 flex-1 bg-transparent outline-hidden"
           />
         </div>
       </div>
       <div className="relative mt-2">
         {open && selectables.length > 0 ? (
-          <div className="bg-popover text-popover-foreground animate-in absolute top-0 z-50 w-full rounded-md border shadow-md outline-none">
+          <div className="bg-popover text-popover-foreground animate-in absolute top-0 z-50 w-full rounded-md border shadow-md outline-hidden">
             <CommandGroup className="h-full overflow-auto">
               {selectables.map((framework) => {
                 return (

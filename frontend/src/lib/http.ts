@@ -9,15 +9,7 @@ interface ErrorResponse {
   status: number
 }
 
-let serverURL
-
-if (process.env.NODE_ENV === 'production') {
-  // Use production URL
-  serverURL = '/api'
-} else {
-  // Use local development URL
-  serverURL = 'http://localhost:3000/api'
-}
+const serverURL = 'http://localhost:3000/api'
 
 const http: AxiosInstance = axios.create({
   baseURL: serverURL,

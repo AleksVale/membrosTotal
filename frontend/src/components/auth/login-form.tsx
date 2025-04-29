@@ -24,7 +24,9 @@ const loginSchema = z.object({
     .string()
     .min(1, { message: "Email é obrigatório" })
     .email({ message: "Formato de email inválido" }),
-  password: z.string().min(8, { message: "Senha deve ter pelo menos 8 caracteres" }),
+  password: z
+    .string()
+    .min(8, { message: "Senha deve ter pelo menos 8 caracteres" }),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -45,15 +47,12 @@ export default function LoginForm() {
 
   async function onSubmit(data: LoginFormValues) {
     setIsLoading(true);
-    
+
     try {
-      // Here you would typically call your API to authenticate the user
       console.log("Login data:", data);
-      
-      // Simulate API call
+
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      
-      // Redirect to dashboard or home page after successful login
+
       router.push("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
@@ -63,20 +62,21 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="w-full bg-card rounded-lg shadow-sm p-6">
+    <div className="w-full">
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
           <FormField
             control={form.control}
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>E-mail</FormLabel>
                 <FormControl>
                   <Input
+                    placeholder="alexalexx3@gmail.com"
                     type="email"
                     autoComplete="email"
-                    className="bg-background/50"
+                    className="h-11"
                     disabled={isLoading}
                     {...field}
                   />
@@ -97,7 +97,7 @@ export default function LoginForm() {
                       placeholder="••••••••••••"
                       type={showPassword ? "text" : "password"}
                       autoComplete="current-password"
-                      className="bg-background/50"
+                      className="h-11"
                       disabled={isLoading}
                       {...field}
                     />
@@ -105,7 +105,7 @@ export default function LoginForm() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-0 top-0 h-full px-3"
+                      className="absolute right-0 top-0 h-full px-3 text-muted-foreground"
                       onClick={() => setShowPassword(!showPassword)}
                     >
                       {showPassword ? (
@@ -120,36 +120,33 @@ export default function LoginForm() {
               </FormItem>
             )}
           />
-          <div className="flex items-center justify-end">
-            <Link
-              href="/forgot-password"
-              className="text-sm text-primary hover:underline"
+          <div className="flex items-center justify-between mt-8">
+            <div className="flex items-center">
+              <Link
+                href="/contato"
+                className="text-sm text-primary hover:underline font-medium"
+              >
+                Entre em contato conosco!
+              </Link>
+            </div>
+            <Button
+              type="submit"
+              variant="default"
+              className="px-8 h-11 font-medium"
+              disabled={isLoading}
             >
-              Esqueceu a senha?
-            </Link>
+              {isLoading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Entrando...
+                </>
+              ) : (
+                "Entrar"
+              )}
+            </Button>
           </div>
-          <Button 
-            type="submit" 
-            className="w-full bg-primary hover:bg-primary/90" 
-            disabled={isLoading}
-          >
-            {isLoading ? (
-              <>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Entrando...
-              </>
-            ) : (
-              "Entrar"
-            )}
-          </Button>
         </form>
       </Form>
-      <div className="mt-6 text-center text-sm">
-        Não tem uma conta?{" "}
-        <Link href="/register" className="text-primary hover:underline font-medium">
-          Registre-se
-        </Link>
-      </div>
     </div>
   );
 }

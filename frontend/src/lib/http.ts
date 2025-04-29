@@ -9,7 +9,7 @@ interface ErrorResponse {
   status: number
 }
 
-const serverURL = 'http://localhost:3000/api'
+const serverURL = 'http://94.72.118.5:3000/api'
 
 const http: AxiosInstance = axios.create({
   baseURL: serverURL,

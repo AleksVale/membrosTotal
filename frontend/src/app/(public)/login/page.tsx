@@ -22,16 +22,16 @@ export default function LoginPage() {
         <div className="relative h-full flex-col lg:flex items-center justify-center">
           <div className="relative z-20 flex flex-col items-center p-10">
             <Image
+              priority
               src="/logo.png"
               alt="NOHAU Logo"
               width={700}
               height={700}
-              className="mb-4"
             />
           </div>
         </div>
         <div className="flex items-center justify-center">
-          <div className="mx-auto flex w-full max-w-md flex-col justify-center px-8 py-12">
+          <div className="bg-background/90 backdrop-blur-sm mx-auto flex w-full max-w-md flex-col justify-center px-8 py-12 rounded-xl shadow-lg border border-gray-200/30">
             <div className="mb-8">
               <h1 className="text-2xl font-semibold tracking-tight text-foreground">
                 Faça seu login

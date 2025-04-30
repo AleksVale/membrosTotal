@@ -7,6 +7,7 @@ import * as z from "zod";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -18,6 +19,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import AuthService from "@/lib/auth";
+import { useUser } from "@/hooks/useUser";
 
 const loginSchema = z.object({
   email: z
@@ -35,6 +38,7 @@ export default function LoginForm() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const { login: userLogin } = useUser();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -49,13 +53,28 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      console.log("Login data:", data);
+      const response = await AuthService.login(data.email, data.password);
 
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      userLogin(response.token, {
+        id: response.id,
+        name: response.name,
+        email: response.email,
+        profile: response.profile,
+        photo: response.photo,
+      });
 
-      router.push("/dashboard");
+      if (response.profile === "admin") {
+        router.push("/admin/home");
+      } else if (response.profile === "employee") {
+        router.push("/collaborator/home");
+      } else {
+        throw new Error("Perfil inválido");
+      }
+
+      toast.success("Login realizado com sucesso!");
     } catch (error) {
-      console.error("Login error:", error);
+      console.error("Erro de login:", error);
+      toast.error("Email ou senha inválidos. Tente novamente.");
     } finally {
       setIsLoading(false);
     }

@@ -9,7 +9,7 @@ interface ErrorResponse {
   status: number
 }
 
-const serverURL = 'http://94.72.118.5:3000/api'
+const serverURL = 'https://api.nohau.agency/api'
 
 const http: AxiosInstance = axios.create({
   baseURL: serverURL,

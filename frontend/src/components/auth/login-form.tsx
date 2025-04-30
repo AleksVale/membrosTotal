@@ -64,9 +64,9 @@ export default function LoginForm() {
       });
 
       if (response.profile === "admin") {
-        router.push("/admin/home");
+        router.push("/dashboard");
       } else if (response.profile === "employee") {
-        router.push("/collaborator/home");
+        router.push("/dashboard");
       } else {
         throw new Error("Perfil inválido");
       }

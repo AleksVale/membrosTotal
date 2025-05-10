@@ -4,6 +4,7 @@ import axios, {
   AxiosResponse,
   AxiosError,
 } from 'axios';
+import Cookies from 'js-cookie';
 
 interface ErrorResponse {
   status: number;
@@ -24,8 +25,8 @@ http.interceptors.response.use(
   (response: AxiosResponse) => response,
   (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
-      localStorage.clear();
-      window.location.href = '/';
+      Cookies.remove('auth_token');
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   },
@@ -34,9 +35,9 @@ http.interceptors.response.use(
 // Request interceptor
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig<unknown>) => {
-    const token = localStorage.getItem('token');
-    if (token && token !== 'undefined') {
-      config.headers.Authorization = `Bearer ${JSON.parse(token)}`;
+    const token = Cookies.get('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

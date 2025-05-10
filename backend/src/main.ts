@@ -5,9 +5,13 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { patchNestJsSwagger } from 'nestjs-zod';
 import { ConfigService } from '@nestjs/config';
 import { Env } from './env';
+import { WinstonModule } from 'nest-winston';
+import { loggerConfig } from './config/logger.config';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: WinstonModule.createLogger(loggerConfig),
+  });
   const configService = app.get<ConfigService<Env, true>>(ConfigService);
   patchNestJsSwagger();
 

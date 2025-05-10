@@ -3,8 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import ClientSideToastContainer from "@/components/client-toast-container";
+import { AuthProvider } from '@/contexts/AuthContext'
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ 
+  subsets: ["latin"],
+  display: 'swap',
+  variable: '--font-inter',
+});
 
 export const metadata: Metadata = {
   title: "MembrosTotal - Sistema de Gerenciamento",
@@ -18,11 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className={inter.className}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          {children}
-          <ClientSideToastContainer />
-        </ThemeProvider>
+      <body className={`${inter.variable} font-sans antialiased`}>
+        <AuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            {children}
+            <ClientSideToastContainer />
+          </ThemeProvider>
+        </AuthProvider>
       </body>
     </html>
   );

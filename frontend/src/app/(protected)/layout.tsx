@@ -56,7 +56,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <ScrollArea className="flex-1 px-3">
               <nav className="flex-1 space-y-1">
                 <SidebarItem
-                  href="/dashboard"
+                  href="/admin/dashboard"
                   icon={<Home size={20} />}
                   label="Dashboard"
                   active={pathname === "/dashboard"}
@@ -64,19 +64,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 <SidebarGroup label="Colaboradores">
                   <SidebarItem
-                    href="/users"
+                    href="/admin/users"
                     icon={<Users size={20} />}
                     label="Usuários"
                     active={pathname.startsWith("/users")}
                   />
                   <SidebarItem
-                    href="/meetings"
+                    href="/admin/meetings"
                     icon={<Calendar size={20} />}
                     label="Reuniões"
                     active={pathname.startsWith("/meetings")}
                   />
                   <SidebarItem
-                    href="/experts"
+                    href="/admin/experts"
                     icon={<User size={20} />}
                     label="Experts"
                     active={pathname.startsWith("/experts")}
@@ -85,19 +85,19 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 <SidebarGroup label="Financeiro">
                   <SidebarItem
-                    href="/payments"
+                    href="/admin/payments"
                     icon={<DollarSign size={20} />}
                     label="Pagamentos"
                     active={pathname.startsWith("/payments")}
                   />
                   <SidebarItem
-                    href="/payment-requests"
+                    href="/admin/payment-requests"
                     icon={<DollarSign size={20} />}
                     label="Compras"
                     active={pathname.startsWith("/payment-requests")}
                   />
                   <SidebarItem
-                    href="/refunds"
+                    href="/admin/refunds"
                     icon={<DollarSign size={20} />}
                     label="Reembolsos"
                     active={pathname.startsWith("/refunds")}
@@ -106,25 +106,25 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 <SidebarGroup label="Treinamentos">
                   <SidebarItem
-                    href="/trainings"
+                    href="/admin/trainings"
                     icon={<BookOpen size={20} />}
                     label="Treinamentos"
                     active={pathname.startsWith("/trainings")}
                   />
                   <SidebarItem
-                    href="/modules"
+                    href="/admin/modules"
                     icon={<BookOpen size={20} />}
                     label="Módulos"
                     active={pathname.startsWith("/modules")}
                   />
                   <SidebarItem
-                    href="/submodules"
+                    href="/admin/submodules"
                     icon={<BookOpen size={20} />}
                     label="Submódulos"
                     active={pathname.startsWith("/submodules")}
                   />
                   <SidebarItem
-                    href="/lessons"
+                    href="/admin/lessons"
                     icon={<BookOpen size={20} />}
                     label="Aulas"
                     active={pathname.startsWith("/lessons")}
@@ -133,13 +133,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
                 <SidebarGroup label="Configurações">
                   <SidebarItem
-                    href="/permissions"
+                    href="/admin/permissions"
                     icon={<Settings size={20} />}
                     label="Permissões"
                     active={pathname.startsWith("/permissions")}
                   />
                   <SidebarItem
-                    href="/notifications"
+                    href="/admin/notifications"
                     icon={<Bell size={20} />}
                     label="Notificações"
                     active={pathname.startsWith("/notifications")}

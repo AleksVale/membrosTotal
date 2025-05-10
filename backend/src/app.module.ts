@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './admin/user/user.module';
 import { ZodValidationPipe } from 'nestjs-zod';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_FILTER, APP_PIPE } from '@nestjs/core';
 import { ProfileModule } from './profile/profile.module';
 import { ConfigModule } from '@nestjs/config';
 import { envSchema } from './env';
@@ -25,14 +25,15 @@ import { SubModulesAdminModule } from './admin/sub-modules-admin/sub-modules-adm
 import { LessonsAdminModule } from './admin/lessons-admin/lessons-admin.module';
 import { RefundAdminModule } from './admin/refund-admin/refund-admin.module';
 import { TrainingCollaboratorModule } from './collaborator/training-collaborator/training-collaborator.module';
-import { ModuleCollaboratorModule } from './collaborator/modules-collaborator/modules-collaborator.module';
-import { SubmoduleCollaboratorModule } from './collaborator/submodules-collaborator/submodules-collaborator.module';
-import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/lessons-collaborator.module';
-import { PublicExpertRequestModule } from './public/expert-request/public-expert-request.module';
 import { ExpertRequestModule } from './admin/expert-request/expert-request.module';
 import { HomeModule } from './collaborator/home/home.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { AdminNotificationModule } from './admin/admin-notification/admin-notification.module';
 import { CollaboratorNotificationModule } from './collaborator/collaborator-notification/collaborator-notification.module';
+import { LessonCollaboratorModule } from './collaborator/lessons-collaborator/lessons-collaborator.module';
+import { ModuleCollaboratorModule } from './collaborator/modules-collaborator/modules-collaborator.module';
+import { SubmoduleCollaboratorModule } from './collaborator/submodules-collaborator/submodules-collaborator.module';
+import { PublicExpertRequestModule } from './public/expert-request/public-expert-request.module';
 import { UtmParamModule } from './public/utm-param/utm-param.module';
 
 @Module({
@@ -48,19 +49,6 @@ import { UtmParamModule } from './public/utm-param/utm-param.module';
     PrismaModule,
     CollaboratorUserModule,
     ColaboratorMeetingsModule,
-    // MailerModule.forRootAsync({
-    //   imports: [ConfigModule], // Importa ConfigModule para  que o ConfigService esteja disponível
-    //   inject: [ConfigService], // Injeta o ConfigService
-    //   useFactory: async (configService: ConfigService<Env, true>) => ({
-    //     transport: {
-    //       host: 'smtp.gmail.com',
-    //       auth: {
-    //         user: configService.get<string>('MAILER_USERNAME'),
-    //         pass: configService.get<string>('MAILER_PASSWORD'), // Use o ConfigService para obter a senha do e-mail
-    //       },
-    //     },
-    //   }),
-    // }),
     AutocompleteModule,
     PaymentsModule,
     PaymentAdminModule,
@@ -87,6 +75,7 @@ import { UtmParamModule } from './public/utm-param/utm-param.module';
   controllers: [AppController],
   providers: [
     AppService,
+
     {
       provide: APP_PIPE,
       useClass: ZodValidationPipe,

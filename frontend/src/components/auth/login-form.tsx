@@ -4,7 +4,6 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
@@ -19,8 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import AuthService from "@/lib/auth";
-import { useUser } from "@/hooks/useUser";
+import { useAuth } from "@/contexts/AuthContext";
 
 const loginSchema = z.object({
   email: z
@@ -35,10 +33,9 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 export default function LoginForm() {
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const { login: userLogin } = useUser();
+  const { login } = useAuth();
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -53,24 +50,7 @@ export default function LoginForm() {
     setIsLoading(true);
 
     try {
-      const response = await AuthService.login(data.email, data.password);
-
-      userLogin(response.token, {
-        id: response.id,
-        name: response.name,
-        email: response.email,
-        profile: response.profile,
-        photo: response.photo,
-      });
-
-      if (response.profile === "admin") {
-        router.push("/dashboard");
-      } else if (response.profile === "employee") {
-        router.push("/dashboard");
-      } else {
-        throw new Error("Perfil inválido");
-      }
-
+      await login(data.email, data.password);
       toast.success("Login realizado com sucesso!");
     } catch (error) {
       console.error("Erro de login:", error);

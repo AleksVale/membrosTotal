@@ -3,12 +3,13 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import ClientSideToastContainer from "@/components/client-toast-container";
-import { AuthProvider } from '@/contexts/AuthContext'
+import { AuthProvider } from "@/contexts/AuthContext";
+import ReactQueryProvider from "@/components/query";
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ["latin"],
-  display: 'swap',
-  variable: '--font-inter',
+  display: "swap",
+  variable: "--font-inter",
 });
 
 export const metadata: Metadata = {
@@ -26,7 +27,7 @@ export default function RootLayout({
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            {children}
+            <ReactQueryProvider>{children}</ReactQueryProvider>
             <ClientSideToastContainer />
           </ThemeProvider>
         </AuthProvider>

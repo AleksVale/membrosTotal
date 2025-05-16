@@ -1,10 +1,10 @@
-'use client'
+"use client";
 
-import { useForm } from 'react-hook-form'
-import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/button'
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
@@ -12,84 +12,91 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import http from '@/lib/http'
-import { useState, useEffect } from 'react'
-import { toast } from 'react-toastify'
+} from "@/components/ui/select";
+import http from "@/lib/http";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
 
 const paymentSchema = z.object({
-  value: z.number().min(0.01, 'Valor deve ser maior que zero'),
-  description: z.string().min(3, 'Descrição deve ter no mínimo 3 caracteres'),
-  expertId: z.number().min(1, 'Especialista é obrigatório'),
-  paymentTypeId: z.number().min(1, 'Tipo de pagamento é obrigatório'),
-})
+  value: z.number().min(0.01, "Valor deve ser maior que zero"),
+  description: z.string().min(3, "Descrição deve ter no mínimo 3 caracteres"),
+  expertId: z.number().min(1, "Especialista é obrigatório"),
+  paymentTypeId: z.number().min(1, "Tipo de pagamento é obrigatório"),
+});
 
-type PaymentFormValues = z.infer<typeof paymentSchema>
+type PaymentFormValues = z.infer<typeof paymentSchema>;
 
 interface PaymentFormProps {
-  initialData?: PaymentFormValues
-  paymentId?: number
+  initialData?: PaymentFormValues;
+  paymentId?: number;
 }
 
-export function PaymentForm({ initialData, paymentId }: Readonly<PaymentFormProps>) {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [experts, setExperts] = useState<{ id: number; firstName: string; lastName: string }[]>([])
-  const [paymentTypes, setPaymentTypes] = useState<{ id: number; name: string }[]>([])
+export function PaymentForm({
+  initialData,
+  paymentId,
+}: Readonly<PaymentFormProps>) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [experts, setExperts] = useState<
+    { id: number; firstName: string; lastName: string }[]
+  >([]);
+  const [paymentTypes, setPaymentTypes] = useState<
+    { id: number; name: string }[]
+  >([]);
 
   const form = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentSchema),
     defaultValues: initialData || {
       value: 0,
-      description: '',
+      description: "",
       expertId: 0,
       paymentTypeId: 0,
     },
-  })
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [expertsResponse, paymentTypesResponse] = await Promise.all([
-          http.get('/users?profile=EXPERT'),
-          http.get('/payment-types'),
-        ])
-        setExperts(expertsResponse.data)
-        setPaymentTypes(paymentTypesResponse.data)
-      } catch (error) {
-        toast.error('Não foi possível carregar os dados')
+          http.get("/users?profile=EXPERT"),
+          http.get("/payment-types"),
+        ]);
+        setExperts(expertsResponse.data);
+        setPaymentTypes(paymentTypesResponse.data);
+      } catch {
+        toast.error("Não foi possível carregar os dados");
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   const onSubmit = async (data: PaymentFormValues) => {
-    setLoading(true)
+    setLoading(true);
     try {
       if (paymentId) {
-        await http.patch(`/payment-admin/${paymentId}`, data)
-        toast.success('Pagamento atualizado com sucesso')
+        await http.patch(`/payment-admin/${paymentId}`, data);
+        toast.success("Pagamento atualizado com sucesso");
       } else {
-        await http.post('/payment-admin', data)
-        toast.success('Pagamento criado com sucesso')
+        await http.post("/payment-admin", data);
+        toast.success("Pagamento criado com sucesso");
       }
-      router.push('/admin/payments')
-    } catch (error) {
-      toast.error('Não foi possível salvar o pagamento')
+      router.push("/admin/payments");
+    } catch {
+      toast.error("Não foi possível salvar o pagamento");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -186,18 +193,14 @@ export function PaymentForm({ initialData, paymentId }: Readonly<PaymentFormProp
         />
 
         <div className="flex justify-end gap-4">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.back()}
-          >
+          <Button type="button" variant="outline" onClick={() => router.back()}>
             Cancelar
           </Button>
           <Button type="submit" disabled={loading}>
-            {loading ? 'Salvando...' : 'Salvar'}
+            {loading ? "Salvando..." : "Salvar"}
           </Button>
         </div>
       </form>
     </Form>
-  )
-} 
+  );
+}

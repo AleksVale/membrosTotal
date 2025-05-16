@@ -140,7 +140,7 @@ export function UserForm({ initialData, userId }: Readonly<UserFormProps>) {
       toast.success(
         userId ? "Usuário atualizado com sucesso" : "Usuário criado com sucesso"
       );
-      queryClient.invalidateQueries({ queryKey: ["users", "user", userId] });
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       router.push("/admin/users");
     },
     onError: (error) => {

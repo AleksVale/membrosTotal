@@ -213,7 +213,13 @@ export default function Layout({ children }: { children: React.ReactNode }) {
             <Menu className="h-5 w-5" />
             <span className="sr-only">Toggle menu</span>
           </Button>
-          <img src="/logo.png" alt="MembrosTotal Logo" className="h-8 w-8" />
+          <Image
+            src="/logo.png"
+            alt="MembrosTotal Logo"
+            className="h-8 w-8"
+            width={32}
+            height={32}
+          />
           <span className="font-bold text-xl text-foreground">
             MembrosTotal
           </span>
@@ -267,10 +273,12 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         <div className="fixed inset-y-0 left-0 w-3/4 max-w-xs bg-card overflow-y-auto border-r">
           <div className="flex items-center justify-between h-16 px-4 border-b">
             <div className="flex items-center gap-2">
-              <img
+              <Image
                 src="/logo.png"
                 alt="MembrosTotal Logo"
                 className="h-8 w-8"
+                width={32}
+                height={32}
               />
               <span className="font-bold text-xl text-foreground">
                 MembrosTotal

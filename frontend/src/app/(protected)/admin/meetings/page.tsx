@@ -413,10 +413,11 @@ export default function MeetingsPage() {
                             </div>
                           </TableCell>
                           <TableCell>
+                            {/* TODO: Fix date UTC */}
                             <div className="flex items-center gap-2">
                               <Calendar className="h-4 w-4 text-muted-foreground" />
                               {format(
-                                new Date(meeting.date),
+                                meeting.date,
                                 "dd 'de' MMMM 'de' yyyy 'às' HH:mm",
                                 {
                                   locale: ptBR,

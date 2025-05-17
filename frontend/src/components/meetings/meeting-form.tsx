@@ -46,9 +46,7 @@ interface MeetingFormProps {
 
 interface User {
   id: number;
-  firstName: string;
-  name?: string;
-  lastName: string;
+  fullName: string;
 }
 
 export function MeetingForm({
@@ -68,9 +66,7 @@ export function MeetingForm({
       const response = await http.get("/autocomplete?fields=users");
       return response.data.users.map((user: User) => ({
         id: user.id,
-        firstName: user.firstName || user.name?.split(" ")[0] || "",
-        lastName:
-          user.lastName || user.name?.split(" ").slice(1).join(" ") || "",
+        fullName: user.fullName,
       }));
     },
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -125,7 +121,9 @@ export function MeetingForm({
   }, [initialData]);
 
   const onSubmit = (data: MeetingFormValues) => {
-    mutation.mutate(data);
+    const formattedDate = new Date(data.meetingDate);
+    const formattedDateString = formattedDate.toISOString();
+    mutation.mutate({ ...data, meetingDate: formattedDateString });
   };
 
   const handleAddUser = (userId: string) => {
@@ -140,8 +138,8 @@ export function MeetingForm({
   };
 
   const getUserName = (userId: number) => {
-    const user = users.find((u: User) => u.id === userId);
-    return user ? `${user.firstName} ${user.lastName}` : `Usuário ${userId}`;
+    const user: User | undefined = users.find((u: User) => u.id === userId);
+    return user ? user.fullName : `Usuário ${userId}`;
   };
 
   const isLoading = loadingUsers || mutation.isPending;
@@ -220,10 +218,10 @@ export function MeetingForm({
             control={form.control}
             name="users"
             render={() => (
-              <FormItem>
+              <FormItem className="w-full">
                 <FormLabel>Participantes</FormLabel>
-                <Select onValueChange={handleAddUser}>
-                  <FormControl>
+                <Select onValueChange={handleAddUser} value="">
+                  <FormControl className="w-full">
                     <SelectTrigger>
                       <SelectValue placeholder="Selecione os participantes" />
                     </SelectTrigger>
@@ -237,7 +235,7 @@ export function MeetingForm({
                     ) : (
                       users.map((user: User) => (
                         <SelectItem key={user.id} value={user.id.toString()}>
-                          {user.firstName} {user.lastName}
+                          {user.fullName}
                         </SelectItem>
                       ))
                     )}

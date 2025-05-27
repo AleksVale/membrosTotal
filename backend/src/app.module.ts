@@ -80,6 +80,10 @@ import { UtmParamModule } from './public/utm-param/utm-param.module';
       provide: APP_PIPE,
       useClass: ZodValidationPipe,
     },
+    {
+      provide: APP_FILTER,
+      useClass: HttpExceptionFilter,
+    },
   ],
 })
 export class AppModule {}

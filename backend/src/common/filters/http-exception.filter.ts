@@ -7,12 +7,13 @@ import {
   Logger,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { exceptions } from 'winston';
 
-@Catch()
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(HttpExceptionFilter.name);
 
-  catch(exception: unknown, host: ArgumentsHost) {
+  catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
@@ -34,10 +35,9 @@ export class HttpExceptionFilter implements ExceptionFilter {
       message: message,
     };
 
-    // Log the error
     this.logger.error(
-      `${request.method} ${request.url}`,
-      exception instanceof Error ? exception.stack : null,
+      `${request.method} ${request.url} ${exception.message}`,
+      exception.stack,
       'ExceptionFilter',
     );
 

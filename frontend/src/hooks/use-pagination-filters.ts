@@ -53,7 +53,7 @@ export function usePaginationFilters({
       setIsSearching(false);
     }, 500);
     return () => clearTimeout(timer);
-  }, [search, page]);
+  }, [search]);
 
   const buildQueryString = useCallback(() => {
     const params = new URLSearchParams();

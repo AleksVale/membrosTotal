@@ -79,6 +79,9 @@ export function PaymentItemList<T>({
   emptyMessage = "Nenhum item disponível",
   filterEmptyMessage = "Nenhum item encontrado com os filtros aplicados",
 }: PaymentItemListProps<T>) {
+  // Define column count as a constant for reuse
+  const TABLE_COLUMN_COUNT = 7; // Descrição, Valor, Usuário, Categoria, Status, Data, Ações
+
   if (isLoading && items.length === 0) {
     return <Loading size="lg" />;
   }
@@ -220,7 +223,10 @@ export function PaymentItemList<T>({
             <TableBody>
               {items.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-6">
+                  <TableCell
+                    colSpan={TABLE_COLUMN_COUNT}
+                    className="text-center py-6"
+                  >
                     {hasActiveFilters ? filterEmptyMessage : emptyMessage}
                   </TableCell>
                 </TableRow>

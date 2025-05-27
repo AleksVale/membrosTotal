@@ -116,7 +116,8 @@ export default function PaymentRequestsPage() {
   // Carregamento de dados
   const { data, isLoading, isError, refetch, isFetching } =
     useQuery<PaymentRequestResponse>({
-      queryKey: QueryKeys.paymentRequests.list(buildQueryString()),
+      // Use the actual query parameters string for the query key
+      queryKey: QueryKeys.paymentRequests.list(apiParams.toString()),
       queryFn: async () => {
         const response = await http.get<PaymentRequestResponse>(
           `/payment-request-admin?${apiParams}`
@@ -124,6 +125,7 @@ export default function PaymentRequestsPage() {
         return response.data;
       },
       staleTime: 60000, // 1 minuto
+      refetchOnWindowFocus: false, // Prevent unwanted refetches
     });
 
   // Tipos de solicitação de pagamento (para filtro)

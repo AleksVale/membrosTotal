@@ -26,7 +26,7 @@ import {
 import http from "@/lib/http";
 
 // Tipos
-interface Refund {
+interface PaymentRequest {
   id: number;
   userId: number;
   value: number;
@@ -38,8 +38,8 @@ interface Refund {
   description: string;
   createdAt: string;
   updatedAt: string;
-  refundTypeId?: number;
-  RefundType?: {
+  paymentRequestTypeId?: number;
+  PaymentRequestType?: {
     id: number;
     label: string;
   };
@@ -50,8 +50,8 @@ interface Refund {
   };
 }
 
-interface RefundResponse {
-  data: Refund[];
+interface PaymentRequestResponse {
+  data: PaymentRequest[];
   meta: {
     total: number;
     page: number;
@@ -60,13 +60,13 @@ interface RefundResponse {
   };
 }
 
-interface RefundType {
+interface PaymentRequestType {
   id: number;
   label: string;
 }
 
 // Componente principal da página
-export default function RefundsPage() {
+export default function PaymentRequestsPage() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -92,7 +92,7 @@ export default function RefundsPage() {
     defaultPerPage: 10,
     paramMapping: {
       status: "status",
-      refundTypeId: "refundTypeId",
+      paymentRequestTypeId: "paymentRequestTypeId",
       userId: "user",
     },
   });
@@ -100,7 +100,7 @@ export default function RefundsPage() {
   // Atualizar URL quando os filtros mudam
   useEffect(() => {
     const queryString = buildQueryString();
-    router.replace(`/admin/refunds${queryString}`, { scroll: false });
+    router.replace(`/admin/payment-requests${queryString}`, { scroll: false });
   }, [router, buildQueryString]);
 
   // Parâmetros para a API
@@ -109,31 +109,31 @@ export default function RefundsPage() {
   apiParams.append("per_page", perPage.toString());
   if (debouncedSearch) apiParams.append("search", debouncedSearch);
   if (filters.status) apiParams.append("status", filters.status);
-  if (filters.refundTypeId)
-    apiParams.append("refundTypeId", filters.refundTypeId);
+  if (filters.paymentRequestTypeId)
+    apiParams.append("paymentRequestTypeId", filters.paymentRequestTypeId);
   if (filters.userId) apiParams.append("user", filters.userId);
 
   // Carregamento de dados
   const { data, isLoading, isError, refetch, isFetching } =
-    useQuery<RefundResponse>({
-      queryKey: QueryKeys.refunds.list(buildQueryString()),
+    useQuery<PaymentRequestResponse>({
+      queryKey: QueryKeys.paymentRequests.list(buildQueryString()),
       queryFn: async () => {
-        const response = await http.get<RefundResponse>(
-          `/refund-admin?${apiParams}`
+        const response = await http.get<PaymentRequestResponse>(
+          `/payment-request-admin?${apiParams}`
         );
         return response.data;
       },
       staleTime: 60000, // 1 minuto
     });
 
-  // Tipos de reembolso (para filtro)
-  const { data: refundTypes, isLoading: isLoadingTypes } = useQuery<
-    RefundType[]
+  // Tipos de solicitação de pagamento (para filtro)
+  const { data: paymentRequestTypes, isLoading: isLoadingTypes } = useQuery<
+    PaymentRequestType[]
   >({
-    queryKey: QueryKeys.autocomplete.fields(["refundTypes"]),
+    queryKey: QueryKeys.autocomplete.fields(["paymentRequest"]),
     queryFn: async () => {
-      const response = await http.get("/autocomplete?fields=refundTypes");
-      return response.data.refundTypes || [];
+      const response = await http.get("/autocomplete?fields=paymentRequest");
+      return response.data.paymentRequest || [];
     },
     staleTime: 300000, // 5 minutos
   });
@@ -146,19 +146,19 @@ export default function RefundsPage() {
     payMutation,
     cancelMutation,
   } = usePaymentActions({
-    paymentType: "refund",
-    invalidateQueryKey: QueryKeys.refunds.all,
+    paymentType: "payment-request",
+    invalidateQueryKey: QueryKeys.paymentRequests.all,
   });
 
   // Dados processados
-  const refunds = data?.data || [];
+  const paymentRequests = data?.data || [];
   const totalPages = data?.meta?.last_page || 1;
   const totalItems = data?.meta?.total || 0;
 
   return (
     <PaymentLayout
-      title="Reembolsos"
-      description="Visualize e gerencie todos os reembolsos do sistema"
+      title="Solicitações de Pagamento"
+      description="Visualize e gerencie todas as solicitações de pagamento do sistema"
       showFilters={showFilters}
       setShowFilters={setShowFilters}
       activeFiltersCount={activeFiltersCount}
@@ -200,15 +200,18 @@ export default function RefundsPage() {
           </Select>
 
           <Select
-            value={filters.refundTypeId || "ALL"}
+            value={filters.paymentRequestTypeId || "ALL"}
             onValueChange={(value) =>
-              setFilter("refundTypeId", value === "ALL" ? undefined : value)
+              setFilter(
+                "paymentRequestTypeId",
+                value === "ALL" ? undefined : value
+              )
             }
             disabled={isLoadingTypes}
           >
             <SelectTrigger
               className={`w-[180px] ${
-                filters.refundTypeId ? "border-primary" : ""
+                filters.paymentRequestTypeId ? "border-primary" : ""
               }`}
             >
               <SelectValue
@@ -217,7 +220,7 @@ export default function RefundsPage() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="ALL">Todas as categorias</SelectItem>
-              {refundTypes?.map((type) => (
+              {paymentRequestTypes?.map((type) => (
                 <SelectItem key={type.id} value={type.id.toString()}>
                   {type.label}
                 </SelectItem>
@@ -228,8 +231,8 @@ export default function RefundsPage() {
       }
     >
       <PaymentItemList
-        title="Reembolsos"
-        items={refunds}
+        title="Solicitações de Pagamento"
+        items={paymentRequests}
         isLoading={isLoading}
         isFetching={isFetching}
         isError={isError}
@@ -252,18 +255,18 @@ export default function RefundsPage() {
           totalItems,
           onPageChange: setPage,
         }}
-        getItemProps={(refund) => ({
-          id: refund.id,
-          description: refund.description,
-          value: refund.value,
-          userFullName: `${refund.user.firstName} ${refund.user.lastName}`,
-          categoryLabel: refund.RefundType?.label,
-          status: refund.status,
-          createdAt: refund.createdAt,
-          photoKey: refund.photoKey,
+        getItemProps={(request) => ({
+          id: request.id,
+          description: request.description,
+          value: request.value,
+          userFullName: `${request.user.firstName} ${request.user.lastName}`,
+          categoryLabel: request.PaymentRequestType?.label,
+          status: request.status,
+          createdAt: request.createdAt,
+          photoKey: request.photoKey,
         })}
-        emptyMessage="Nenhum reembolso disponível"
-        filterEmptyMessage="Nenhum reembolso encontrado com os filtros aplicados"
+        emptyMessage="Nenhuma solicitação disponível"
+        filterEmptyMessage="Nenhuma solicitação encontrada com os filtros aplicados"
       />
     </PaymentLayout>
   );

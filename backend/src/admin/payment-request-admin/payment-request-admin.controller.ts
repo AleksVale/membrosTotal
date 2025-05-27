@@ -60,7 +60,7 @@ export class PaymentRequestAdminController {
     return this.paymentRequestAdminService.findAll({
       page,
       per_page,
-      paymentRequestTypeId,
+      paymentRequestTypeId: paymentRequestTypeId ? +paymentRequestTypeId : undefined,
       status,
       user,
     });

@@ -29,6 +29,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Card, CardContent } from "@/components/ui/card";
+import { getImageUrl } from "@/lib/image-utils";
 
 // Esquema de validação
 export const trainingSchema = z.object({
@@ -52,7 +53,7 @@ export const trainingSchema = z.object({
 export type TrainingFormValues = z.infer<typeof trainingSchema>;
 
 interface TrainingFormProps {
-  initialData?: TrainingFormValues & { id?: number };
+  initialData?: TrainingFormValues & { id?: number; thumbnail?: string };
   onSubmit: (values: TrainingFormValues, file?: File) => Promise<void>;
   isSubmitting: boolean;
 }
@@ -65,7 +66,7 @@ export function TrainingForm({
   const router = useRouter();
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(
-    initialData?.id ? `/training-admin/thumbnail/${initialData.id}` : null
+    initialData?.thumbnail ? getImageUrl(initialData.thumbnail) : null
   );
 
   // Configuração do formulário

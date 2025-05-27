@@ -26,6 +26,7 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { TrainingTabs } from "../components/TrainingTabs";
 import { Separator } from "@/components/ui/separator";
+import { getImageUrl } from "@/lib/image-utils";
 
 interface Training {
   id: number;
@@ -136,7 +137,7 @@ export default function TrainingDetailsPage() {
             <CardContent className="p-0 relative aspect-video">
               {training.thumbnail ? (
                 <Image
-                  src={training.thumbnail}
+                  src={getImageUrl(training.thumbnail) as string}
                   alt={training.title}
                   fill
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

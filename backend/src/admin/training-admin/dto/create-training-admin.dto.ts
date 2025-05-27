@@ -14,6 +14,7 @@ const createTrainingSchema = z.object({
   order: z
     .number({ required_error: 'A ordem é obrigatória' })
     .min(1, { message: 'A ordem deve ser maior que 0' }),
+  status: z.enum(['ACTIVE', 'DRAFT', 'ARCHIVED']).optional(),
 });
 
 // class is required for using DTO as a type

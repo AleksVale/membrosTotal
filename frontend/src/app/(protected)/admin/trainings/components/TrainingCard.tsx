@@ -53,9 +53,9 @@ export function TrainingCard({ training, onView, onEdit }: TrainingCardProps) {
   return (
     <Card className="overflow-hidden flex flex-col h-full">
       <div className="relative aspect-video w-full">
-        {training.thumbnail ? (
+        {training ? (
           <Image
-            src={training.thumbnail}
+            src={`https://pub-5d54aa14d19d48d4bac5298564dde31b.r2.dev/membros/${training.thumbnail}`}
             alt={training.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

@@ -21,7 +21,6 @@ export default function EditTrainingPage() {
 
   const trainingId = Number(params.id);
 
-  // Buscar dados do treinamento
   const {
     data: training,
     isLoading,
@@ -103,13 +102,14 @@ export default function EditTrainingPage() {
     );
   }
 
-  const initialData: TrainingFormValues & { id: number } = {
+  const initialData: TrainingFormValues & { id: number; thumbnail?: string } = {
     id: training.id,
     title: training.title,
     description: training.description,
     tutor: training.tutor,
     order: training.order || 0,
     status: training.status || "DRAFT",
+    thumbnail: training.thumbnail || undefined,
   };
 
   return (

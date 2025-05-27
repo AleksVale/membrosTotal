@@ -63,7 +63,7 @@ export function TrainingTabs({
     isError: isErrorModules,
     refetch: refetchModules,
   } = useQuery({
-    queryKey: QueryKeys.modules.list(`trainingId=${trainingId}`),
+    queryKey: QueryKeys.modules.list(trainingId),
     queryFn: async () => {
       const response = await http.get(
         `/training-modules-admin?trainingId=${trainingId}`
@@ -181,7 +181,7 @@ export function TrainingTabs({
               </p>
               <Button
                 onClick={() =>
-                  router.push(`/admin/modules/new?trainingId=${trainingId}`)
+                  router.push(`/admin/trainings/${trainingId}/modules/new`)
                 }
               >
                 Criar primeiro módulo

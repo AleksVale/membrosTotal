@@ -10,6 +10,8 @@ import {
   Users,
   Award,
   Loader2,
+  FileText,
+  Plus,
 } from "lucide-react";
 
 // Hooks e API
@@ -40,6 +42,15 @@ interface Training {
   order: number;
 }
 
+// Interface para estatísticas de treinamento
+interface TrainingStats {
+  modules: number;
+  students: number;
+  completions: number;
+  averageCompletionTime?: number;
+  completionRate?: number;
+}
+
 export default function TrainingDetailsPage() {
   const params = useParams();
   const router = useRouter();
@@ -61,8 +72,8 @@ export default function TrainingDetailsPage() {
     refetchOnWindowFocus: false,
   });
 
-  // Stats dinâmicos para este treinamento
-  const { data: stats } = useQuery({
+  // Stats dinâmicos para este treinamento com tipagem correta
+  const { data: stats } = useQuery<TrainingStats>({
     queryKey: QueryKeys.trainings.stats(trainingId),
     queryFn: async () => {
       const response = await http.get(`/training-admin/${trainingId}/stats`);
@@ -71,6 +82,15 @@ export default function TrainingDetailsPage() {
     staleTime: 60000,
     refetchOnWindowFocus: false,
   });
+
+  // Valores seguros para estatísticas
+  const safeStats = stats || {
+    modules: 0,
+    students: 0,
+    completions: 0,
+    averageCompletionTime: 0,
+    completionRate: 0,
+  };
 
   if (isLoading) {
     return (
@@ -121,12 +141,23 @@ export default function TrainingDetailsPage() {
           <ArrowLeft className="h-4 w-4 mr-2" />
           Voltar
         </Button>
-        <Button
-          onClick={() => router.push(`/admin/trainings/${training.id}/edit`)}
-        >
-          <Edit className="h-4 w-4 mr-2" />
-          Editar Treinamento
-        </Button>
+        <div className="flex space-x-2">
+          <Button
+            variant="outline"
+            onClick={() =>
+              router.push(`/admin/trainings/${training.id}/modules`)
+            }
+          >
+            <FileText className="h-4 w-4 mr-2" />
+            Gerenciar Módulos
+          </Button>
+          <Button
+            onClick={() => router.push(`/admin/trainings/${training.id}/edit`)}
+          >
+            <Edit className="h-4 w-4 mr-2" />
+            Editar Treinamento
+          </Button>
+        </div>
       </div>
 
       {/* Detalhes do treinamento */}
@@ -176,24 +207,45 @@ export default function TrainingDetailsPage() {
                 <div className="flex items-center">
                   <Book className="h-4 w-4 mr-2 text-muted-foreground" />
                   <span className="text-sm">
-                    {stats?.modules || 0} módulo
-                    {stats?.modules !== 1 ? "s" : ""}
+                    {safeStats.modules || 0} módulo
+                    {safeStats.modules !== 1 ? "s" : ""}
                   </span>
                 </div>
                 <div className="flex items-center">
                   <Users className="h-4 w-4 mr-2 text-muted-foreground" />
                   <span className="text-sm">
-                    {stats?.students || 0} aluno
-                    {stats?.students !== 1 ? "s" : ""}
+                    {safeStats.students || 0} aluno
+                    {safeStats.students !== 1 ? "s" : ""}
                   </span>
                 </div>
                 <div className="flex items-center">
                   <Award className="h-4 w-4 mr-2 text-muted-foreground" />
                   <span className="text-sm">
-                    {stats?.completions || 0} conclus
-                    {stats?.completions !== 1 ? "ões" : "ão"}
+                    {safeStats.completions || 0} conclus
+                    {safeStats.completions !== 1 ? "ões" : "ão"}
                   </span>
                 </div>
+                {safeStats.completionRate !== undefined && (
+                  <div className="flex items-center">
+                    <Award className="h-4 w-4 mr-2 text-muted-foreground" />
+                    <span className="text-sm">
+                      Taxa de conclusão: {safeStats.completionRate.toFixed(1)}%
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              {/* Botão para criar novo módulo diretamente desta página */}
+              <div className="mt-6">
+                <Button
+                  className="w-full"
+                  onClick={() =>
+                    router.push(`/admin/trainings/${training.id}/modules/new`)
+                  }
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Novo Módulo
+                </Button>
               </div>
             </CardContent>
           </Card>

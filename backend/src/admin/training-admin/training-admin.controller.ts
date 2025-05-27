@@ -109,14 +109,12 @@ export class TrainingAdminController {
   @Get('stats')
   @ApiResponse({ status: 200, type: TrainingStatsDto })
   async getGlobalStats() {
-    console.log('Fetching global training stats');
     return this.trainingAdminService.getGlobalStats();
   }
 
   @Get(':id/stats')
   @ApiResponse({ status: 200, type: TrainingDetailStatsDto })
   async getTrainingStats(@Param('id', ParseIntPipe) id: number) {
-    console.log('Fetching training stats');
     return this.trainingAdminService.getTrainingStats(id);
   }
 

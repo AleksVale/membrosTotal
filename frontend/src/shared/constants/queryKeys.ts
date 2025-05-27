@@ -45,19 +45,22 @@ export const QueryKeys = {
   
   modules: {
     all: ['modules'],
-    list: (params?: string) => ['modules', 'list', params],
+    list: (trainingId: number | string, params?: string) => ['modules', 'list', trainingId, params],
     detail: (id: number) => ['modules', 'detail', id],
+    permissions: (id: number) => ['modules', 'permissions', id],
+    stats: (id: number) => ['modules', 'stats', id],
   },
   
   submodules: {
     all: ['submodules'],
-    list: (params?: string) => ['submodules', 'list', params],
+    list: (moduleId: number) => ['submodules', 'list', moduleId],
     detail: (id: number) => ['submodules', 'detail', id],
+    permissions: (id: number) => ['submodules', 'permissions', id],
   },
-
+  
   lessons: {
     all: ['lessons'],
-    list: (params?: string) => ['lessons', 'list', params],
+    list: (submoduleId: number) => ['lessons', 'list', submoduleId],
     detail: (id: number) => ['lessons', 'detail', id],
   },
 

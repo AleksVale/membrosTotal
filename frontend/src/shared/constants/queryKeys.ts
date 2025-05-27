@@ -39,6 +39,8 @@ export const QueryKeys = {
     all: ['trainings'],
     list: (params?: string) => ['trainings', 'list', params],
     detail: (id: number) => ['trainings', 'detail', id],
+    permissions: (id: number) => ['trainings', 'permissions', id],
+    stats: (id: number) => ['trainings', 'stats', id],
   },
   
   modules: {

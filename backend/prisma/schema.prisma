@@ -202,13 +202,19 @@ model PaymentRequest {
   @@map("payment_requests")
 }
 
-model Training {
-  id          Int    @id @default(autoincrement())
-  title       String
-  description String
-  tutor       String
-  order       Int    @default(0)
+enum TrainingStatus {
+  DRAFT
+  ACTIVE
+  ARCHIVED
+}
 
+model Training {
+  id                     Int                      @id @default(autoincrement())
+  title                  String
+  description            String
+  tutor                  String
+  order                  Int                      @default(0)
+  status                 TrainingStatus           @default(DRAFT)
   thumbnail              String?
   createdAt              DateTime                 @default(now())
   updatedAt              DateTime                 @updatedAt

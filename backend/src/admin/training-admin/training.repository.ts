@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, TrainingStatus } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
 import { TrainingDTO } from './dto/training-response.dto';
 import { TrainingQuery } from './training-admin.service';
+import { TrainingDetailStatsDto, TrainingStatsDto } from './dto/training-stats.dto';
 
 @Injectable()
 export class TrainingRepository {
@@ -159,5 +160,81 @@ export class TrainingRepository {
           }),
       );
     }
+  }
+
+  async getGlobalStats(): Promise<TrainingStatsDto> {
+    const [total, activeCount, draftCount, archivedCount] = await Promise.all([
+      this.prisma.training.count(),
+      this.prisma.training.count({
+        where: { status: TrainingStatus.ACTIVE },
+      }),
+      this.prisma.training.count({
+        where: { status: TrainingStatus.DRAFT },
+      }),
+      this.prisma.training.count({
+        where: { status: TrainingStatus.ARCHIVED },
+      }),
+    ]);
+
+    // Usar groupBy para contar usuários distintos
+    const distinctUsers = await this.prisma.permissionUserTraining.groupBy({
+      by: ['userId'],
+      _count: {
+        userId: true, // Conta quantos registros existem para cada userId
+      },
+    });
+
+    const studentsCount = distinctUsers.length;
+
+    return {
+      total,
+      active: activeCount,
+      draft: draftCount,
+      archived: archivedCount,
+      students: studentsCount,
+    };
+  }
+
+  async getTrainingStats(id: number): Promise<TrainingDetailStatsDto> {
+    // Verificar se o treinamento existe
+    const training = await this.prisma.training.findUnique({
+      where: { id },
+      include: {
+        Module: {
+          include: {
+            submodules: {
+              include: {
+                lessons: true,
+              },
+            },
+          },
+        },
+        PermissionUserTraining: true,
+      },
+    });
+
+    if (!training) {
+      throw new Error(`Training with ID ${id} not found`);
+    }
+
+    // Contar módulos
+    const moduleCount = training.Module.length;
+
+    // Contar alunos matriculados
+    const studentsCount = training.PermissionUserTraining.length;
+
+    // Para implementar completions e outras estatísticas mais avançadas,
+    // você precisaria de uma tabela que registre o progresso/conclusão dos alunos
+    // Aqui estou usando valores mockados, mas você deve adaptar para sua estrutura real
+    const completionsCount = 0; // Substitua pela lógica real
+    const completionRate = studentsCount > 0 ? (completionsCount / studentsCount) * 100 : 0;
+
+    return {
+      modules: moduleCount,
+      students: studentsCount,
+      completions: completionsCount,
+      completionRate: completionRate,
+      averageCompletionTime: 0, // Implemente conforme necessário
+    };
   }
 }

@@ -27,6 +27,7 @@ import { SuccessResponse } from 'src/utils/success-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PostResponse } from 'src/utils/post-response.dto';
 import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { TrainingStatsDto, TrainingDetailStatsDto } from './dto/training-stats.dto';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
@@ -78,12 +79,6 @@ export class TrainingAdminController {
     });
   }
 
-  @Get(':id')
-  @ApiResponse({ type: GetTrainingResponse, status: 200 })
-  findOne(@Param('id') id: string) {
-    return this.trainingAdminService.findOne(+id);
-  }
-
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -109,5 +104,25 @@ export class TrainingAdminController {
   ): Promise<SuccessResponse> {
     await this.trainingAdminService.delete(id);
     return { success: true };
+  }
+
+  @Get('stats')
+  @ApiResponse({ status: 200, type: TrainingStatsDto })
+  async getGlobalStats() {
+    console.log('Fetching global training stats');
+    return this.trainingAdminService.getGlobalStats();
+  }
+
+  @Get(':id/stats')
+  @ApiResponse({ status: 200, type: TrainingDetailStatsDto })
+  async getTrainingStats(@Param('id', ParseIntPipe) id: number) {
+    console.log('Fetching training stats');
+    return this.trainingAdminService.getTrainingStats(id);
+  }
+
+  @Get(':id')
+  @ApiResponse({ type: GetTrainingResponse, status: 200 })
+  findOne(@Param('id') id: string) {
+    return this.trainingAdminService.findOne(+id);
   }
 }

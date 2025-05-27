@@ -6,6 +6,7 @@ import { AwsService } from 'src/common/aws/aws.service';
 import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
 import { ModuleRepository } from '../training-modules-admin/modules.repository';
 import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
+import { TrainingDetailStatsDto, TrainingStatsDto } from './dto/training-stats.dto';
 
 export interface TrainingQuery {
   title: string;
@@ -80,5 +81,17 @@ export class TrainingAdminService {
         );
     await this.awsService.updatePhoto(file, thumbnail);
     return this.trainingRepository.update({ thumbnail }, { id: paymentId });
+  }
+
+  async getGlobalStats(): Promise<TrainingStatsDto> {
+    return this.trainingRepository.getGlobalStats();
+  }
+
+  async getTrainingStats(id: number): Promise<TrainingDetailStatsDto> {
+    try {
+      return await this.trainingRepository.getTrainingStats(id);
+    } catch (error) {
+      throw new NotFoundException(`Stats for training with ID ${id} not found`);
+    }
   }
 }

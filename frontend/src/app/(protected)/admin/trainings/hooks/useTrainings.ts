@@ -76,15 +76,15 @@ export function useTrainings({ page, perPage, search, filters = {} }: UseTrainin
   });
 
   // Query para buscar estatísticas
-  const { data: statsData } = {
-    data: {
-      total: 0,
-      students: 0,
-      active: 0,
-      draft: 0, 
-      archived: 0
-    } as TrainingStats,
-  };
+  const { data: statsData, isLoading: statsLoading } = useQuery<TrainingStats>({
+    queryKey: ['trainings', 'global-stats'],
+    queryFn: async () => {
+      const response = await http.get<TrainingStats>('/training-admin/stats');
+      return response.data;
+    },
+    staleTime: 300000, // 5 minutos
+    refetchOnWindowFocus: false,   
+  });
 
   return {
     trainings: data?.data || [],
@@ -95,11 +95,12 @@ export function useTrainings({ page, perPage, search, filters = {} }: UseTrainin
     isFetching,
     refetch,
     stats: statsData || {
-      total: 0,
+      total: data?.meta.total || 0,
       students: 0,
       active: 0,
       draft: 0,
       archived: 0,
     },
+    statsLoading,
   };
 }

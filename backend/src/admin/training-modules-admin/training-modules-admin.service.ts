@@ -22,10 +22,17 @@ export class TrainingModulesAdminService {
   ) {}
 
   async create(createTrainingModulesAdminDto: CreateModuleAdminDTO) {
+    console.log(
+      'Creating module with data:',
+      createTrainingModulesAdminDto,
+    );
     return this.moduleRepository.create(createTrainingModulesAdminDto);
   }
 
   async createFile(file: Express.Multer.File, moduleId: number) {
+    console.log(
+      'Creating file for module with ID:',
+      moduleId)
     const module = await this.moduleRepository.find({ id: moduleId });
     const thumbnail = module?.thumbnail
       ? module.thumbnail

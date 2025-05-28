@@ -22,7 +22,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import Link from "next/link";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,7 +31,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 interface Module {
@@ -153,36 +151,34 @@ export function ModuleList({
                         </DropdownMenuItem>
                       )}
 
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/admin/trainings/${trainingId}/modules/${module.id}/submodules`}
-                        >
-                          <FileText className="mr-2 h-4 w-4" />
-                          <span>Submódulos</span>
-                        </Link>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          (window.location.href = `/admin/trainings/${trainingId}/modules/${module.id}/submodules`)
+                        }
+                      >
+                        <FileText className="mr-2 h-4 w-4" />
+                        <span>Submódulos</span>
                       </DropdownMenuItem>
 
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/admin/trainings/${trainingId}/modules/${module.id}/permissions`}
-                        >
-                          <Lock className="mr-2 h-4 w-4" />
-                          <span>Permissões</span>
-                        </Link>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          (window.location.href = `/admin/trainings/${trainingId}/modules/${module.id}/permissions`)
+                        }
+                      >
+                        <Lock className="mr-2 h-4 w-4" />
+                        <span>Permissões</span>
                       </DropdownMenuItem>
 
                       {onDelete && (
                         <>
                           <DropdownMenuSeparator />
-                          <AlertDialogTrigger asChild>
-                            <DropdownMenuItem
-                              onClick={() => setModuleToDelete(module.id)}
-                              className="text-destructive focus:text-destructive"
-                            >
-                              <Trash className="mr-2 h-4 w-4" />
-                              <span>Excluir</span>
-                            </DropdownMenuItem>
-                          </AlertDialogTrigger>
+                          <DropdownMenuItem
+                            onClick={() => setModuleToDelete(module.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash className="mr-2 h-4 w-4" />
+                            <span>Excluir</span>
+                          </DropdownMenuItem>
                         </>
                       )}
                     </DropdownMenuContent>
@@ -194,14 +190,17 @@ export function ModuleList({
         </TableBody>
       </Table>
 
-      <AlertDialog>
+      <AlertDialog
+        open={!!moduleToDelete}
+        onOpenChange={(open) => !open && setModuleToDelete(null)}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Excluir módulo</AlertDialogTitle>
             <AlertDialogDescription>
               Tem certeza que deseja excluir este módulo? Esta ação não pode ser
               desfeita e também excluirá todos os submódulos e aulas
-              relacionados.
+              relacionadas.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>

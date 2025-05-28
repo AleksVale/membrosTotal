@@ -27,11 +27,6 @@ interface ModuleResponse {
   };
 }
 
-interface ModuleStats {
-  total: number;
-  submodules: number;
-}
-
 interface Training {
   id: number;
   title: string;
@@ -82,24 +77,6 @@ export function useModules({ trainingId, page, perPage, search, filters = {} }: 
     refetchOnWindowFocus: false,
   });
 
-  // Query para buscar estatísticas
-  const { data: statsData } = useQuery<ModuleStats>({
-    queryKey: ['modules', 'stats', trainingId || 'all'],
-    queryFn: async () => {
-      const url = trainingId 
-        ? `/training-modules-admin/stats?trainingId=${trainingId}`
-        : '/training-modules-admin/stats';
-      const response = await http.get<ModuleStats>(url);
-      return response.data;
-    },
-    staleTime: 300000, // 5 minutos
-    refetchOnWindowFocus: false,
-    // Fallback em caso de erro
-    onError: () => {
-      console.warn('Failed to fetch module stats');
-    },
-  });
-
   // Query para buscar treinamentos para o filtro
   const { data: trainingsData } = useQuery<{ data: Training[] }>({
     queryKey: QueryKeys.trainings.all,
@@ -120,7 +97,6 @@ export function useModules({ trainingId, page, perPage, search, filters = {} }: 
     isError,
     isFetching,
     refetch,
-    stats: statsData,
     trainings: trainingsData?.data || [],
   };
 }

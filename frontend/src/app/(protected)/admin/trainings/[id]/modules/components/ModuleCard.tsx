@@ -2,7 +2,7 @@
 
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, MoreVertical, FileText, Lock } from "lucide-react";
+import { Edit, Eye, MoreVertical, FileText, Lock, Trash } from "lucide-react";
 import Image from "next/image";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -63,6 +63,7 @@ export function ModuleCard({
       <CardHeader className="p-4 pb-0 flex-grow">
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-lg line-clamp-2">{module.title}</h3>
+
           <AlertDialog>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -107,7 +108,7 @@ export function ModuleCard({
                     <DropdownMenuSeparator />
                     <AlertDialogTrigger asChild>
                       <DropdownMenuItem className="text-destructive focus:text-destructive">
-                        <FileText className="mr-2 h-4 w-4" />
+                        <Trash className="mr-2 h-4 w-4" />
                         <span>Excluir</span>
                       </DropdownMenuItem>
                     </AlertDialogTrigger>
@@ -115,6 +116,7 @@ export function ModuleCard({
                 )}
               </DropdownMenuContent>
             </DropdownMenu>
+
             {onDelete && (
               <DeleteModuleAlert moduleId={module.id} onDelete={onDelete} />
             )}

@@ -66,6 +66,18 @@ export function ModuleList({
 }: ModuleListProps) {
   const [moduleToDelete, setModuleToDelete] = useState<number | null>(null);
 
+  const handleConfirmDelete = async () => {
+    if (!moduleToDelete || !onDelete) return;
+
+    try {
+      await onDelete(moduleToDelete);
+      setModuleToDelete(null); // Limpa o estado após exclusão bem sucedida
+    } catch {
+      // Erro já tratado na função onDelete
+      setModuleToDelete(null); // Limpa mesmo em caso de erro
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="w-full flex justify-center py-8">
@@ -203,12 +215,7 @@ export function ModuleList({
           <AlertDialogFooter>
             <AlertDialogCancel>Cancelar</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => {
-                if (moduleToDelete && onDelete) {
-                  onDelete(moduleToDelete);
-                  setModuleToDelete(null);
-                }
-              }}
+              onClick={handleConfirmDelete}
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Confirmar exclusão

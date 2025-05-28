@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import {
   PlusCircle,
@@ -10,7 +10,6 @@ import {
   Search,
   Loader2,
   ArrowLeft,
-  FileText,
 } from "lucide-react";
 
 // Custom hooks
@@ -36,17 +35,9 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
-import { ModuleStatCard } from "./components/ModuleStatCard";
 import { ModuleCard } from "./components/ModuleCard";
 import { ModuleList } from "./components/ModuleList";
-
-// 1. Modificar a interface ModuleStats
-interface ModuleStats {
-  total: number;
-  // Remover: public: number;
-  // Remover: private: number;
-  submodules: number;
-}
+import http from "@/lib/http";
 
 export default function ModulesPage() {
   const router = useRouter();
@@ -86,7 +77,6 @@ export default function ModulesPage() {
     refetch,
     totalItems,
     totalPages,
-    stats,
     training,
   } = useModules({
     trainingId,
@@ -96,36 +86,10 @@ export default function ModulesPage() {
     filters,
   });
 
-  // Stats para os cards com garantia de tipo
-  const moduleStats = useMemo(() => {
-    // Garantir que stats tem o formato esperado
-    const safeStats: ModuleStats = (stats as ModuleStats) || {
-      total: 0,
-      // Remover: public: 0,
-      // Remover: private: 0,
-      submodules: 0,
-    };
-
-    return [
-      {
-        title: "Total de Módulos",
-        value: safeStats.total,
-        icon: FileText,
-      },
-      {
-        title: "Submódulos",
-        value: safeStats.submodules,
-        icon: FileText,
-      },
-    ];
-  }, [stats]);
-
   // Handler para exclusão
   const handleDeleteModule = async (id: number) => {
     try {
-      await fetch(`/api/training-modules-admin/${id}`, {
-        method: "DELETE",
-      });
+      await http.delete(`/training-modules-admin/${id}`);
       refetch();
     } catch (error) {
       console.error("Erro ao excluir módulo:", error);
@@ -177,19 +141,6 @@ export default function ModulesPage() {
           <PlusCircle className="mr-2 h-4 w-4" />
           Novo Módulo
         </Button>
-      </div>
-
-      {/* Cards de Estatísticas */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        {moduleStats.map((stat) => (
-          <ModuleStatCard
-            key={stat.title}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-            loading={isLoading}
-          />
-        ))}
       </div>
 
       {/* Área de filtros e controles */}

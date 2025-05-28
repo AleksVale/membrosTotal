@@ -49,7 +49,7 @@ export function ModuleCard({
       <div className="relative aspect-video w-full">
         {module.thumbnail ? (
           <Image
-            src={getImageUrl(module.thumbnail)}
+            src={getImageUrl(module.thumbnail) as string}
             alt={module.title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"

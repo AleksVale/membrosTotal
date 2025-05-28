@@ -25,11 +25,6 @@ interface ModuleResponse {
   };
 }
 
-interface ModuleStats {
-  total: number;
-  submodules: number;
-}
-
 interface Training {
   id: number;
   title: string;
@@ -96,18 +91,6 @@ export function useModules({ trainingId, page, perPage, search, filters = {} }: 
     enabled: !!trainingId,
   });
 
-  // Query para buscar estatísticas
-  const { data: statsData, isLoading: statsLoading } = useQuery<ModuleStats>({
-    queryKey: ['modules', 'stats', trainingId],
-    queryFn: async () => {
-      const response = await http.get<ModuleStats>(`/training-modules-admin/stats?trainingId=${trainingId}`);
-      return response.data;
-    },
-    staleTime: 300000, // 5 minutos
-    refetchOnWindowFocus: false,
-    enabled: !!trainingId,
-  });
-
   return {
     modules: data?.data || [],
     totalItems: data?.meta.total || 0,
@@ -116,11 +99,6 @@ export function useModules({ trainingId, page, perPage, search, filters = {} }: 
     isError,
     isFetching,
     refetch,
-    stats: statsData || {
-      total: data?.meta.total || 0,
-      submodules: 0,
-    },
-    statsLoading,
     training: trainingData?.training,
   };
 }

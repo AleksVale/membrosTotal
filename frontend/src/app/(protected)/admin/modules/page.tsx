@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   PlusCircle,
@@ -9,9 +9,8 @@ import {
   List,
   Search,
   Loader2,
-  ArrowLeft,
-  FileText,
 } from "lucide-react";
+import { toast } from "react-toastify";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
@@ -38,13 +37,8 @@ import { Badge } from "@/components/ui/badge";
 import { Pagination } from "@/components/ui/pagination";
 import { ModuleCard } from "./components/ModuleCard";
 import { ModuleList } from "./components/ModuleList";
-import { ModuleStatCard } from "./components/ModuleStatCard";
-import { IconType } from "@/lib/types";
-
-interface ModuleStats {
-  total: number;
-  submodules: number;
-}
+import { CreateModuleDialog } from "./components/CreateModuleDialog";
+import http from "@/lib/http";
 
 export default function ModulesListPage() {
   const router = useRouter();
@@ -53,6 +47,7 @@ export default function ModulesListPage() {
     ? Number(searchParams.get("trainingId"))
     : undefined;
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [createDialogOpen, setCreateDialogOpen] = useState(false);
 
   // Filtros e paginação
   const {
@@ -86,7 +81,6 @@ export default function ModulesListPage() {
     refetch,
     totalItems,
     totalPages,
-    stats,
     trainings,
   } = useModules({
     trainingId,
@@ -96,88 +90,46 @@ export default function ModulesListPage() {
     filters,
   });
 
-  // Stats para os cards
-  const moduleStats = useMemo(() => {
-    const safeStats: ModuleStats = stats || {
-      total: 0,
-      submodules: 0,
-    };
+  // Handler para exclusão com estado de loading e melhor tratamento de erros
 
-    return [
-      {
-        title: "Total de Módulos",
-        value: safeStats.total || 0,
-        icon: FileText as IconType,
-      },
-      {
-        title: "Total de Submódulos",
-        value: safeStats.submodules || 0,
-        icon: FileText as IconType,
-      },
-    ];
-  }, [stats]);
-
-  // Handler para exclusão
   const handleDeleteModule = async (id: number) => {
     try {
-      await fetch(`/api/training-modules-admin/${id}`, {
-        method: "DELETE",
-      });
-      refetch();
+      await http.delete(`/training-modules-admin/${id}`);
+
+      // Notificação de sucesso
+      toast.success("Módulo excluído com sucesso");
+
+      // Atualiza a lista
+      await refetch();
     } catch (error) {
       console.error("Erro ao excluir módulo:", error);
+      toast.error("Erro ao excluir o módulo. Tente novamente.");
     }
   };
 
   return (
     <div className="flex flex-col space-y-6">
+      {/* Modal de criação */}
+      <CreateModuleDialog
+        open={createDialogOpen}
+        onOpenChange={setCreateDialogOpen}
+        defaultTrainingId={trainingId}
+      />
+
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="w-full">
           <div className="flex items-center mb-2">
-            <Button
-              variant="outline"
-              size="sm"
-              className="mr-2"
-              onClick={() => router.back()}
-            >
-              <ArrowLeft className="h-4 w-4 mr-2" />
-              Voltar
-            </Button>
             <h1 className="text-2xl font-bold">Módulos</h1>
           </div>
           <p className="text-muted-foreground">
             Gerencie todos os módulos da plataforma
           </p>
         </div>
-        <Button
-          onClick={() => {
-            const url = new URL(
-              "/admin/trainings/modules/new",
-              window.location.origin
-            );
-            if (trainingId) {
-              url.searchParams.set("trainingId", trainingId.toString());
-            }
-            router.push(url.toString());
-          }}
-        >
+        <Button onClick={() => setCreateDialogOpen(true)}>
           <PlusCircle className="mr-2 h-4 w-4" />
           Novo Módulo
         </Button>
-      </div>
-
-      {/* Cards de Estatísticas */}
-      <div className="grid gap-4 grid-cols-1 md:grid-cols-2">
-        {moduleStats.map((stat) => (
-          <ModuleStatCard
-            key={stat.title}
-            title={stat.title}
-            value={stat.value}
-            icon={stat.icon}
-            loading={isLoading}
-          />
-        ))}
       </div>
 
       {/* Área de filtros e controles */}
@@ -403,8 +355,6 @@ export default function ModulesListPage() {
               )}
             </div>
           )}
-
-          {/* Paginação */}
           {totalPages > 1 && (
             <Pagination
               currentPage={page}

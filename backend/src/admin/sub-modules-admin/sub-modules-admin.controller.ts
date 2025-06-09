@@ -1,31 +1,31 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  Query,
+  Controller,
   DefaultValuePipe,
-  ParseIntPipe,
-  UploadedFile,
-  HttpStatus,
-  UseInterceptors,
   Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseInterceptors,
 } from '@nestjs/common';
-import { SubModulesAdminService } from './sub-modules-admin.service';
-import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
-import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
+import { PostResponse } from 'src/utils/post-response.dto';
+import { SuccessResponse } from 'src/utils/success-response.dto';
+import { AddPermissionAdminDTO } from './dto/add-permissions-subModule-training.dto';
+import { CreateSubModuleAdminDTO } from './dto/create-sub-modules-admin.dto';
 import {
   GetSubModuleResponse,
   SubmoduleDTO,
 } from './dto/sub-modules-response.dto';
-import { SuccessResponse } from 'src/utils/success-response.dto';
-import { AddPermissionAdminDTO } from './dto/add-permissions-subModule-training.dto';
-import { PostResponse } from 'src/utils/post-response.dto';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { UpdateSubModulesAdminDto } from './dto/update-sub-modules-admin.dto';
+import { SubModulesAdminService } from './sub-modules-admin.service';
 
 @Controller('sub-modules-admin')
 export class SubModulesAdminController {
@@ -83,6 +83,12 @@ export class SubModulesAdminController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.subModulesAdminService.findOne(+id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id/permissions')
+  async getPermissions(@Param('id', ParseIntPipe) id: number) {
+    return this.subModulesAdminService.getPermissions(id);
   }
 
   @ApiResponse({ type: SuccessResponse })

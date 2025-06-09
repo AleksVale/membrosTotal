@@ -49,19 +49,24 @@ export const QueryKeys = {
     detail: (id: number) => ['modules', 'detail', id],
     permissions: (id: number) => ['modules', 'permissions', id],
     stats: (id: number) => ['modules', 'stats', id],
+    autocomplete: ['modules', 'autocomplete'],
   },
   
   submodules: {
     all: ['submodules'],
-    list: (moduleId: number) => ['submodules', 'list', moduleId],
+    list: (page?: number, perPage?: number, search?: string, moduleId?: number, filters?: Record<string, string | undefined>) => 
+      ['submodules', 'list', page, perPage, search, moduleId, filters],
+    byModule: (moduleId: number) => ['submodules', 'list', moduleId],
     detail: (id: number) => ['submodules', 'detail', id],
     permissions: (id: number) => ['submodules', 'permissions', id],
   },
   
   lessons: {
     all: ['lessons'],
-    list: (submoduleId: number) => ['lessons', 'list', submoduleId],
+    list: (params?: { submoduleId?: number; page?: number; perPage?: number; search?: string; filters?: Record<string, string | number | undefined> }) => 
+      ['lessons', 'list', params],
     detail: (id: number) => ['lessons', 'detail', id],
+    autocomplete: ['lessons', 'autocomplete'],
   },
 
   meetings: {

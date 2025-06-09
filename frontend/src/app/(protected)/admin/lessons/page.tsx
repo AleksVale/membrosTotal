@@ -10,11 +10,11 @@ import {
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
-import { toast } from "react-toastify";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
-import { useModules } from "./hooks/useModules";
+import { useDeleteLesson } from "./hooks/useLessonMutations";
+import { useLessons } from "./hooks/useLessons";
 
 // Components
 import { Badge } from "@/components/ui/badge";
@@ -35,19 +35,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import http from "@/lib/http";
-import { CreateModuleDialog } from "./components/CreateModuleDialog";
-import { ModuleCard } from "./components/ModuleCard";
-import { ModuleList } from "./components/ModuleList";
+import { LessonCard } from "./components/LessonCard";
+import { LessonList } from "./components/LessonList";
 
-export default function ModulesListPage() {
+export default function LessonsListPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const trainingId = searchParams.get("trainingId")
-    ? Number(searchParams.get("trainingId"))
+  const submoduleId = searchParams.get("submoduleId")
+    ? Number(searchParams.get("submoduleId"))
     : undefined;
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [createDialogOpen, setCreateDialogOpen] = useState(false);
+
+  const deleteLesson = useDeleteLesson();
 
   // Filtros e paginação
   const {
@@ -68,68 +67,54 @@ export default function ModulesListPage() {
   } = usePaginationFilters({
     defaultPerPage: 12,
     paramMapping: {
-      trainingId: "trainingId",
+      submoduleId: "submoduleId",
     },
   });
 
   // Buscar dados
-  const {
-    modules,
-    isLoading,
-    isFetching,
-    isError,
-    refetch,
-    totalItems,
-    totalPages,
-    trainings,
-  } = useModules({
-    trainingId,
+  const { data, isLoading, isFetching, isError, refetch } = useLessons({
+    submoduleId,
     page,
     perPage,
     search: debouncedSearch,
     filters,
   });
 
-  // Handler para exclusão com estado de loading e melhor tratamento de erros
+  const lessons = data?.lessons || [];
+  const totalItems = data?.totalItems || 0;
+  const totalPages = data?.totalPages || 0;
 
-  const handleDeleteModule = async (id: number) => {
-    try {
-      await http.delete(`/training-modules-admin/${id}`);
-
-      // Notificação de sucesso
-      toast.success("Módulo excluído com sucesso");
-
-      // Atualiza a lista
-      await refetch();
-    } catch (error) {
-      console.error("Erro ao excluir módulo:", error);
-      toast.error("Erro ao excluir o módulo. Tente novamente.");
-    }
+  // Handler para exclusão
+  const handleDeleteLesson = async (id: number) => {
+    await deleteLesson.mutateAsync(id);
   };
 
   return (
     <div className="flex flex-col space-y-6">
-      {/* Modal de criação */}
-      <CreateModuleDialog
-        open={createDialogOpen}
-        onOpenChange={setCreateDialogOpen}
-        defaultTrainingId={trainingId}
-      />
-
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row justify-between items-center gap-4">
         <div className="w-full">
           <div className="flex items-center mb-2">
-            <h1 className="text-2xl font-bold">Módulos</h1>
+            <h1 className="text-2xl font-bold">Aulas</h1>
           </div>
           <p className="text-muted-foreground">
-            Gerencie todos os módulos da plataforma
+            Gerencie todas as aulas da plataforma
           </p>
         </div>
-        <Button onClick={() => setCreateDialogOpen(true)}>
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Novo Módulo
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={() => {
+              const url = new URL("/admin/lessons/new", window.location.origin);
+              if (submoduleId) {
+                url.searchParams.set("submoduleId", submoduleId.toString());
+              }
+              router.push(url.toString());
+            }}
+          >
+            <PlusCircle className="mr-2 h-4 w-4" />
+            Nova Aula
+          </Button>
+        </div>
       </div>
 
       {/* Área de filtros e controles */}
@@ -137,11 +122,11 @@ export default function ModulesListPage() {
         <CardHeader className="pb-3">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
             <div>
-              <CardTitle>Todos os Módulos</CardTitle>
+              <CardTitle>Todas as Aulas</CardTitle>
               <CardDescription>
                 {hasActiveFilters
-                  ? `${totalItems} módulos encontrados com os filtros aplicados`
-                  : `${totalItems} módulos no total`}
+                  ? `${totalItems} aulas encontradas com os filtros aplicados`
+                  : `${totalItems} aulas no total`}
               </CardDescription>
             </div>
 
@@ -210,7 +195,7 @@ export default function ModulesListPage() {
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Buscar módulos..."
+                  placeholder="Buscar aulas..."
                   className="pl-8"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -219,38 +204,6 @@ export default function ModulesListPage() {
                   <Loader2 className="absolute right-2 top-2.5 h-4 w-4 animate-spin" />
                 )}
               </div>
-
-              {trainings && trainings.length > 0 && (
-                <Select
-                  value={trainingId?.toString() || ""}
-                  onValueChange={(value) => {
-                    const url = new URL(window.location.href);
-
-                    if (value === "") {
-                      url.searchParams.delete("trainingId");
-                    } else {
-                      url.searchParams.set("trainingId", value);
-                    }
-
-                    router.push(url.toString());
-                  }}
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Filtrar por treinamento" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">Todos os treinamentos</SelectItem>
-                    {trainings.map((training) => (
-                      <SelectItem
-                        key={training.id}
-                        value={training.id.toString()}
-                      >
-                        {training.title}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
 
               {hasActiveFilters && (
                 <Button
@@ -274,31 +227,31 @@ export default function ModulesListPage() {
           ) : isError ? (
             <div className="text-center py-8">
               <p className="text-red-500 mb-2">
-                Ocorreu um erro ao carregar os módulos.
+                Ocorreu um erro ao carregar as aulas.
               </p>
               <Button variant="outline" onClick={() => refetch()}>
                 Tentar novamente
               </Button>
             </div>
-          ) : modules.length === 0 ? (
+          ) : lessons.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-muted-foreground mb-2">
-                Nenhum módulo encontrado.
+                Nenhuma aula encontrada.
               </p>
               <Button
                 onClick={() => {
                   const url = new URL(
-                    "/admin/trainings/modules/new",
+                    "/admin/lessons/new",
                     window.location.origin
                   );
-                  if (trainingId) {
-                    url.searchParams.set("trainingId", trainingId.toString());
+                  if (submoduleId) {
+                    url.searchParams.set("submoduleId", submoduleId.toString());
                   }
                   router.push(url.toString());
                 }}
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
-                Criar primeiro módulo
+                Criar primeira aula
               </Button>
             </div>
           ) : (
@@ -310,47 +263,27 @@ export default function ModulesListPage() {
               )}
 
               {viewMode === "grid" ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                  {modules.map((module) => (
-                    <ModuleCard
-                      key={module.id}
-                      module={module}
-                      onView={(id) =>
-                        router.push(
-                          `/admin/trainings/${module.trainingId}/modules/${id}`
-                        )
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4">
+                  {lessons.map((lesson) => (
+                    <LessonCard
+                      key={lesson.id}
+                      lesson={lesson}
+                      isDeletingId={
+                        deleteLesson.isPending
+                          ? deleteLesson.variables || null
+                          : null
                       }
-                      onEdit={(id) =>
-                        router.push(
-                          `/admin/trainings/${module.trainingId}/modules/${id}/edit`
-                        )
-                      }
-                      onDelete={handleDeleteModule}
-                      onManageSubmodules={(id) =>
-                        router.push(
-                          `/admin/trainings/${module.trainingId}/modules/${id}/submodules`
-                        )
-                      }
+                      onView={(id) => router.push(`/admin/lessons/${id}`)}
+                      onEdit={(id) => router.push(`/admin/lessons/${id}/edit`)}
+                      onDelete={handleDeleteLesson}
                     />
                   ))}
                 </div>
               ) : (
-                <ModuleList
-                  modules={modules}
-                  onView={(id, trainingId) =>
-                    router.push(`/admin/trainings/${trainingId}/modules/${id}`)
-                  }
-                  onEdit={(id, trainingId) =>
-                    router.push(
-                      `/admin/trainings/${trainingId}/modules/${id}/edit`
-                    )
-                  }
-                  onDelete={handleDeleteModule}
-                  onManageSubmodules={(id, trainingId) =>
-                    router.push(
-                      `/admin/trainings/${trainingId}/modules/${id}/submodules`
-                    )
-                  }
+                <LessonList
+                  lessons={lessons}
+                  onDelete={handleDeleteLesson}
+                  isDeleting={deleteLesson.isPending}
                 />
               )}
             </div>
@@ -361,7 +294,7 @@ export default function ModulesListPage() {
               totalPages={totalPages}
               totalItems={totalItems}
               itemsPerPage={perPage}
-              itemsCount={modules.length}
+              itemsCount={lessons.length}
               onPageChange={setPage}
               isMobile={false}
               isLoading={isLoading || isFetching}

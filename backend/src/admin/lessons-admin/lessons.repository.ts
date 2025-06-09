@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
-import { LessonQuery } from './lessons-admin.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { LessonResponseDTO } from './dto/lessons-response.dto';
+import { LessonQuery } from './lessons-admin.service';
 
 @Injectable()
 export class LessonsRepository {
@@ -16,6 +16,17 @@ export class LessonsRepository {
   async find(condition: Prisma.LessonWhereInput) {
     return await this.prisma.lesson.findFirst({
       where: condition,
+      include: {
+        submodule: {
+          include: {
+            module: {
+              include: {
+                training: true,
+              },
+            },
+          },
+        },
+      },
     });
   }
 
@@ -42,7 +53,15 @@ export class LessonsRepository {
           submoduleId: options.subModuleId,
         },
         include: {
-          submodule: true,
+          submodule: {
+            include: {
+              module: {
+                include: {
+                  training: true,
+                },
+              },
+            },
+          },
         },
         orderBy: { order: 'asc' },
       },

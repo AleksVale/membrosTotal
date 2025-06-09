@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
-import { SubModulesQuery } from './sub-modules-admin.service';
-import { SubmoduleDTO } from './dto/sub-modules-response.dto';
 import { TrainingRepository } from 'src/admin/training-admin/training.repository';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { SubmoduleDTO } from './dto/sub-modules-response.dto';
+import { SubModulesQuery } from './sub-modules-admin.service';
 
 @Injectable()
 export class SubModuleRepository {
@@ -20,7 +20,32 @@ export class SubModuleRepository {
   async find(condition: Prisma.SubmoduleWhereInput) {
     return await this.prisma.submodule.findFirst({
       where: condition,
-      include: { PermissionUserSubModule: true },
+      include: { 
+        PermissionUserSubModule: true,
+        module: {
+          include: {
+            training: true
+          }
+        }
+      },
+    });
+  }
+
+  async getUsersWithPermission(submoduleId: number) {
+    return this.prisma.permissionUserSubModule.findMany({
+      where: {
+        submoduleId,
+      },
+      include: {
+        User: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
   }
 
@@ -48,7 +73,11 @@ export class SubModuleRepository {
         },
         orderBy: { order: 'asc' },
         include: {
-          module: true,
+          module: {
+            include: {
+              training: true
+            }
+          },
           PermissionUserSubModule: true,
         },
       },

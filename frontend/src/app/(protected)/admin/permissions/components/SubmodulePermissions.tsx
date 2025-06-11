@@ -143,7 +143,7 @@ export function SubmodulePermissions({
     });
   }, [submodules, trainingFilter, moduleFilter, searchTerm]);
 
-  const { data: permissionsData, isLoading: isLoadingPermissions } =
+  const { data: permissions = [], isLoading: isLoadingPermissions } =
     useSubmodulePermissions(selectedSubmoduleId || 0);
 
   const updatePermissions = useUpdateSubmodulePermissions();
@@ -433,7 +433,7 @@ export function SubmodulePermissions({
               <PermissionManager
                 title={selectedSubmodule?.title || "Submódulo"}
                 description={selectedSubmodule?.description || ""}
-                permissions={permissionsData?.users || []}
+                permissions={permissions}
                 isLoading={isLoadingPermissions}
                 onUpdatePermissions={handleUpdatePermissions}
                 isUpdating={updatePermissions.isPending}

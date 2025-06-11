@@ -382,7 +382,7 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
                   selectedModule?.training.title
                 }
                 })`}
-                permissions={permissionsData?.users || []}
+                permissions={permissions}
                 isLoading={isLoadingPermissions}
                 onUpdatePermissions={handleUpdatePermissions}
                 isUpdating={updatePermissions.isPending}

@@ -86,14 +86,21 @@ export function LessonCard({
 
           <div className="space-y-2 min-w-0">
             <div className="min-w-0">
-              <span className="text-xs text-muted-foreground block mb-1">Submódulo:</span>
-              <Badge variant="outline" className="text-xs w-full justify-start truncate max-w-full">
+              <span className="text-xs text-muted-foreground block mb-1">
+                Submódulo:
+              </span>
+              <Badge
+                variant="outline"
+                className="text-xs w-full justify-start truncate max-w-full"
+              >
                 {lesson.submodule.title}
               </Badge>
             </div>
 
             <div className="min-w-0">
-              <span className="text-xs text-muted-foreground block mb-1">Módulo:</span>
+              <span className="text-xs text-muted-foreground block mb-1">
+                Módulo:
+              </span>
               <span className="font-medium text-xs block truncate">
                 {lesson.submodule.module.title}
               </span>

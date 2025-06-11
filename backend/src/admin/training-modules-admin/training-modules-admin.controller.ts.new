@@ -1,0 +1,98 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+} from '@nestjs/common';
+import { TrainingModulesAdminService } from './training-modules-admin.service';
+import { CreateTrainingModulesAdminDto } from './dto/create-training-modules-admin.dto';
+import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
+import {
+  ApiTags,
+  ApiResponse,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
+import { UserRole } from 'src/common/constants';
+import { JwtRole } from 'src/common/guards/jwt-role.guard';
+import { OrderDTO } from './dto/order.dto';
+import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { SuccessResponse } from 'src/common/dto/success-response.dto';
+
+@ApiTags('trainingModulesAdmin')
+@ApiResponse({ status: 403, description: 'Forbidden.' })
+@ApiBearerAuth()
+@Controller('training-modules-admin')
+@JwtRole(UserRole.ADMIN)
+export class TrainingModulesAdminController {
+  constructor(
+    private readonly trainingModulesAdminService: TrainingModulesAdminService,
+  ) {}
+
+  @ApiResponse({ status: 201 })
+  @Post()
+  create(@Body() createTrainingModulesAdminDto: CreateTrainingModulesAdminDto) {
+    const entity = { ...createTrainingModulesAdminDto, file: undefined };
+    return this.trainingModulesAdminService.create(entity);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get('training/:id')
+  findAll(
+    @Param('id') id: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+  ) {
+    return this.trainingModulesAdminService.findAll(id, { page, limit });
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.trainingModulesAdminService.findOne(+id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id/permissions')
+  async getPermissions(@Param('id', ParseIntPipe) id: number) {
+    return this.trainingModulesAdminService.getPermissions(id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body() updateTrainingModulesAdminDto: UpdateTrainingModulesAdminDto,
+  ) {
+    const entity = { ...updateTrainingModulesAdminDto, file: undefined };
+    return this.trainingModulesAdminService.update(+id, entity);
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Patch('permissions/:id')
+  async addPermission(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: AddPermissionAdminDTO,
+  ): Promise<SuccessResponse> {
+    await this.trainingModulesAdminService.addPermission(id, body);
+    return { success: true };
+  }
+
+  @ApiResponse({ status: 200 })
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.trainingModulesAdminService.remove(+id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Post('drag-order')
+  async dragOrder(@Body() orderDTO: OrderDTO) {
+    return this.trainingModulesAdminService.dragOrder(orderDTO);
+  }
+}

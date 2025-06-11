@@ -1,0 +1,137 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  UseGuards,
+  Query,
+  DefaultValuePipe,
+  ParseIntPipe,
+  Delete,
+} from '@nestjs/common';
+import { TrainingAdminService } from './training-admin.service';
+import { CreateTrainingAdminDto } from './dto/create-training-admin.dto';
+import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
+import { User } from '@prisma/client';
+import { JwtRole } from 'src/common/guards/jwt-role.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { SuccessResponse } from 'src/common/dto/success-response.dto';
+import { Status } from './interfaces/status.interface';
+import { Pagination } from 'src/common/dto/pagination.dto';
+import { FilterTrainingDTO } from 'src/collaborator/home/dto/filter-training-dto';
+import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { AdminRoles } from 'src/common/guards/admin-roles';
+import { UserRole } from 'src/common/constants';
+import { multerOptions } from 'src/config/multer.config';
+import { MulterFile } from 'src/common/interfaces/multer-file.interface';
+import { DuplicateTrainingAdminDTO } from './dto/duplicate-training-admin.dto';
+
+@ApiTags('trainingsAdmin')
+@ApiResponse({ status: 403, description: 'Forbidden.' })
+@ApiBearerAuth()
+@Controller('trainings-admin')
+@JwtRole(UserRole.ADMIN)
+export class TrainingAdminController {
+  constructor(private readonly trainingAdminService: TrainingAdminService) {}
+
+  @ApiResponse({ status: 201 })
+  @Post()
+  @AdminRoles([UserRole.ADMIN_MASTER])
+  create(
+    @Body() createTrainingAdminDto: CreateTrainingAdminDto,
+    @CurrentUser() user: User,
+  ) {
+    const entity = { ...createTrainingAdminDto };
+    return this.trainingAdminService.create(entity, user.id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get()
+  findAll(
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number,
+    @Query() filter: FilterTrainingDTO,
+  ) {
+    return this.trainingAdminService.findAll({
+      page,
+      limit,
+      ...filter,
+    });
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.trainingAdminService.findOne(+id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id/permissions')
+  async getPermissions(@Param('id', ParseIntPipe) id: number) {
+    return this.trainingAdminService.getPermissions(id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Patch(':id')
+  @AdminRoles([UserRole.ADMIN_MASTER])
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateTrainingAdminDto: UpdateTrainingAdminDto,
+  ) {
+    return this.trainingAdminService.update(+id, updateTrainingAdminDto);
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Patch('permissions/:id')
+  async addPermission(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() body: AddPermissionAdminDTO,
+  ): Promise<SuccessResponse> {
+    await this.trainingAdminService.addPermission(id, body);
+    return { success: true };
+  }
+
+  @ApiResponse({ status: 200, type: SuccessResponse })
+  @Delete(':id')
+  @AdminRoles([UserRole.ADMIN_MASTER])
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuccessResponse> {
+    await this.trainingAdminService.remove(+id);
+    return { success: true };
+  }
+
+  @ApiResponse({ status: 200 })
+  @Post(':id/duplicate')
+  @AdminRoles([UserRole.ADMIN_MASTER])
+  duplicate(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() duplicateTrainingDto: DuplicateTrainingAdminDTO,
+    @CurrentUser() user: User,
+  ) {
+    return this.trainingAdminService.duplicate(
+      +id,
+      duplicateTrainingDto,
+      user.id,
+    );
+  }
+
+  @ApiResponse({ status: 200, type: Status })
+  @Patch('status/:id')
+  @AdminRoles([UserRole.ADMIN_MASTER])
+  updateStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status') status: string,
+  ) {
+    return this.trainingAdminService.updateStatus(+id, status);
+  }
+}

@@ -1,11 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
-  const router = useRouter();
-  const [selectedModuleId, setSelectedModuleId] = useState<number | null>(null);
-  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
-  const [trainingFilter, setTrainingFilter] = useState("all");rt {
+import {
   BookOpen,
   Eye,
   FileText,
@@ -14,18 +10,11 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
   Shield,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import {
   Select,
   SelectContent,
@@ -36,11 +25,6 @@ import {
 
 import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
-import {
-  useModulePermissions,
-  useUpdateModulePermissions,
-} from "../hooks/usePermissions";
-import { PermissionManager } from "./PermissionManager";
 
 interface ModulePermissionsProps {
   searchTerm: string;
@@ -68,9 +52,8 @@ interface Training {
 }
 
 export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
-  const [selectedModuleId, setSelectedModuleId] = useState<number | null>(null);
-  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
-  const [trainingFilter, setTrainingFilter] = useState<string>("all");
+  const router = useRouter();
+  const [trainingFilter, setTrainingFilter] = React.useState<string>("all");
 
   // Fetch modules
   const { data: modules = [], isLoading: isLoadingModules } = useQuery<
@@ -96,12 +79,7 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
     staleTime: 60000,
   });
 
-  // Fetch module permissions
-  const { data: permissions = [], isLoading: isLoadingPermissions } =
-    useModulePermissions(selectedModuleId || 0);
-
-  const updatePermissions = useUpdateModulePermissions();
-
+  // Filtrar módulos com base nos filtros selecionados
   const filteredModules = modules.filter((module) => {
     const trainingMatches =
       trainingFilter === "all" ||
@@ -116,26 +94,6 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
 
     return trainingMatches && searchMatches;
   });
-
-  const selectedModule = modules.find((m) => m.id === selectedModuleId);
-
-  const handleManagePermissions = (moduleId: number) => {
-    setSelectedModuleId(moduleId);
-    setIsManageDialogOpen(true);
-  };
-
-  const handleUpdatePermissions = async (data: {
-    addedUsers?: number[];
-    removedUsers?: number[];
-    addRelatives?: boolean;
-  }) => {
-    if (!selectedModuleId) return;
-
-    await updatePermissions.mutateAsync({
-      moduleId: selectedModuleId,
-      data,
-    });
-  };
 
   if (isLoadingModules) {
     return (
@@ -322,7 +280,9 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => router.push(`/admin/permissions/module/${module.id}`)}
+                      onClick={() =>
+                        router.push(`/admin/permissions/module/${module.id}`)
+                      }
                       className="flex-1 sm:flex-none"
                     >
                       <Settings className="h-4 w-4 sm:mr-2" />
@@ -356,47 +316,13 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
             variant="outline"
             onClick={() => {
               setTrainingFilter("all");
-              if (searchTerm)
-                window.location.href = "/admin/permissions/modules";
+              if (searchTerm) router.push("/admin/permissions");
             }}
           >
             Limpar Filtros
           </Button>
         </div>
       )}
-
-      {/* Permission Management Dialog */}
-      <Dialog open={isManageDialogOpen} onOpenChange={setIsManageDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Gerenciar Permissões - {selectedModule?.title}
-            </DialogTitle>
-            <DialogDescription>
-              Controle quais usuários têm acesso a este módulo e suas entidades
-              relacionadas.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex-1 overflow-auto">
-            {selectedModuleId && (
-              <PermissionManager
-                title={selectedModule?.title || "Módulo"}
-                description={`${selectedModule?.description || ""} (${
-                  selectedModule?.training.title
-                }
-                })`}
-                permissions={permissions}
-                isLoading={isLoadingPermissions}
-                onUpdatePermissions={handleUpdatePermissions}
-                isUpdating={updatePermissions.isPending}
-                entityType="module"
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

@@ -129,8 +129,8 @@ export function PermissionManager({
     }`.toUpperCase();
   };
 
-  const availableUsers = searchResults.filter(
-    (user) => !permissions.some((permission) => permission.user.id === user.id)
+  const availableUsers = searchResults.filter((user) =>
+    permissions?.some((permission) => permission.user.id === user.id)
   );
 
   const getEntityIcon = () => {

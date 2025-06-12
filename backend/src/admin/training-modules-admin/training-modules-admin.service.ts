@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { AwsService } from 'src/common/aws/aws.service';
+import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
 import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
 import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
 import { ModuleRepository } from './modules.repository';
-import { AwsService } from 'src/common/aws/aws.service';
-import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
-import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
 
 export interface TrainingModulesAdminQuery {
   title?: string;
@@ -22,17 +22,12 @@ export class TrainingModulesAdminService {
   ) {}
 
   async create(createTrainingModulesAdminDto: CreateModuleAdminDTO) {
-    console.log(
-      'Creating module with data:',
-      createTrainingModulesAdminDto,
-    );
+    console.log('Creating module with data:', createTrainingModulesAdminDto);
     return this.moduleRepository.create(createTrainingModulesAdminDto);
   }
 
   async createFile(file: Express.Multer.File, moduleId: number) {
-    console.log(
-      'Creating file for module with ID:',
-      moduleId)
+    console.log('Creating file for module with ID:', moduleId);
     const module = await this.moduleRepository.find({ id: moduleId });
     const thumbnail = module?.thumbnail
       ? module.thumbnail
@@ -83,5 +78,18 @@ export class TrainingModulesAdminService {
       addPermissionModuleAdminDto.addedUsers,
       addPermissionModuleAdminDto.addRelatives,
     );
+  }
+
+  async getPermissions(id: number) {
+    const module = await this.moduleRepository.find({ id });
+    if (!module) throw new NotFoundException('ID inválido');
+
+    const users = await this.moduleRepository.getUsersWithPermission(id);
+    const totalUsers = users.length;
+
+    return {
+      users,
+      totalUsers,
+    };
   }
 }

@@ -96,9 +96,7 @@ export function UserPermissions({ searchTerm }: UserPermissionsProps) {
   const { data: users = [], isLoading: isLoadingUsers } = useQuery<User[]>({
     queryKey: QueryKeys.users.list(searchTerm),
     queryFn: async () => {
-      const response = await http.get(
-        `/admin/users?search=${searchTerm}&per_page=50`
-      );
+      const response = await http.get(`/user?name=${searchTerm}&per_page=50`);
       return response.data.data || [];
     },
     staleTime: 60000,
@@ -109,9 +107,7 @@ export function UserPermissions({ searchTerm }: UserPermissionsProps) {
       queryKey: ["user-permissions", selectedUserId],
       queryFn: async () => {
         if (!selectedUserId) return null;
-        const response = await http.get(
-          `/admin/users/${selectedUserId}/permissions`
-        );
+        const response = await http.get(`/user/${selectedUserId}/permissions`);
         return response.data;
       },
       enabled: !!selectedUserId,
@@ -358,7 +354,7 @@ export function UserPermissions({ searchTerm }: UserPermissionsProps) {
                       </TableRow>
                     );
                   })}
-                </TableBody>{" "}
+                </TableBody>
               </Table>
             </div>
           )}

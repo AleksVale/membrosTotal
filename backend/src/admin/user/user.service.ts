@@ -1,13 +1,13 @@
 import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
+    BadRequestException,
+    Injectable,
+    NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDTO } from './dto/create-user.dto';
-import { UserRepository } from './user.repository';
-import { DateUtils } from 'src/utils/date';
-import { UpdateUserDto } from './dto/update-user.dto';
 import * as bcrypt from 'bcrypt';
+import { DateUtils } from 'src/utils/date';
+import { CreateUserDTO } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserRepository } from './user.repository';
 // import { MailerService } from '@nestjs-modules/mailer';
 import { UserStatus } from '@prisma/client';
 // import { MailerService } from '@nestjs-modules/mailer';
@@ -136,5 +136,13 @@ export class UserService {
       { status: UserStatus.INACTIVE },
       { id },
     );
+  }
+
+  async getUserPermissions(id: number) {
+    const user = await this.userRepository.find({ id });
+    if (!user) throw new NotFoundException('Usuário não encontrado');
+    
+    // Get all permissions for the user
+    return await this.userRepository.getUserPermissions(id);
   }
 }

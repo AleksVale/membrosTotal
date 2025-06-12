@@ -1,33 +1,36 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  UseGuards,
-  Query,
+  Controller,
   DefaultValuePipe,
-  ParseIntPipe,
-  UseInterceptors,
-  HttpStatus,
-  UploadedFile,
   Delete,
+  Get,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { TrainingAdminService } from './training-admin.service';
-import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
-import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
-import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
-import { Roles } from 'src/public/auth/roles/roles.decorator';
-import { RoleGuard } from 'src/public/auth/role/role.guard';
-import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
-import { GetTrainingResponse, TrainingDTO } from './dto/training-response.dto';
-import { SuccessResponse } from 'src/utils/success-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PostResponse } from 'src/utils/post-response.dto';
+import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
-import { TrainingStatsDto, TrainingDetailStatsDto } from './dto/training-stats.dto';
+import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
+import { PostResponse } from 'src/utils/post-response.dto';
+import { SuccessResponse } from 'src/utils/success-response.dto';
+import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
+import { GetTrainingResponse, TrainingDTO } from './dto/training-response.dto';
+import {
+  TrainingDetailStatsDto,
+  TrainingStatsDto,
+} from './dto/training-stats.dto';
+import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
+import { TrainingAdminService } from './training-admin.service';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['admin'])
@@ -112,10 +115,22 @@ export class TrainingAdminController {
     return this.trainingAdminService.getGlobalStats();
   }
 
+  @ApiResponse({ status: 200 })
+  @Get('permissions-stats')
+  async getPermissionsStats() {
+    return this.trainingAdminService.getPermissionsStats();
+  }
+
   @Get(':id/stats')
   @ApiResponse({ status: 200, type: TrainingDetailStatsDto })
   async getTrainingStats(@Param('id', ParseIntPipe) id: number) {
     return this.trainingAdminService.getTrainingStats(id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id/permissions')
+  async getPermissions(@Param('id', ParseIntPipe) id: number) {
+    return this.trainingAdminService.getPermissions(id);
   }
 
   @Get(':id')

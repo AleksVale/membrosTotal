@@ -35,7 +35,7 @@ export function useTrainingPermissions(trainingId: number) {
   return useQuery<Permission[]>({
     queryKey: QueryKeys.trainings.permissions(trainingId),
     queryFn: async () => {
-      const response = await http.get(`/trainings-admin/${trainingId}/permissions`);
+      const response = await http.get(`/training-admin/${trainingId}/permissions`);
       return response.data;
     },
     enabled: !!trainingId,
@@ -54,7 +54,7 @@ export function useUpdateTrainingPermissions() {
       trainingId: number; 
       data: AddPermissionData 
     }) => {
-      const response = await http.patch(`/trainings-admin/permissions/${trainingId}`, data);
+      const response = await http.patch(`/training-admin/permissions/${trainingId}`, data);
       return response.data;
     },
     onSuccess: (_, { trainingId }) => {
@@ -161,19 +161,16 @@ export function usePermissionsStats() {
   return useQuery<PermissionStats>({
     queryKey: ["permissions-stats"],
     queryFn: async () => {
-      // Vamos buscar dados de várias APIs para montar as estatísticas
-      const [trainingsRes, usersRes] = await Promise.all([
-        http.get("/trainings-admin?per_page=1"),
-        http.get("/autocomplete?fields=users"),
-      ]);
-
+      // Buscar dados do endpoint de estatísticas de permissões
+      const response = await http.get("/training-admin/permissions-stats");
+      
       return {
-        totalUsers: usersRes.data.users?.length || 0,
-        totalTrainings: trainingsRes.data.meta?.total || 0,
-        totalModules: 0, // Seria implementado no backend
-        totalSubmodules: 0, // Seria implementado no backend
-        totalPermissions: 0, // Seria implementado no backend
-        recentChanges: 0, // Seria implementado no backend
+        totalUsers: response.data.totalUsers || 0,
+        totalTrainings: response.data.totalTrainings || 0,
+        totalModules: response.data.totalModules || 0,
+        totalSubmodules: response.data.totalSubmodules || 0,
+        totalPermissions: response.data.activePermissions || 0,
+        recentChanges: response.data.recentChanges || 0,
       };
     },
     staleTime: 300000, // 5 minutes

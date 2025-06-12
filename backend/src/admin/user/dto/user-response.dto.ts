@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ProfileDTO } from './profile.dto';
 
+export class PermissionCountDTO {
+  @ApiProperty()
+  trainingPermissions: number = 0;
+
+  @ApiProperty()
+  modulePermissions: number = 0;
+
+  @ApiProperty()
+  submodulePermissions: number = 0;
+}
+
 export class UserResponseDTO {
   @ApiProperty()
   id!: number;
@@ -46,4 +57,7 @@ export class UserResponseDTO {
 
   @ApiProperty({ type: () => ProfileDTO })
   Profile!: ProfileDTO;
+  
+  @ApiProperty({ type: () => PermissionCountDTO, required: false })
+  _count?: PermissionCountDTO;
 }

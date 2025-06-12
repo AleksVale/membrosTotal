@@ -1,26 +1,13 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
-  BookOpen,
-  Eye,
-  FileText,
-  GraduationCap,
-  Settings,
-  Shield,
-} from "lucide-react";
-import React, { useState } from "react";
+import { BookOpen, Eye, FileText, GraduationCap, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 
 import {
   Select,
@@ -31,11 +18,6 @@ import {
 } from "@/components/ui/select";
 import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
-import {
-  useSubmodulePermissions,
-  useUpdateSubmodulePermissions,
-} from "../hooks/usePermissions";
-import { PermissionManager } from "./PermissionManager";
 
 interface SubmodulePermissionsProps {
   searchTerm: string;
@@ -67,12 +49,9 @@ interface Training {
 export function SubmodulePermissions({
   searchTerm,
 }: SubmodulePermissionsProps) {
-  const [selectedSubmoduleId, setSelectedSubmoduleId] = useState<number | null>(
-    null
-  );
-  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
-  const [trainingFilter, setTrainingFilter] = useState<string>("all");
-  const [moduleFilter, setModuleFilter] = useState<string>("all");
+  const router = useRouter();
+  const [trainingFilter, setTrainingFilter] = React.useState<string>("all");
+  const [moduleFilter, setModuleFilter] = React.useState<string>("all");
 
   // Fetch submodules
   const { data: submodules = [], isLoading: isLoadingSubmodules } = useQuery<
@@ -92,7 +71,7 @@ export function SubmodulePermissions({
   const { data: trainings = [] } = useQuery<Training[]>({
     queryKey: QueryKeys.trainings.list(),
     queryFn: async () => {
-      const response = await http.get("/trainings-admin?per_page=50");
+      const response = await http.get("/training-admin?per_page=50");
       return response.data.data || [];
     },
     staleTime: 60000,
@@ -142,33 +121,6 @@ export function SubmodulePermissions({
       return trainingMatches && moduleMatches && searchMatches;
     });
   }, [submodules, trainingFilter, moduleFilter, searchTerm]);
-
-  const { data: permissions = [], isLoading: isLoadingPermissions } =
-    useSubmodulePermissions(selectedSubmoduleId || 0);
-
-  const updatePermissions = useUpdateSubmodulePermissions();
-
-  const selectedSubmodule = submodules.find(
-    (s) => s.id === selectedSubmoduleId
-  );
-
-  const handleManagePermissions = (submoduleId: number) => {
-    setSelectedSubmoduleId(submoduleId);
-    setIsManageDialogOpen(true);
-  };
-
-  const handleUpdatePermissions = async (data: {
-    addedUsers?: number[];
-    removedUsers?: number[];
-    addRelatives?: boolean;
-  }) => {
-    if (!selectedSubmoduleId) return;
-
-    await updatePermissions.mutateAsync({
-      submoduleId: selectedSubmoduleId,
-      data,
-    });
-  };
 
   if (isLoadingSubmodules) {
     return (
@@ -370,7 +322,11 @@ export function SubmodulePermissions({
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => handleManagePermissions(submodule.id)}
+                      onClick={() =>
+                        router.push(
+                          `/admin/permissions/submodule/${submodule.id}`
+                        )
+                      }
                       className="flex-1 sm:flex-none"
                     >
                       <Settings className="h-4 w-4 sm:mr-2" />
@@ -405,8 +361,7 @@ export function SubmodulePermissions({
             onClick={() => {
               setTrainingFilter("all");
               setModuleFilter("all");
-              if (searchTerm)
-                window.location.href = "/admin/permissions/submodules";
+              if (searchTerm) router.push("/admin/permissions");
             }}
           >
             Limpar Filtros
@@ -414,35 +369,7 @@ export function SubmodulePermissions({
         </div>
       )}
 
-      {/* Permission Management Dialog */}
-      <Dialog open={isManageDialogOpen} onOpenChange={setIsManageDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Gerenciar Permissões - {selectedSubmodule?.title}
-            </DialogTitle>
-            <DialogDescription>
-              Controle quais usuários têm acesso a este submódulo e suas
-              entidades relacionadas.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex-1 overflow-auto">
-            {selectedSubmoduleId && (
-              <PermissionManager
-                title={selectedSubmodule?.title || "Submódulo"}
-                description={selectedSubmodule?.description || ""}
-                permissions={permissions}
-                isLoading={isLoadingPermissions}
-                onUpdatePermissions={handleUpdatePermissions}
-                isUpdating={updatePermissions.isPending}
-                entityType="submodule"
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
+      {/* Permissions are now managed on a separate page */}
     </div>
   );
 }

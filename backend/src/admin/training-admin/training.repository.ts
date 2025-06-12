@@ -1,10 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma, TrainingStatus } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { TrainingDTO } from './dto/training-response.dto';
+import {
+    TrainingDetailStatsDto,
+    TrainingStatsDto,
+} from './dto/training-stats.dto';
 import { TrainingQuery } from './training-admin.service';
-import { TrainingDetailStatsDto, TrainingStatsDto } from './dto/training-stats.dto';
 
 @Injectable()
 export class TrainingRepository {
@@ -162,6 +165,79 @@ export class TrainingRepository {
     }
   }
 
+  async countUsers() {
+    return await this.prisma.user.count({
+      where: {
+        status: 'ACTIVE',
+      },
+    });
+  }
+
+  async countTrainings() {
+    return await this.prisma.training.count();
+  }
+
+  async countActivePermissions() {
+    // Count all permissions across all entities
+    const [trainingPermissions, modulePermissions, submodulePermissions] = await Promise.all([
+      this.prisma.permissionUserTraining.count(),
+      this.prisma.permissionUserModule.count(),
+      this.prisma.permissionUserSubModule.count(),
+    ]);
+    
+    return trainingPermissions + modulePermissions + submodulePermissions;
+  }
+
+  async countRecentPermissionChanges() {
+    // Get permissions created or updated in the last 24 hours
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    const [recentTrainingPermissions, recentModulePermissions, recentSubmodulePermissions] = await Promise.all([
+      this.prisma.permissionUserTraining.count({
+        where: {
+          createdAt: {
+            gte: yesterday,
+          },
+        },
+      }),
+      this.prisma.permissionUserModule.count({
+        where: {
+          createdAt: {
+            gte: yesterday,
+          },
+        },
+      }),
+      this.prisma.permissionUserSubModule.count({
+        where: {
+          createdAt: {
+            gte: yesterday,
+          },
+        },
+      }),
+    ]);
+    
+    return recentTrainingPermissions + recentModulePermissions + recentSubmodulePermissions;
+  }
+
+  async getUsersWithPermission(trainingId: number) {
+    return this.prisma.permissionUserTraining.findMany({
+      where: {
+        trainingId,
+      },
+      include: {
+        User: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
+  }
+
   async getGlobalStats(): Promise<TrainingStatsDto> {
     const [total, activeCount, draftCount, archivedCount] = await Promise.all([
       this.prisma.training.count(),
@@ -227,7 +303,8 @@ export class TrainingRepository {
     // você precisaria de uma tabela que registre o progresso/conclusão dos alunos
     // Aqui estou usando valores mockados, mas você deve adaptar para sua estrutura real
     const completionsCount = 0; // Substitua pela lógica real
-    const completionRate = studentsCount > 0 ? (completionsCount / studentsCount) * 100 : 0;
+    const completionRate =
+      studentsCount > 0 ? (completionsCount / studentsCount) * 100 : 0;
 
     return {
       modules: moduleCount,

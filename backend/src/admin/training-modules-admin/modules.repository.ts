@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
-import { TrainingModulesAdminQuery } from './training-modules-admin.service';
-import { ModuleDTO } from './dto/module-response.dto';
 import { TrainingRepository } from 'src/admin/training-admin/training.repository';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { ModuleDTO } from './dto/module-response.dto';
+import { TrainingModulesAdminQuery } from './training-modules-admin.service';
 
 @Injectable()
 export class ModuleRepository {
@@ -15,6 +15,10 @@ export class ModuleRepository {
 
   async create(data: Prisma.ModuleUncheckedCreateInput) {
     return await this.prisma.module.create({ data });
+  }
+
+  async countModules() {
+    return await this.prisma.module.count();
   }
 
   async find(condition: Prisma.ModuleWhereInput) {
@@ -164,5 +168,23 @@ export class ModuleRepository {
           }),
       );
     }
+  }
+
+  async getUsersWithPermission(moduleId: number) {
+    return this.prisma.permissionUserModule.findMany({
+      where: {
+        moduleId,
+      },
+      include: {
+        User: {
+          select: {
+            id: true,
+            email: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
+    });
   }
 }

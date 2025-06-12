@@ -1,12 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { AwsService } from 'src/common/aws/aws.service';
+import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
+import { ModuleRepository } from '../training-modules-admin/modules.repository';
 import { CreateTrainingAdminDTO } from './dto/create-training-admin.dto';
+import {
+  TrainingDetailStatsDto,
+  TrainingStatsDto,
+} from './dto/training-stats.dto';
 import { UpdateTrainingAdminDto } from './dto/update-training-admin.dto';
 import { TrainingRepository } from './training.repository';
-import { AwsService } from 'src/common/aws/aws.service';
-import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
-import { ModuleRepository } from '../training-modules-admin/modules.repository';
-import { SubModuleRepository } from '../sub-modules-admin/sub-modules.repository';
-import { TrainingDetailStatsDto, TrainingStatsDto } from './dto/training-stats.dto';
 
 export interface TrainingQuery {
   title: string;
@@ -71,6 +74,19 @@ export class TrainingAdminService {
     );
   }
 
+  async getPermissions(id: number) {
+    const training = await this.trainingRepository.find({ id });
+    if (!training) throw new NotFoundException('ID inválido');
+
+    const users = await this.trainingRepository.getUsersWithPermission(id);
+    const totalUsers = users.length;
+
+    return {
+      users,
+      totalUsers,
+    };
+  }
+
   async createFile(file: Express.Multer.File, paymentId: number) {
     const training = await this.trainingRepository.find({ id: paymentId });
     const thumbnail = training?.thumbnail
@@ -93,5 +109,39 @@ export class TrainingAdminService {
     } catch (error) {
       throw new NotFoundException(`Stats for training with ID ${id} not found`);
     }
+  }
+
+  async getPermissionsStats() {
+    // Get total users count
+    const totalUsers = await this.trainingRepository.countUsers();
+
+    // Get trainings count
+    const totalTrainings = await this.trainingRepository.countTrainings();
+
+    // Get modules count
+    const totalModules = await this.moduleRepository.countModules();
+
+    // Get submodules count
+    const totalSubmodules = await this.submoduleRepository.countSubmodules();
+
+    // Get active permissions count (total of all permissions)
+    const activePermissions = await this.trainingRepository.countActivePermissions();
+
+    // Get recent changes (permissions created or modified in the last 24 hours)
+    const recentChanges = await this.trainingRepository.countRecentPermissionChanges();
+
+    return {
+      totalUsers,
+      totalTrainings,
+      totalModules,
+      totalSubmodules,
+      activePermissions,
+      pendingPermissions: 0, // Not implemented yet
+      recentChanges,
+    };
+  }
+
+  async getUsersWithPermission(trainingId: number) {
+    return this.trainingRepository.getUsersWithPermission(trainingId);
   }
 }

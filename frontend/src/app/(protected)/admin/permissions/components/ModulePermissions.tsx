@@ -1,7 +1,11 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import {
+export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
+  const router = useRouter();
+  const [selectedModuleId, setSelectedModuleId] = useState<number | null>(null);
+  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
+  const [trainingFilter, setTrainingFilter] = useState("all");rt {
   BookOpen,
   Eye,
   FileText,
@@ -9,6 +13,7 @@ import {
   Settings,
   Shield,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
@@ -85,7 +90,7 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
   const { data: trainings = [] } = useQuery<Training[]>({
     queryKey: QueryKeys.trainings.list(),
     queryFn: async () => {
-      const response = await http.get("/trainings-admin?per_page=50");
+      const response = await http.get("/training-admin?per_page=50");
       return response.data.data || [];
     },
     staleTime: 60000,
@@ -317,7 +322,7 @@ export function ModulePermissions({ searchTerm }: ModulePermissionsProps) {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => handleManagePermissions(module.id)}
+                      onClick={() => router.push(`/admin/permissions/module/${module.id}`)}
                       className="flex-1 sm:flex-none"
                     >
                       <Settings className="h-4 w-4 sm:mr-2" />

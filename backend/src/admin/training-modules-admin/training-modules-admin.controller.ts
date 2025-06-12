@@ -1,28 +1,28 @@
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Query,
-  DefaultValuePipe,
-  ParseIntPipe,
-  UseInterceptors,
-  UploadedFile,
-  HttpStatus,
-  Delete,
+    Body,
+    Controller,
+    DefaultValuePipe,
+    Delete,
+    Get,
+    HttpStatus,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+    UploadedFile,
+    UseInterceptors,
 } from '@nestjs/common';
-import { TrainingModulesAdminService } from './training-modules-admin.service';
-import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
-import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
-import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
-import { GetModuleResponse, ModuleDTO } from './dto/module-response.dto';
-import { ApiQuery, ApiResponse } from '@nestjs/swagger';
-import { SuccessResponse } from 'src/utils/success-response.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { PostResponse } from 'src/utils/post-response.dto';
+import { ApiQuery, ApiResponse } from '@nestjs/swagger';
 import { AddPermissionAdminDTO } from 'src/admin/sub-modules-admin/dto/add-permissions-subModule-training.dto';
+import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
+import { PostResponse } from 'src/utils/post-response.dto';
+import { SuccessResponse } from 'src/utils/success-response.dto';
+import { CreateModuleAdminDTO } from './dto/create-training-modules-admin.dto';
+import { GetModuleResponse, ModuleDTO } from './dto/module-response.dto';
+import { UpdateTrainingModulesAdminDto } from './dto/update-training-modules-admin.dto';
+import { TrainingModulesAdminService } from './training-modules-admin.service';
 
 @Controller('training-modules-admin')
 export class TrainingModulesAdminController {
@@ -78,6 +78,12 @@ export class TrainingModulesAdminController {
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.trainingModulesAdminService.findOne(+id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Get(':id/permissions')
+  async getPermissions(@Param('id', ParseIntPipe) id: number) {
+    return this.trainingModulesAdminService.getPermissions(id);
   }
 
   @Patch(':id')

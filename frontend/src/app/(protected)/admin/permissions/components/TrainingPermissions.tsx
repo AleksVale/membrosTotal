@@ -2,27 +2,15 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { BookOpen, Eye, GraduationCap, Settings, Shield } from "lucide-react";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Skeleton } from "@/components/ui/skeleton";
 
 import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
-import {
-  useTrainingPermissions,
-  useUpdateTrainingPermissions,
-} from "../hooks/usePermissions";
-import { PermissionManager } from "./PermissionManager";
 
 interface TrainingPermissionsProps {
   searchTerm: string;
@@ -39,48 +27,19 @@ interface Training {
 }
 
 export function TrainingPermissions({ searchTerm }: TrainingPermissionsProps) {
-  const [selectedTrainingId, setSelectedTrainingId] = useState<number | null>(
-    null
-  );
-  const [isManageDialogOpen, setIsManageDialogOpen] = useState(false);
-
+  const router = useRouter();
   const { data: trainings = [], isLoading: isLoadingTrainings } = useQuery<
     Training[]
   >({
     queryKey: QueryKeys.trainings.list(searchTerm),
     queryFn: async () => {
       const response = await http.get(
-        `/trainings-admin?title=${searchTerm}&per_page=50`
+        `/training-admin?title=${searchTerm}&per_page=50`
       );
       return response.data.data || [];
     },
     staleTime: 60000,
   });
-
-  const { data: permissions = [], isLoading: isLoadingPermissions } =
-    useTrainingPermissions(selectedTrainingId || 0);
-
-  const updatePermissions = useUpdateTrainingPermissions();
-
-  const selectedTraining = trainings.find((t) => t.id === selectedTrainingId);
-
-  const handleManagePermissions = (trainingId: number) => {
-    setSelectedTrainingId(trainingId);
-    setIsManageDialogOpen(true);
-  };
-
-  const handleUpdatePermissions = async (data: {
-    addedUsers?: number[];
-    removedUsers?: number[];
-    addRelatives?: boolean;
-  }) => {
-    if (!selectedTrainingId) return;
-
-    await updatePermissions.mutateAsync({
-      trainingId: selectedTrainingId,
-      data,
-    });
-  };
 
   if (isLoadingTrainings) {
     return (
@@ -224,7 +183,11 @@ export function TrainingPermissions({ searchTerm }: TrainingPermissionsProps) {
                     </Button>
                     <Button
                       size="sm"
-                      onClick={() => handleManagePermissions(training.id)}
+                      onClick={() =>
+                        router.push(
+                          `/admin/permissions/training/${training.id}`
+                        )
+                      }
                       className="flex-1 sm:flex-none"
                     >
                       <Settings className="h-4 w-4 sm:mr-2" />
@@ -238,36 +201,6 @@ export function TrainingPermissions({ searchTerm }: TrainingPermissionsProps) {
           )}
         </CardContent>
       </Card>
-
-      {/* Permission Management Dialog */}
-      <Dialog open={isManageDialogOpen} onOpenChange={setIsManageDialogOpen}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-hidden">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Shield className="h-5 w-5" />
-              Gerenciar Permissões - {selectedTraining?.title}
-            </DialogTitle>
-            <DialogDescription>
-              Controle quais usuários têm acesso a este treinamento e suas
-              entidades relacionadas.
-            </DialogDescription>
-          </DialogHeader>
-
-          <div className="flex-1 overflow-auto">
-            {selectedTrainingId && (
-              <PermissionManager
-                title={selectedTraining?.title || "Treinamento"}
-                description={selectedTraining?.description || ""}
-                permissions={permissions}
-                isLoading={isLoadingPermissions}
-                onUpdatePermissions={handleUpdatePermissions}
-                isUpdating={updatePermissions.isPending}
-                entityType="training"
-              />
-            )}
-          </div>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

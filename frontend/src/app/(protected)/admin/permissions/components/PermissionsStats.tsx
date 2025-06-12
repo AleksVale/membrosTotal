@@ -29,20 +29,17 @@ export function PermissionsStats({
   const { data: stats, isLoading } = useQuery<StatsData>({
     queryKey: ["permissions-stats", searchTerm, filterType],
     queryFn: async () => {
-      // Como não temos um endpoint específico, vamos simular com dados das APIs existentes
-      const [trainingsRes, usersRes] = await Promise.all([
-        http.get("/trainings-admin"),
-        http.get("/autocomplete?fields=users"),
-      ]);
+      // Buscar dados reais do novo endpoint de estatísticas
+      const response = await http.get("/training-admin/permissions-stats");
 
       return {
-        totalUsers: usersRes.data.users?.length || 0,
-        totalTrainings: trainingsRes.data.meta?.total || 0,
-        totalModules: 0, // Seria calculado agregando todos os módulos
-        totalSubmodules: 0, // Seria calculado agregando todos os submódulos
-        activePermissions: 150, // Simulado
-        pendingPermissions: 12, // Simulado
-        recentChanges: 8, // Simulado
+        totalUsers: response.data.totalUsers || 0,
+        totalTrainings: response.data.totalTrainings || 0,
+        totalModules: response.data.totalModules || 0,
+        totalSubmodules: response.data.totalSubmodules || 0,
+        activePermissions: response.data.activePermissions || 0,
+        pendingPermissions: response.data.pendingPermissions || 0,
+        recentChanges: response.data.recentChanges || 0,
       };
     },
     staleTime: 60000,

@@ -17,6 +17,10 @@ export class SubModuleRepository {
     return await this.prisma.submodule.create({ data });
   }
 
+  async countSubmodules() {
+    return await this.prisma.submodule.count();
+  }
+
   async find(condition: Prisma.SubmoduleWhereInput) {
     return await this.prisma.submodule.findFirst({
       where: condition,

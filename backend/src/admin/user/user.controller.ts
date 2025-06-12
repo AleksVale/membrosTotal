@@ -1,27 +1,27 @@
 import {
-  Controller,
-  Post,
-  Body,
-  Patch,
-  Param,
-  ParseIntPipe,
-  Get,
-  Query,
-  DefaultValuePipe,
-  UseGuards,
-  Delete,
+    Body,
+    Controller,
+    DefaultValuePipe,
+    Delete,
+    Get,
+    Param,
+    ParseIntPipe,
+    Patch,
+    Post,
+    Query,
+    UseGuards,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDTO } from './dto/create-user.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 import { JwtAuthGuard } from '../../public/auth/jwt-auth.guard';
 import { RoleGuard } from '../../public/auth/role/role.guard';
 import { Roles } from '../../public/auth/roles/roles.decorator';
-import { UserResponseDTO } from './dto/user-response.dto';
-import { SuccessResponse } from 'src/utils/success-response.dto';
-import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
+import { CreateUserDTO } from './dto/create-user.dto';
 import { CreateNewPasswordDTO } from './dto/update-password.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
+import { UserResponseDTO } from './dto/user-response.dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 @Roles(['admin'])
@@ -101,6 +101,15 @@ export class UserController {
       email,
       profile,
     });
+  }
+  
+  @ApiResponse({
+    status: 200,
+    description: 'The user permissions have been successfully returned.',
+  })
+  @Get(':id/permissions')
+  getUserPermissions(@Param('id', ParseIntPipe) id: number) {
+    return this.userService.getUserPermissions(id);
   }
 
   @Delete(':id')

@@ -1,7 +1,7 @@
+import ClientSideToastContainer from "@/components/client-toast-container";
+import { ThemeProvider } from "@/components/theme-provider";
 import type { Metadata } from "next";
 import "../globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import ClientSideToastContainer from "@/components/client-toast-container";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,7 +25,7 @@ export default function RootLayout({
             disableTransitionOnChange
           >
             <ClientSideToastContainer />
-            <main className="min-h-screen">{children}</main>{" "}
+            <main className="min-h-screen">{children}</main>
           </ThemeProvider>
         </body>
       </html>

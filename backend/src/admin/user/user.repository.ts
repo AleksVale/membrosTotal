@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
-import { UserResponseDTO } from './dto/user-response.dto';
 import { createPaginator } from 'prisma-pagination';
+import { PrismaService } from 'src/prisma/prisma.service';
+import { UserResponseDTO } from './dto/user-response.dto';
 import { UserFilter } from './user.service';
 
 @Injectable()
@@ -44,7 +44,7 @@ export class UserRepository {
       userIds = ids.map((user) => user.id);
     }
 
-    return paginate<UserResponseDTO, Prisma.UserFindManyArgs>(
+    const users = await paginate<UserResponseDTO, Prisma.UserFindManyArgs>(
       this.prisma.user,
       {
         where: {
@@ -56,11 +56,109 @@ export class UserRepository {
         include: {
           Profile: true,
           UserMeeting: true,
+          _count: {
+            select: {
+              PermissionUserTraining: true,
+              PermissionUserModule: true,
+              PermissionUserSubModule: true,
+            }
+          }
         },
       },
       {
         page: options.page,
       },
     );
+    
+    // Transform the count fields to the expected format
+    const transformedData = {
+      ...users,
+      data: users.data.map(user => {
+        // First extract the raw Prisma count data
+        const countData = user._count as unknown as { 
+          PermissionUserTraining: number; 
+          PermissionUserModule: number; 
+          PermissionUserSubModule: number;
+        };
+        
+        return {
+          ...user,
+          _count: {
+            trainingPermissions: countData?.PermissionUserTraining || 0,
+            modulePermissions: countData?.PermissionUserModule || 0,
+            submodulePermissions: countData?.PermissionUserSubModule || 0,
+          }
+        };
+      })
+    };
+    
+    return transformedData;
+  }
+  
+  async getUserPermissions(userId: number) {
+    // Get trainings the user has access to
+    const trainingPermissions = await this.prisma.permissionUserTraining.findMany({
+      where: { userId },
+      select: {
+        Training: {
+          select: {
+            id: true,
+            title: true,
+            status: true,
+          },
+        },
+      },
+    });
+
+    // Get modules the user has access to
+    const modulePermissions = await this.prisma.permissionUserModule.findMany({
+      where: { userId },
+      select: {
+        Module: {
+          select: {
+            id: true,
+            title: true,
+            training: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Get submodules the user has access to
+    const submodulePermissions = await this.prisma.permissionUserSubModule.findMany({
+      where: { userId },
+      select: {
+        Submodule: {
+          select: {
+            id: true,
+            title: true,
+            module: {
+              select: {
+                id: true,
+                title: true,
+                training: {
+                  select: {
+                    id: true,
+                    title: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    // Format and return data
+    return {
+      trainings: trainingPermissions.map(perm => perm.Training),
+      modules: modulePermissions.map(perm => perm.Module),
+      submodules: submodulePermissions.map(perm => perm.Submodule),
+    };
   }
 }

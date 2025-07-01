@@ -1,7 +1,7 @@
 "use client";
 
-import { Suspense, useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,29 +10,107 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { ModeToggle } from "@/components/ui/mode-toggle";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import http from "@/lib/http";
+import { cn } from "@/lib/utils";
+import { QueryKeys } from "@/shared/constants/queryKeys";
+import { useQuery } from "@tanstack/react-query";
 import {
   Bell,
   BookOpen,
+  Calendar,
   DollarSign,
+  FileText,
   Home,
   LogOut,
   Menu,
   Settings,
   User,
   Users,
-  Calendar,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-import { ModeToggle } from "@/components/ui/mode-toggle";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+
+// Tipos de usuário
+type UserRole = "admin" | "employee" | "student";
+
+interface UserProfile {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
+  avatar?: string;
+}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
+  const [userRole, setUserRole] = useState<UserRole | null>(null);
+
+  // Buscar perfil do usuário
+  const { data: userProfile, isLoading } = useQuery<UserProfile>({
+    queryKey: QueryKeys.users.profile,
+    queryFn: async () => {
+      try {
+        const response = await http.get("/auth/me");
+        return response.data;
+      } catch (error) {
+        console.error("Erro ao buscar perfil:", error);
+        // Redirecionar para login se não autenticado
+        router.push("/login");
+        return null;
+      }
+    },
+    staleTime: 300000, // 5 minutos
+    refetchOnWindowFocus: false,
+  });
+
+  // Definir role do usuário quando os dados forem carregados
+  useEffect(() => {
+    if (userProfile) {
+      setUserRole(userProfile.role);
+    }
+  }, [userProfile]);
+
+  // Função para fazer logout
+  const handleLogout = async () => {
+    try {
+      await http.post("/auth/logout");
+      router.push("/login");
+    } catch (error) {
+      console.error("Erro ao fazer logout:", error);
+    }
+  };
+
+  // Determinar se é admin ou colaborador baseado na URL
+  const isAdminSection = pathname.startsWith("/admin");
+  const isCollaboratorSection = pathname.startsWith("/collaborator");
+
+  // Redirecionar para a seção correta baseado no perfil do usuário
+  useEffect(() => {
+    if (userProfile) {
+      if (
+        userProfile.role === "admin" &&
+        !isAdminSection &&
+        !pathname.startsWith("/profile") &&
+        !pathname.startsWith("/settings")
+      ) {
+        router.push("/admin/dashboard");
+      } else if (
+        userProfile.role === "employee" &&
+        !isCollaboratorSection &&
+        !pathname.startsWith("/profile") &&
+        !pathname.startsWith("/settings")
+      ) {
+        router.push("/collaborator/dashboard");
+      }
+    }
+  }, [userProfile, isAdminSection, isCollaboratorSection, pathname, router]);
 
   return (
     <div className="flex h-screen bg-background">
@@ -55,96 +133,148 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           <div className="flex flex-col flex-1 pt-5 pb-4 overflow-y-auto">
             <ScrollArea className="flex-1 px-3">
               <nav className="flex-1 space-y-1">
-                <SidebarItem
-                  href="/admin/dashboard"
-                  icon={<Home size={20} />}
-                  label="Dashboard"
-                  active={pathname === "/dashboard"}
-                />
+                {/* Menu para Administradores */}
+                {userRole === "admin" && (
+                  <>
+                    <SidebarItem
+                      href="/admin/dashboard"
+                      icon={<Home size={20} />}
+                      label="Dashboard"
+                      active={pathname === "/admin/dashboard"}
+                    />
 
-                <SidebarGroup label="Colaboradores">
-                  <SidebarItem
-                    href="/admin/users"
-                    icon={<Users size={20} />}
-                    label="Usuários"
-                    active={pathname.startsWith("/users")}
-                  />
-                  <SidebarItem
-                    href="/admin/meetings"
-                    icon={<Calendar size={20} />}
-                    label="Reuniões"
-                    active={pathname.startsWith("/meetings")}
-                  />
-                  <SidebarItem
-                    href="/admin/experts"
-                    icon={<User size={20} />}
-                    label="Experts"
-                    active={pathname.startsWith("/experts")}
-                  />
-                </SidebarGroup>
+                    <SidebarGroup label="Colaboradores">
+                      <SidebarItem
+                        href="/admin/users"
+                        icon={<Users size={20} />}
+                        label="Usuários"
+                        active={pathname.startsWith("/admin/users")}
+                      />
+                      <SidebarItem
+                        href="/admin/meetings"
+                        icon={<Calendar size={20} />}
+                        label="Reuniões"
+                        active={pathname.startsWith("/admin/meetings")}
+                      />
+                      <SidebarItem
+                        href="/admin/experts"
+                        icon={<User size={20} />}
+                        label="Experts"
+                        active={pathname.startsWith("/admin/experts")}
+                      />
+                    </SidebarGroup>
 
-                <SidebarGroup label="Financeiro">
-                  <SidebarItem
-                    href="/admin/payments"
-                    icon={<DollarSign size={20} />}
-                    label="Pagamentos"
-                    active={pathname.startsWith("/payments")}
-                  />
-                  <SidebarItem
-                    href="/admin/payment-requests"
-                    icon={<DollarSign size={20} />}
-                    label="Compras"
-                    active={pathname.startsWith("/payment-requests")}
-                  />
-                  <SidebarItem
-                    href="/admin/refunds"
-                    icon={<DollarSign size={20} />}
-                    label="Reembolsos"
-                    active={pathname.startsWith("/refunds")}
-                  />
-                </SidebarGroup>
+                    <SidebarGroup label="Financeiro">
+                      <SidebarItem
+                        href="/admin/payments"
+                        icon={<DollarSign size={20} />}
+                        label="Pagamentos"
+                        active={pathname.startsWith("/admin/payments")}
+                      />
+                      <SidebarItem
+                        href="/admin/payment-requests"
+                        icon={<DollarSign size={20} />}
+                        label="Compras"
+                        active={pathname.startsWith("/admin/payment-requests")}
+                      />
+                      <SidebarItem
+                        href="/admin/refunds"
+                        icon={<DollarSign size={20} />}
+                        label="Reembolsos"
+                        active={pathname.startsWith("/admin/refunds")}
+                      />
+                    </SidebarGroup>
 
-                <SidebarGroup label="Treinamentos">
-                  <SidebarItem
-                    href="/admin/trainings"
-                    icon={<BookOpen size={20} />}
-                    label="Treinamentos"
-                    active={pathname.startsWith("/trainings")}
-                  />
-                  <SidebarItem
-                    href="/admin/modules"
-                    icon={<BookOpen size={20} />}
-                    label="Módulos"
-                    active={pathname.startsWith("/modules")}
-                  />
-                  <SidebarItem
-                    href="/admin/submodules"
-                    icon={<BookOpen size={20} />}
-                    label="Submódulos"
-                    active={pathname.startsWith("/submodules")}
-                  />
-                  <SidebarItem
-                    href="/admin/lessons"
-                    icon={<BookOpen size={20} />}
-                    label="Aulas"
-                    active={pathname.startsWith("/lessons")}
-                  />
-                </SidebarGroup>
+                    <SidebarGroup label="Treinamentos">
+                      <SidebarItem
+                        href="/admin/trainings"
+                        icon={<BookOpen size={20} />}
+                        label="Treinamentos"
+                        active={pathname.startsWith("/admin/trainings")}
+                      />
+                      <SidebarItem
+                        href="/admin/modules"
+                        icon={<BookOpen size={20} />}
+                        label="Módulos"
+                        active={pathname.startsWith("/admin/modules")}
+                      />
+                      <SidebarItem
+                        href="/admin/submodules"
+                        icon={<BookOpen size={20} />}
+                        label="Submódulos"
+                        active={pathname.startsWith("/admin/submodules")}
+                      />
+                      <SidebarItem
+                        href="/admin/lessons"
+                        icon={<BookOpen size={20} />}
+                        label="Aulas"
+                        active={pathname.startsWith("/admin/lessons")}
+                      />
+                    </SidebarGroup>
 
-                <SidebarGroup label="Configurações">
-                  <SidebarItem
-                    href="/admin/permissions"
-                    icon={<Settings size={20} />}
-                    label="Permissões"
-                    active={pathname.startsWith("/permissions")}
-                  />
-                  <SidebarItem
-                    href="/admin/notifications"
-                    icon={<Bell size={20} />}
-                    label="Notificações"
-                    active={pathname.startsWith("/notifications")}
-                  />
-                </SidebarGroup>
+                    <SidebarGroup label="Configurações">
+                      <SidebarItem
+                        href="/admin/permissions"
+                        icon={<Settings size={20} />}
+                        label="Permissões"
+                        active={pathname.startsWith("/admin/permissions")}
+                      />
+                      <SidebarItem
+                        href="/admin/notifications"
+                        icon={<Bell size={20} />}
+                        label="Notificações"
+                        active={pathname.startsWith("/admin/notifications")}
+                      />
+                    </SidebarGroup>
+                  </>
+                )}
+
+                {/* Menu para Colaboradores */}
+                {userRole === "employee" && (
+                  <>
+                    <SidebarItem
+                      href="/collaborator/dashboard"
+                      icon={<Home size={20} />}
+                      label="Dashboard"
+                      active={pathname === "/collaborator/dashboard"}
+                    />
+
+                    <SidebarGroup label="Treinamentos">
+                      <SidebarItem
+                        href="/collaborator/trainings"
+                        icon={<BookOpen size={20} />}
+                        label="Meus Treinamentos"
+                        active={pathname.startsWith("/collaborator/trainings")}
+                      />
+                      <SidebarItem
+                        href="/collaborator/modules"
+                        icon={<FileText size={20} />}
+                        label="Módulos"
+                        active={pathname.startsWith("/collaborator/modules")}
+                      />
+                    </SidebarGroup>
+
+                    <SidebarGroup label="Financeiro">
+                      <SidebarItem
+                        href="/collaborator/payment-requests"
+                        icon={<DollarSign size={20} />}
+                        label="Solicitações de Pagamento"
+                        active={pathname.startsWith(
+                          "/collaborator/payment-requests"
+                        )}
+                      />
+                    </SidebarGroup>
+
+                    <SidebarGroup label="Agenda">
+                      <SidebarItem
+                        href="/collaborator/meetings"
+                        icon={<Calendar size={20} />}
+                        label="Minhas Reuniões"
+                        active={pathname.startsWith("/collaborator/meetings")}
+                      />
+                    </SidebarGroup>
+                  </>
+                )}
               </nav>
             </ScrollArea>
           </div>
@@ -158,8 +288,17 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       className="relative h-10 w-10 rounded-full"
                     >
                       <Avatar className="h-10 w-10">
-                        <AvatarImage src="/placeholder-user.jpg" alt="User" />
-                        <AvatarFallback>AD</AvatarFallback>
+                        <AvatarImage
+                          src={userProfile?.avatar || "/placeholder-user.jpg"}
+                          alt={userProfile?.firstName || "User"}
+                        />
+                        <AvatarFallback>
+                          {userProfile
+                            ? `${userProfile.firstName.charAt(
+                                0
+                              )}${userProfile.lastName.charAt(0)}`
+                            : "U"}
+                        </AvatarFallback>
                       </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
@@ -167,24 +306,33 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          Administrador
+                          {userProfile
+                            ? `${userProfile.firstName} ${userProfile.lastName}`
+                            : "Carregando..."}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          admin@exemplo.com
+                          {userProfile?.email || ""}
                         </p>
                       </div>
                     </DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                      <User className="mr-2 h-4 w-4" />
-                      <span>Perfil</span>
+                    <DropdownMenuItem asChild>
+                      <Link href="/profile">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Perfil</span>
+                      </Link>
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Configurações</span>
+                    <DropdownMenuItem asChild>
+                      <Link href="/settings">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Configurações</span>
+                      </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem className="text-destructive">
+                    <DropdownMenuItem
+                      onClick={handleLogout}
+                      className="text-destructive"
+                    >
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Sair</span>
                     </DropdownMenuItem>
@@ -192,8 +340,18 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                 </DropdownMenu>
               </div>
               <div className="ml-3 flex-1">
-                <p className="text-sm font-medium text-foreground">Admin</p>
-                <p className="text-xs text-muted-foreground">Administrador</p>
+                <p className="text-sm font-medium text-foreground">
+                  {userProfile?.firstName || "Usuário"}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {userRole === "admin"
+                    ? "Administrador"
+                    : userRole === "employee"
+                    ? "Colaborador"
+                    : userRole === "student"
+                    ? "Aluno"
+                    : "Carregando..."}
+                </p>
               </div>
               <ModeToggle />
             </div>
@@ -201,199 +359,72 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </div>
       </div>
 
-      {/* Mobile header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 z-30 flex h-16 items-center justify-between border-b bg-card px-4">
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="icon"
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="md:hidden"
-          >
-            <Menu className="h-5 w-5" />
-            <span className="sr-only">Toggle menu</span>
-          </Button>
-          <Image
-            src="/logo.png"
-            alt="MembrosTotal Logo"
-            className="h-8 w-8"
-            width={32}
-            height={32}
+      {/* Mobile sidebar */}
+      <div className="md:hidden">
+        <div className="fixed inset-0 z-40 flex">
+          <div
+            className={`fixed inset-0 bg-gray-600 bg-opacity-75 transition-opacity ease-linear duration-300 ${
+              sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setSidebarOpen(false)}
           />
-          <span className="font-bold text-xl text-foreground">
-            MembrosTotal
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <ModeToggle />
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                className="relative h-10 w-10 rounded-full"
+
+          <div
+            className={`relative flex-1 flex flex-col max-w-xs w-full pt-5 pb-4 bg-card transition ease-in-out duration-300 transform ${
+              sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+          >
+            <div className="absolute top-0 right-0 -mr-12 pt-2">
+              <button
+                className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                onClick={() => setSidebarOpen(false)}
               >
-                <Avatar className="h-8 w-8">
-                  <AvatarFallback>AD</AvatarFallback>
-                </Avatar>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Perfil</span>
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Configurações</span>
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">
-                <LogOut className="mr-2 h-4 w-4" />
-                <span>Sair</span>
-              </DropdownMenuItem>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
+                <span className="sr-only">Close sidebar</span>
+                <Menu className="h-6 w-6 text-white" />
+              </button>
+            </div>
 
-      {/* Mobile sidebar (off-canvas) */}
-      <div
-        className={cn(
-          "fixed inset-0 z-40 md:hidden",
-          sidebarOpen ? "block" : "hidden"
-        )}
-      >
-        {/* Backdrop */}
-        <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm"
-          onClick={() => setSidebarOpen(false)}
-        />
-
-        {/* Sidebar */}
-        <div className="fixed inset-y-0 left-0 w-3/4 max-w-xs bg-card overflow-y-auto border-r">
-          <div className="flex items-center justify-between h-16 px-4 border-b">
-            <div className="flex items-center gap-2">
+            <div className="flex-shrink-0 flex items-center px-4">
               <Image
                 src="/logo.png"
                 alt="MembrosTotal Logo"
-                className="h-8 w-8"
                 width={32}
                 height={32}
               />
-              <span className="font-bold text-xl text-foreground">
-                MembrosTotal
-              </span>
+              <span className="ml-2 font-bold text-xl">MembrosTotal</span>
             </div>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarOpen(false)}
-            >
-              <span className="sr-only">Close menu</span>
-              &times;
-            </Button>
+            <div className="mt-5 flex-1 h-0 overflow-y-auto">
+              <nav className="px-2 space-y-1">
+                {/* Conteúdo do menu mobile - similar ao desktop */}
+                {/* Será renderizado baseado no userRole */}
+              </nav>
+            </div>
           </div>
-          <ScrollArea className="flex-1 px-3 py-4">
-            <nav className="flex-1 space-y-1">
-              <SidebarItem
-                href="/dashboard"
-                icon={<Home size={20} />}
-                label="Dashboard"
-                active={pathname === "/dashboard"}
-              />
-
-              <SidebarGroup label="Colaboradores">
-                <SidebarItem
-                  href="/users"
-                  icon={<Users size={20} />}
-                  label="Usuários"
-                  active={pathname.startsWith("/users")}
-                />
-                <SidebarItem
-                  href="/meetings"
-                  icon={<Calendar size={20} />}
-                  label="Reuniões"
-                  active={pathname.startsWith("/meetings")}
-                />
-                <SidebarItem
-                  href="/experts"
-                  icon={<User size={20} />}
-                  label="Experts"
-                  active={pathname.startsWith("/experts")}
-                />
-              </SidebarGroup>
-
-              <SidebarGroup label="Financeiro">
-                <SidebarItem
-                  href="/payments"
-                  icon={<DollarSign size={20} />}
-                  label="Pagamentos"
-                  active={pathname.startsWith("/payments")}
-                />
-                <SidebarItem
-                  href="/payment-requests"
-                  icon={<DollarSign size={20} />}
-                  label="Compras"
-                  active={pathname.startsWith("/payment-requests")}
-                />
-                <SidebarItem
-                  href="/refunds"
-                  icon={<DollarSign size={20} />}
-                  label="Reembolsos"
-                  active={pathname.startsWith("/refunds")}
-                />
-              </SidebarGroup>
-
-              <SidebarGroup label="Treinamentos">
-                <SidebarItem
-                  href="/trainings"
-                  icon={<BookOpen size={20} />}
-                  label="Treinamentos"
-                  active={pathname.startsWith("/trainings")}
-                />
-                <SidebarItem
-                  href="/modules"
-                  icon={<BookOpen size={20} />}
-                  label="Módulos"
-                  active={pathname.startsWith("/modules")}
-                />
-                <SidebarItem
-                  href="/submodules"
-                  icon={<BookOpen size={20} />}
-                  label="Submódulos"
-                  active={pathname.startsWith("/submodules")}
-                />
-                <SidebarItem
-                  href="/lessons"
-                  icon={<BookOpen size={20} />}
-                  label="Aulas"
-                  active={pathname.startsWith("/lessons")}
-                />
-              </SidebarGroup>
-
-              <SidebarGroup label="Configurações">
-                <SidebarItem
-                  href="/permissions"
-                  icon={<Settings size={20} />}
-                  label="Permissões"
-                  active={pathname.startsWith("/permissions")}
-                />
-                <SidebarItem
-                  href="/notifications"
-                  icon={<Bell size={20} />}
-                  label="Notificações"
-                  active={pathname.startsWith("/notifications")}
-                />
-              </SidebarGroup>
-            </nav>
-          </ScrollArea>
         </div>
       </div>
 
       {/* Main content */}
-      <div className="flex flex-1 flex-col md:pl-64">
-        <main className="flex-1 p-4 md:p-6 lg:p-8 overflow-y-auto mt-16 md:mt-0">
-          <Suspense fallback={<div>Carregando...</div>}>{children}</Suspense>
+      <div className="md:pl-64 flex flex-col flex-1">
+        <div className="sticky top-0 z-10 flex-shrink-0 h-16 bg-card border-b flex">
+          <button
+            type="button"
+            className="md:hidden px-4 text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-indigo-500"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <span className="sr-only">Open sidebar</span>
+            <Menu className="h-6 w-6" />
+          </button>
+          <div className="flex-1 px-4 flex justify-between">
+            <div className="flex-1 flex"></div>
+          </div>
+        </div>
+
+        <main className="flex-1">
+          <div className="py-6">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
+              {children}
+            </div>
+          </div>
         </main>
       </div>
     </div>

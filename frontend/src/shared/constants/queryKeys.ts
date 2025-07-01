@@ -88,4 +88,33 @@ export const QueryKeys = {
     unread: ['notifications', 'unread'],
     detail: (id: number) => ['notifications', 'detail', id],
   },
+
+  collaborator: {
+    dashboard: ['collaborator', 'dashboard'],
+    trainings: {
+      all: ['collaborator', 'trainings'],
+      list: (params?: string) => ['collaborator', 'trainings', 'list', params],
+      detail: (id: number) => ['collaborator', 'trainings', 'detail', id],
+    },
+    modules: {
+      all: ['collaborator', 'modules'],
+      list: (params?: string) => ['collaborator', 'modules', 'list', params],
+      detail: (id: number) => ['collaborator', 'modules', 'detail', id],
+    },
+    submodules: {
+      all: ['collaborator', 'submodules'],
+      list: (params?: string) => ['collaborator', 'submodules', 'list', params],
+      detail: (id: number) => ['collaborator', 'submodules', 'detail', id],
+    },
+    lessons: {
+      all: ['collaborator', 'lessons'],
+      list: (params?: string) => ['collaborator', 'lessons', 'list', params],
+      detail: (id: number) => ['collaborator', 'lessons', 'detail', id],
+    },
+    meetings: {
+      all: ['collaborator', 'meetings'],
+      list: (params?: string) => ['collaborator', 'meetings', 'list', params],
+      detail: (id: number) => ['collaborator', 'meetings', 'detail', id],
+    },
+  },
 };

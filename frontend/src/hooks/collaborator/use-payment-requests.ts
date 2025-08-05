@@ -42,7 +42,7 @@ interface CreatePaymentRequestData {
 
 export function useCollaboratorPaymentRequests(params: URLSearchParams) {
   return useQuery<PaymentRequestResponse>({
-    queryKey: QueryKeys.paymentRequests.list(`collaborator-${params.toString()}`),
+    queryKey: QueryKeys.collaborator.paymentRequests.list(params.toString()),
     queryFn: async () => {
       const response = await http.get<PaymentRequestResponse>(
         `/collaborator/payment_requests?${params}`
@@ -75,7 +75,7 @@ export function useCreatePaymentRequest() {
     },
     onSuccess: () => {
       toast.success("Solicitação de pagamento criada com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.paymentRequests.all });
+      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.paymentRequests.all });
     },
     onError: () => {
       toast.error("Erro ao criar solicitação de pagamento");
@@ -102,7 +102,7 @@ export function useUpdatePaymentRequest() {
     },
     onSuccess: () => {
       toast.success("Solicitação de pagamento atualizada com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.paymentRequests.all });
+      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.paymentRequests.all });
     },
     onError: () => {
       toast.error("Erro ao atualizar solicitação de pagamento");
@@ -120,7 +120,7 @@ export function useCancelPaymentRequest() {
     },
     onSuccess: () => {
       toast.success("Solicitação de pagamento cancelada com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.paymentRequests.all });
+      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.paymentRequests.all });
     },
     onError: () => {
       toast.error("Erro ao cancelar solicitação de pagamento");

@@ -8,7 +8,6 @@ import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { DatePicker } from "@/components/ui/date-picker";
 import {
   Form,
   FormControl,
@@ -28,14 +27,15 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  useCreatePaymentRequest,
-  useUpdatePaymentRequest,
-  useUploadPaymentRequestFile,
-} from "@/hooks/collaborator/use-payment-requests";
-import { usePaymentRequestTypes } from "@/hooks/useAutocomplete";
+  useCreatePayment,
+  usePaymentTypes,
+  useUpdatePayment,
+  useUploadPaymentFile,
+} from "@/hooks/collaborator/use-payments";
+import { format } from "date-fns";
 
 // Schema de validação
-const paymentRequestSchema = z.object({
+const paymentSchema = z.object({
   description: z
     .string()
     .min(5, "A descrição deve ter pelo menos 5 caracteres")
@@ -43,58 +43,53 @@ const paymentRequestSchema = z.object({
   value: z
     .number({ required_error: "O valor é obrigatório" })
     .min(0.01, "O valor deve ser maior que zero"),
-  paymentRequestTypeId: z.number({
+  paymentTypeId: z.number({
     required_error: "O tipo de pagamento é obrigatório",
   }),
-  requestDate: z.date({
-    required_error: "A data da solicitação é obrigatória",
-  }),
+  paymentDate: z.string().min(1, "A data é obrigatória"),
 });
 
-type PaymentRequestFormValues = z.infer<typeof paymentRequestSchema>;
+type PaymentFormValues = z.infer<typeof paymentSchema>;
 
-interface PaymentRequestType {
+interface PaymentType {
   id: number;
   label: string;
 }
 
-interface PaymentRequestFormProps {
-  paymentRequestId?: number;
-  initialData?: PaymentRequestFormValues;
+interface PaymentFormProps {
+  paymentId?: number;
+  initialData?: PaymentFormValues;
   onSuccess?: () => void;
 }
 
-export function PaymentRequestForm({
-  paymentRequestId,
+export function PaymentForm({
+  paymentId,
   initialData,
   onSuccess,
-}: PaymentRequestFormProps) {
+}: PaymentFormProps) {
   const [file, setFile] = useState<File | null>(null);
 
   // Mutations
-  const createPaymentRequest = useCreatePaymentRequest();
-  const updatePaymentRequest = useUpdatePaymentRequest();
-  const uploadFile = useUploadPaymentRequestFile();
+  const createPayment = useCreatePayment();
+  const updatePayment = useUpdatePayment();
+  const uploadFile = useUploadPaymentFile();
 
   const isSubmitting =
-    createPaymentRequest.isPending ||
-    updatePaymentRequest.isPending ||
-    uploadFile.isPending;
+    createPayment.isPending || updatePayment.isPending || uploadFile.isPending;
 
   // Formulário
-  const form = useForm<PaymentRequestFormValues>({
-    resolver: zodResolver(paymentRequestSchema),
+  const form = useForm<PaymentFormValues>({
+    resolver: zodResolver(paymentSchema),
     defaultValues: initialData || {
       description: "",
       value: 0,
-      paymentRequestTypeId: 0,
-      requestDate: new Date(),
+      paymentTypeId: 0,
+      paymentDate: format(new Date(), "yyyy-MM-dd"),
     },
   });
 
   // Buscar tipos de pagamento
-  const { data: paymentRequestTypes, isLoading: isLoadingTypes } =
-    usePaymentRequestTypes();
+  const { data: paymentTypes, isLoading: isLoadingTypes } = usePaymentTypes();
 
   // Atualizar form quando initialData mudar
   useEffect(() => {
@@ -109,31 +104,25 @@ export function PaymentRequestForm({
     }
   };
 
-  const onSubmit = async (data: PaymentRequestFormValues) => {
+  const onSubmit = async (data: PaymentFormValues) => {
     try {
-      // Formatear data para o backend (formato YYYY-MM-DD)
-      const formattedData = {
-        ...data,
-        requestDate: data.requestDate.toISOString().split("T")[0],
-      };
-
-      if (paymentRequestId) {
-        // Atualizar solicitação existente
-        await updatePaymentRequest.mutateAsync({
-          id: paymentRequestId,
-          data: formattedData,
+      if (paymentId) {
+        // Atualizar pagamento existente
+        await updatePayment.mutateAsync({
+          id: paymentId,
+          data,
         });
 
         // Upload do arquivo se fornecido
         if (file) {
           await uploadFile.mutateAsync({
-            id: paymentRequestId,
+            id: paymentId,
             file,
           });
         }
       } else {
-        // Criar nova solicitação
-        const result = await createPaymentRequest.mutateAsync(formattedData);
+        // Criar novo pagamento
+        const result = await createPayment.mutateAsync(data);
 
         // Upload do arquivo se fornecido
         if (file && result.id) {
@@ -153,7 +142,7 @@ export function PaymentRequestForm({
         onSuccess();
       }
     } catch (error) {
-      console.error("Erro ao processar solicitação:", error);
+      console.error("Erro ao processar pagamento:", error);
     }
   };
 
@@ -172,7 +161,7 @@ export function PaymentRequestForm({
                       <FormLabel>Descrição</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Descreva o motivo da solicitação de pagamento"
+                          placeholder="Descreva o motivo do pagamento"
                           className="min-h-[120px]"
                           disabled={isSubmitting}
                           {...field}
@@ -210,7 +199,7 @@ export function PaymentRequestForm({
 
                   <FormField
                     control={form.control}
-                    name="paymentRequestTypeId"
+                    name="paymentTypeId"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Tipo de Pagamento</FormLabel>
@@ -234,7 +223,7 @@ export function PaymentRequestForm({
                                 Carregando...
                               </SelectItem>
                             ) : (
-                              paymentRequestTypes?.map((type) => (
+                              paymentTypes?.map((type: PaymentType) => (
                                 <SelectItem
                                   key={type.id}
                                   value={type.id.toString()}
@@ -249,29 +238,24 @@ export function PaymentRequestForm({
                       </FormItem>
                     )}
                   />
-
-                  <FormField
-                    control={form.control}
-                    name="requestDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Data da Solicitação</FormLabel>
-                        <FormControl>
-                          <DatePicker
-                            date={field.value}
-                            onSelect={field.onChange}
-                            placeholder="Selecione a data da solicitação"
-                            disabled={isSubmitting}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Data em que a despesa foi realizada
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="paymentDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data do Pagamento</FormLabel>
+                      <FormControl>
+                        <Input type="date" disabled={isSubmitting} {...field} />
+                      </FormControl>
+                      <FormDescription>
+                        Data em que o pagamento foi realizado
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormItem>
                   <FormLabel>Comprovante</FormLabel>
@@ -284,7 +268,7 @@ export function PaymentRequestForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Anexe um comprovante para sua solicitação (opcional)
+                    Anexe um comprovante para seu pagamento (obrigatório)
                   </FormDescription>
                 </FormItem>
 
@@ -298,7 +282,7 @@ export function PaymentRequestForm({
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        {paymentRequestId ? "Atualizar" : "Enviar Solicitação"}
+                        {paymentId ? "Atualizar" : "Registrar Pagamento"}
                       </>
                     )}
                   </Button>

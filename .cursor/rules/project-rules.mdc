@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+description: "Regras gerais do projeto, incluindo princípios de código, nomenclatura, tratamento de erros e mais."
+---
+
+# Regras Gerais do Projeto
+
+- **Linguagem:** Sempre responda em Português.
+- **Princípios de Código:** Siga os princípios SOLID, DRY (Don't Repeat Yourself) and KISS (Keep It Simple, Stupid) para manter o código limpo, modular e de fácil manutenção.
+- **Nomenclatura:** Use nomes de variáveis, funções e classes que sejam claros, descritivos e consistentes em todo o projeto.
+- **Tratamento de Erros:** Nunca deixe erros por tratar. Sempre implemente blocos `try...catch` para código assíncrono e valide entradas para previnir falhas inesperadas.
+- **Comentários:** Adicione comentários úteis apenas quando o código não for autoexplicativo. Evite comentários óbvios.
+- **Formatação de Código:** Formate o código de maneira consistente usando ESLint e Prettier para garantir um estilo uniforme.
+- **Logging:** Não utilize `console.log` em código de produção. Prefira um sistema de logging apropriado.
+- **Segurança:** Utilize variáveis de ambiente para armazenar chaves de API, segredos e outras informações sensíveis.
+- **Testes:** Sugira a criação de testes unitários e de integração utilizando Jest ou Vitest para garantir a qualidade e a estabilidade do código.

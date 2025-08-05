@@ -1,12 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { HomeService } from './home.service';
-import { CurrentUser } from 'src/public/auth/current-user-decorator';
-import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
 import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
-import { HomeResponseDto } from './dto/home-response-dto';
+import { DashboardStatsResponseDto, HomeResponseDto } from './dto/home-response-dto';
+import { HomeService } from './home.service';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
@@ -19,5 +19,11 @@ export class HomeController {
   @Get()
   async getInitialData(@CurrentUser() currentUser: TokenPayload) {
     return await this.homeService.getInitialData(currentUser);
+  }
+
+  @ApiResponse({ type: DashboardStatsResponseDto })
+  @Get('stats')
+  async getDashboardStats(@CurrentUser() currentUser: TokenPayload) {
+    return await this.homeService.getDashboardStats(currentUser);
   }
 }

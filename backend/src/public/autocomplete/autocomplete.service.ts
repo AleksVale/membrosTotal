@@ -106,6 +106,7 @@ export class AutocompleteService {
             id: value.id,
             label: value.title,
           }));
+          break;
         case 'submodules':
           response.submodules = (
             await this.prisma.submodule.findMany({

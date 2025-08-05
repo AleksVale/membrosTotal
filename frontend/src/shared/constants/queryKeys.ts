@@ -116,5 +116,25 @@ export const QueryKeys = {
       list: (params?: string) => ['collaborator', 'meetings', 'list', params],
       detail: (id: number) => ['collaborator', 'meetings', 'detail', id],
     },
+    payments: {
+      all: ['collaborator', 'payments'],
+      list: (params?: string) => ['collaborator', 'payments', 'list', params],
+      detail: (id: number) => ['collaborator', 'payments', 'detail', id],
+    },
+    paymentRequests: {
+      all: ['collaborator', 'paymentRequests'],
+      list: (params?: string) => ['collaborator', 'paymentRequests', 'list', params],
+      detail: (id: number) => ['collaborator', 'paymentRequests', 'detail', id],
+    },
+    refunds: {
+      all: ['collaborator', 'refunds'],
+      list: (params?: string) => ['collaborator', 'refunds', 'list', params],
+      detail: (id: number) => ['collaborator', 'refunds', 'detail', id],
+    },
+    notifications: {
+      all: ['collaborator', 'notifications'],
+      list: (params?: string) => ['collaborator', 'notifications', 'list', params],
+      detail: (id: number) => ['collaborator', 'notifications', 'detail', id],
+    },
   },
 };

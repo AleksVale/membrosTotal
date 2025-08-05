@@ -1,0 +1,12 @@
+---
+description: "Regras para o desenvolvimento backend com Node.js (NestJS/Express) e TypeScript."
+globs: "**/src/**/*.ts,**/pages/api/**/*.ts"
+---
+
+# Regras de Backend (Node.js)
+
+- **Linguagem:** Escreva código TypeScript limpo e idiomático.
+- **Tipagem:** Utilize tipos explícitos para todas as variáveis, parâmetros de função e retornos.
+- **Framework:** Ao construir o backend, dê preferência ao NestJS pela sua arquitetura modular e escalável, ou Express com Prisma para uma abordagem mais leve e focada em ORM.
+- **Código Assíncrono:** Manipule operações assíncronas, como chamadas de banco de dados e APIs, exclusivamente com `async/await`.
+- **Validação:** Utilize a biblioteca Zod para validar dados de entrada (requests), parâmetros e variáveis de ambiente.

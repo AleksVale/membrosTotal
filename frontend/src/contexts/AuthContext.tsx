@@ -1,15 +1,16 @@
 "use client";
 
+import { performLogout } from "@/lib/auth";
+import http from "@/lib/http";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 import {
   createContext,
-  useContext,
-  useState,
-  useMemo,
   useCallback,
+  useContext,
+  useMemo,
+  useState,
 } from "react";
-import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
-import http from "@/lib/http";
 
 interface User {
   id: string;
@@ -54,7 +55,7 @@ export function AuthProvider({
         if (userData.profile === "admin") {
           router.push("/admin/dashboard");
         } else if (userData.profile === "employee") {
-          router.push("/employee/dashboard");
+          router.push("/collaborator/dashboard");
         } else {
           throw new Error("Perfil inválido");
         }
@@ -66,11 +67,10 @@ export function AuthProvider({
     [router]
   );
 
-  const logout = useCallback(() => {
-    Cookies.remove("auth_token");
+  const logout = useCallback(async () => {
     setUser(null);
-    router.push("/login");
-  }, [router]);
+    await performLogout();
+  }, []);
 
   const value = useMemo(
     () => ({

@@ -12,14 +12,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { ModeToggle } from "@/components/ui/mode-toggle";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { performLogout } from "@/lib/auth";
 import http from "@/lib/http";
 import { cn } from "@/lib/utils";
 import { QueryKeys } from "@/shared/constants/queryKeys";
+import { UserProfile, UserRole } from "@/types/user";
 import { useQuery } from "@tanstack/react-query";
 import {
+  ArrowDownLeft,
   Bell,
   BookOpen,
   Calendar,
+  CreditCard,
   DollarSign,
   FileText,
   Home,
@@ -34,18 +38,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-// Tipos de usuário
-type UserRole = "admin" | "employee" | "student";
-
-interface UserProfile {
-  id: number;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: UserRole;
-  avatar?: string;
-}
-
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const pathname = usePathname();
@@ -53,38 +45,26 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const [userRole, setUserRole] = useState<UserRole | null>(null);
 
   // Buscar perfil do usuário
-  const { data: userProfile, isLoading } = useQuery<UserProfile>({
+  const { data, isLoading } = useQuery<UserProfile>({
     queryKey: QueryKeys.users.profile,
     queryFn: async () => {
-      try {
-        const response = await http.get("/auth/me");
-        return response.data;
-      } catch (error) {
-        console.error("Erro ao buscar perfil:", error);
-        // Redirecionar para login se não autenticado
-        router.push("/login");
-        return null;
-      }
+      const response = await http.get("/auth/profile");
+      return response.data;
     },
-    staleTime: 300000, // 5 minutos
-    refetchOnWindowFocus: false,
   });
 
   // Definir role do usuário quando os dados forem carregados
   useEffect(() => {
-    if (userProfile) {
-      setUserRole(userProfile.role);
+    if (data) {
+      // Mapear role do backend para o frontend
+      const role = data.role;
+      setUserRole(role === "admin" ? "admin" : "employee");
     }
-  }, [userProfile]);
+  }, [data]);
 
   // Função para fazer logout
   const handleLogout = async () => {
-    try {
-      await http.post("/auth/logout");
-      router.push("/login");
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
-    }
+    await performLogout();
   };
 
   // Determinar se é admin ou colaborador baseado na URL
@@ -93,16 +73,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
   // Redirecionar para a seção correta baseado no perfil do usuário
   useEffect(() => {
-    if (userProfile) {
+    if (data && userRole) {
       if (
-        userProfile.role === "admin" &&
+        userRole === "admin" &&
         !isAdminSection &&
         !pathname.startsWith("/profile") &&
         !pathname.startsWith("/settings")
       ) {
         router.push("/admin/dashboard");
       } else if (
-        userProfile.role === "employee" &&
+        userRole === "employee" &&
         !isCollaboratorSection &&
         !pathname.startsWith("/profile") &&
         !pathname.startsWith("/settings")
@@ -110,7 +90,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         router.push("/collaborator/dashboard");
       }
     }
-  }, [userProfile, isAdminSection, isCollaboratorSection, pathname, router]);
+  }, [data, userRole, isAdminSection, isCollaboratorSection, pathname, router]);
 
   return (
     <div className="flex h-screen bg-background">
@@ -239,7 +219,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                       active={pathname === "/collaborator/dashboard"}
                     />
 
-                    <SidebarGroup label="Treinamentos">
+                    <SidebarGroup label="Aprendizado">
                       <SidebarItem
                         href="/collaborator/trainings"
                         icon={<BookOpen size={20} />}
@@ -252,25 +232,57 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         label="Módulos"
                         active={pathname.startsWith("/collaborator/modules")}
                       />
+                      <SidebarItem
+                        href="/collaborator/lessons"
+                        icon={<BookOpen size={20} />}
+                        label="Aulas"
+                        active={pathname.startsWith("/collaborator/lessons")}
+                      />
+                      <SidebarItem
+                        href="/collaborator/submodules"
+                        icon={<FileText size={20} />}
+                        label="Submódulos"
+                        active={pathname.startsWith("/collaborator/submodules")}
+                      />
                     </SidebarGroup>
 
                     <SidebarGroup label="Financeiro">
                       <SidebarItem
                         href="/collaborator/payment-requests"
                         icon={<DollarSign size={20} />}
-                        label="Solicitações de Pagamento"
+                        label="Solicitações"
                         active={pathname.startsWith(
                           "/collaborator/payment-requests"
                         )}
                       />
+                      <SidebarItem
+                        href="/collaborator/payments"
+                        icon={<CreditCard size={20} />}
+                        label="Histórico"
+                        active={pathname.startsWith("/collaborator/payments")}
+                      />
+                      <SidebarItem
+                        href="/collaborator/refunds"
+                        icon={<ArrowDownLeft size={20} />}
+                        label="Reembolsos"
+                        active={pathname.startsWith("/collaborator/refunds")}
+                      />
                     </SidebarGroup>
 
-                    <SidebarGroup label="Agenda">
+                    <SidebarGroup label="Agenda & Comunicação">
                       <SidebarItem
                         href="/collaborator/meetings"
                         icon={<Calendar size={20} />}
-                        label="Minhas Reuniões"
+                        label="Reuniões"
                         active={pathname.startsWith("/collaborator/meetings")}
+                      />
+                      <SidebarItem
+                        href="/collaborator/notifications"
+                        icon={<Bell size={20} />}
+                        label="Notificações"
+                        active={pathname.startsWith(
+                          "/collaborator/notifications"
+                        )}
                       />
                     </SidebarGroup>
                   </>
@@ -289,14 +301,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     >
                       <Avatar className="h-10 w-10">
                         <AvatarImage
-                          src={userProfile?.avatar || "/placeholder-user.jpg"}
-                          alt={userProfile?.firstName || "User"}
+                          src={data?.avatar || "/placeholder-user.jpg"}
+                          alt={data?.firstName || "User"}
                         />
                         <AvatarFallback>
-                          {userProfile
-                            ? `${userProfile.firstName.charAt(
+                          {data
+                            ? `${data.firstName.charAt(
                                 0
-                              )}${userProfile.lastName.charAt(0)}`
+                              )}${data.lastName.charAt(0)}`
                             : "U"}
                         </AvatarFallback>
                       </Avatar>
@@ -306,12 +318,14 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
-                          {userProfile
-                            ? `${userProfile.firstName} ${userProfile.lastName}`
-                            : "Carregando..."}
+                          {isLoading
+                            ? "Carregando..."
+                            : data
+                            ? `${data.firstName} ${data.lastName}`
+                            : "Usuário"}
                         </p>
                         <p className="text-xs leading-none text-muted-foreground">
-                          {userProfile?.email || ""}
+                          {data?.email || ""}
                         </p>
                       </div>
                     </DropdownMenuLabel>
@@ -341,7 +355,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
               </div>
               <div className="ml-3 flex-1">
                 <p className="text-sm font-medium text-foreground">
-                  {userProfile?.firstName || "Usuário"}
+                  {data?.firstName || "Usuário"}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {userRole === "admin"

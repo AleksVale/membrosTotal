@@ -1,20 +1,16 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -22,24 +18,31 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 import http from "@/lib/http";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import { useQuery } from "@tanstack/react-query";
-import {
-  AutocompleteResponse,
-  UserAutocompleteItem,
-  AutocompleteItem,
-} from "@/shared/types/autocomplete";
 import { QueryKeys } from "@/shared/constants/queryKeys";
+import {
+  AutocompleteItem,
+  UserAutocompleteItem,
+} from "@/shared/types/autocomplete";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import * as z from "zod";
 import { CurrencyInput } from "../ui/currency-input";
+import { DatePicker } from "../ui/date-picker";
 
 const paymentSchema = z.object({
   value: z.number().min(0.01, "Valor deve ser maior que zero"),
   description: z.string().min(3, "Descrição deve ter no mínimo 3 caracteres"),
   expertId: z.number().min(1, "Especialista é obrigatório"),
   paymentTypeId: z.number().min(1, "Tipo de pagamento é obrigatório"),
-  file: z.any().optional(),
+  paymentDate: z.date({
+    required_error: "A data do pagamento é obrigatória",
+  }),
+  file: z.instanceof(File).optional(),
 });
 
 type PaymentFormValues = z.infer<typeof paymentSchema>;
@@ -81,6 +84,7 @@ export function PaymentForm({
       description: "",
       expertId: 0,
       paymentTypeId: 0,
+      paymentDate: new Date(),
     },
   });
   const fileRef = form.register("file");
@@ -97,6 +101,7 @@ export function PaymentForm({
         description: data.description,
         expertId: data.expertId,
         paymentTypeId: data.paymentTypeId,
+        paymentDate: data.paymentDate.toISOString().split("T")[0],
       };
 
       if (paymentId) {
@@ -105,7 +110,7 @@ export function PaymentForm({
           paymentData
         );
 
-        if (data.file && data.file[0]) {
+        if (data.file && data.file instanceof FileList && data.file[0]) {
           const formData = new FormData();
           formData.append("file", data.file[0]);
           await http.post(`/payment-admin/${paymentId}/file`, formData, {
@@ -117,7 +122,12 @@ export function PaymentForm({
       } else {
         paymentResponse = await http.post("/payment-admin", paymentData);
 
-        if (data.file && data.file[0] && paymentResponse?.data?.id) {
+        if (
+          data.file &&
+          data.file instanceof FileList &&
+          data.file[0] &&
+          paymentResponse?.data?.id
+        ) {
           const formData = new FormData();
           formData.append("file", data.file[0]);
           await http.post(
@@ -241,6 +251,28 @@ export function PaymentForm({
                   ))}
                 </SelectContent>
               </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="paymentDate"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Data do Pagamento</FormLabel>
+              <FormControl>
+                <DatePicker
+                  date={field.value}
+                  onSelect={field.onChange}
+                  placeholder="Selecione a data do pagamento"
+                  disabled={loading}
+                />
+              </FormControl>
+              <FormDescription>
+                Data em que o pagamento foi realizado
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

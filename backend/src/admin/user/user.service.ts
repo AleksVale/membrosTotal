@@ -1,7 +1,7 @@
 import {
-    BadRequestException,
-    Injectable,
-    NotFoundException,
+  BadRequestException,
+  Injectable,
+  NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { DateUtils } from 'src/utils/date';
@@ -117,11 +117,12 @@ export class UserService {
     return user;
   }
 
-  async findOneAuthentication(email: string) {
-    const user = await this.userRepository.find({
-      email,
-      status: UserStatus.ACTIVE,
-    });
+  async findOneAuthentication(email?: string, id?: number) {
+    const whereClause = email 
+      ? { email, status: UserStatus.ACTIVE }
+      : { id, status: UserStatus.ACTIVE };
+      
+    const user = await this.userRepository.find(whereClause);
     return user;
   }
 

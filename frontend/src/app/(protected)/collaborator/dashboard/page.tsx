@@ -1,35 +1,85 @@
 "use client";
 
+import { DashboardChart } from "@/components/dashboard/DashboardChart";
+import { QuickActions } from "@/components/dashboard/QuickActions";
+import { RecentActivity } from "@/components/dashboard/RecentActivity";
+import { StatCard } from "@/components/dashboard/StatCard";
+import { WeeklyProgress } from "@/components/dashboard/WeeklyProgress";
+import { WelcomeHeader } from "@/components/dashboard/WelcomeHeader";
+import { CalendarDateRangePicker } from "@/components/date-range-picker";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Loading } from "@/components/ui/loading";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useAuth } from "@/contexts/AuthContext";
 import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, Calendar, Clock, DollarSign } from "lucide-react";
-import Link from "next/link";
+import {
+  Award,
+  BarChart3,
+  Bell,
+  BookOpen,
+  Calendar,
+  Clock,
+  DollarSign,
+  RefreshCw,
+  TrendingUp,
+} from "lucide-react";
 
-interface DashboardData {
-  pendingPaymentRequests: number;
-  completedTrainings: number;
-  inProgressTrainings: number;
-  upcomingMeetings: number;
+interface DashboardStats {
+  paymentRequests: {
+    pending: number;
+    total: number;
+    approved: number;
+    rejectedPercentage: number;
+  };
+  trainings: {
+    total: number;
+    completed: number;
+    inProgress: number;
+    completionRate: number;
+  };
+  meetings: {
+    upcoming: number;
+    thisMonth: number;
+    total: number;
+  };
+  modules: {
+    total: number;
+    completed: number;
+    completionRate: number;
+  };
+  lessons: {
+    total: number;
+    completed: number;
+    completionRate: number;
+  };
+  financials: {
+    totalEarnings: number;
+    pendingAmount: number;
+  };
+  notifications: {
+    unread: number;
+  };
 }
 
 export default function CollaboratorDashboardPage() {
-  const { data, isLoading, isError } = useQuery<DashboardData>({
+  const { user } = useAuth();
+
+  const {
+    data: stats,
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery<DashboardStats>({
     queryKey: QueryKeys.collaborator.dashboard,
     queryFn: async () => {
-      const response = await http.get("/collaborator/home");
+      const response = await http.get("/collaborator/home/stats");
       return response.data;
     },
-    staleTime: 60000, // 1 minuto
+    staleTime: 5 * 60 * 1000, // 5 minutos
+    refetchInterval: 10 * 60 * 1000, // 10 minutos
   });
 
   if (isLoading) {
@@ -38,119 +88,263 @@ export default function CollaboratorDashboardPage() {
 
   if (isError) {
     return (
-      <div className="text-center py-8">
-        <p className="text-destructive mb-4">
-          Ocorreu um erro ao carregar os dados do dashboard.
-        </p>
-        <Button onClick={() => window.location.reload()} variant="outline">
-          Tentar novamente
-        </Button>
+      <div className="flex flex-col gap-6">
+        <Alert variant="destructive">
+          <AlertDescription>
+            Erro ao carregar os dados do dashboard. Tente novamente.
+          </AlertDescription>
+        </Alert>
+        <div className="text-center">
+          <Button onClick={() => refetch()} variant="outline">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Tentar novamente
+          </Button>
+        </div>
       </div>
     );
   }
 
-  const stats = [
-    {
-      title: "Solicitações Pendentes",
-      value: data?.pendingPaymentRequests || 0,
-      description: "Solicitações de pagamento aguardando aprovação",
-      icon: <DollarSign className="h-5 w-5 text-muted-foreground" />,
-      href: "/collaborator/payment-requests",
-      color: "bg-warning/20",
-    },
-    {
-      title: "Treinamentos Concluídos",
-      value: data?.completedTrainings || 0,
-      description: "Treinamentos que você já completou",
-      icon: <BookOpen className="h-5 w-5 text-muted-foreground" />,
-      href: "/collaborator/trainings",
-      color: "bg-success/20",
-    },
-    {
-      title: "Treinamentos em Andamento",
-      value: data?.inProgressTrainings || 0,
-      description: "Treinamentos que você está fazendo",
-      icon: <Clock className="h-5 w-5 text-muted-foreground" />,
-      href: "/collaborator/trainings",
-      color: "bg-primary/20",
-    },
-    {
-      title: "Próximas Reuniões",
-      value: data?.upcomingMeetings || 0,
-      description: "Reuniões agendadas para os próximos dias",
-      icon: <Calendar className="h-5 w-5 text-muted-foreground" />,
-      href: "/collaborator/meetings",
-      color: "bg-secondary/20",
-    },
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    }).format(value);
+  };
+
+  const chartData = [
+    { name: "Treinamentos", value: stats?.trainings.completed || 0 },
+    { name: "Módulos", value: stats?.modules.completed || 0 },
+    { name: "Aulas", value: stats?.lessons.completed || 0 },
+    { name: "Reuniões", value: stats?.meetings.thisMonth || 0 },
+  ];
+
+  const progressData = [
+    { name: "Jan", value: 12 },
+    { name: "Fev", value: 19 },
+    { name: "Mar", value: 15 },
+    { name: "Abr", value: 25 },
+    { name: "Mai", value: 22 },
+    { name: "Jun", value: 30 },
   ];
 
   return (
     <div className="flex flex-col gap-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Bem-vindo ao seu painel de controle
-        </p>
+      <WelcomeHeader
+        stats={{
+          completionRate: stats?.trainings.completionRate || 0,
+          streak: 5, // Dados simulados - pode ser integrado com API futuramente
+          todayTasks: 3,
+        }}
+      />
+
+      <div className="flex flex-col md:flex-row justify-between gap-4">
+        <div>
+          <h2 className="text-xl font-semibold">Resumo das Atividades</h2>
+          <p className="text-muted-foreground">
+            Acompanhe seu progresso e métricas em tempo real
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          <CalendarDateRangePicker />
+          <Button onClick={() => refetch()} variant="outline" size="sm">
+            <RefreshCw className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <Card key={index} className="overflow-hidden">
-            <div className={`h-1 ${stat.color}`} />
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              {stat.icon}
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground mt-1">
-                {stat.description}
-              </p>
-              <Button asChild variant="link" className="px-0 mt-2">
-                <Link href={stat.href}>Ver detalhes</Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-4">
+          <TabsTrigger value="overview">Visão Geral</TabsTrigger>
+          <TabsTrigger value="learning">Aprendizado</TabsTrigger>
+          <TabsTrigger value="financial">Financeiro</TabsTrigger>
+          <TabsTrigger value="activities">Atividades</TabsTrigger>
+        </TabsList>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle>Treinamentos Recentes</CardTitle>
-            <CardDescription>Seus treinamentos mais recentes</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Acesse a seção de treinamentos para ver todos os seus cursos.
-            </p>
-            <Button asChild variant="outline" className="mt-4">
-              <Link href="/collaborator/trainings">Ver Treinamentos</Link>
-            </Button>
-          </CardContent>
-        </Card>
+        <TabsContent value="overview" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              title="Pagamentos Pendentes"
+              value={stats?.paymentRequests.pending || 0}
+              description="Solicitações aguardando aprovação"
+              icon={<DollarSign className="h-4 w-4" />}
+              href="/collaborator/payment-requests"
+              badge={{
+                text: formatCurrency(stats?.financials.pendingAmount || 0),
+                variant: "secondary",
+              }}
+            />
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Solicitações de Pagamento</CardTitle>
-            <CardDescription>
-              Gerencie suas solicitações de pagamento
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-muted-foreground">
-              Crie e acompanhe suas solicitações de pagamento.
-            </p>
-            <Button asChild variant="outline" className="mt-4">
-              <Link href="/collaborator/payment-requests">
-                Ver Solicitações
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+            <StatCard
+              title="Treinamentos Ativos"
+              value={stats?.trainings.inProgress || 0}
+              description="Cursos em andamento"
+              icon={<BookOpen className="h-4 w-4" />}
+              href="/collaborator/trainings"
+              progress={{
+                value: stats?.trainings.completed || 0,
+                max: stats?.trainings.total || 1,
+                label: "Taxa de conclusão",
+              }}
+            />
+
+            <StatCard
+              title="Próximas Reuniões"
+              value={stats?.meetings.upcoming || 0}
+              description="Reuniões agendadas"
+              icon={<Calendar className="h-4 w-4" />}
+              href="/collaborator/meetings"
+              trend={{
+                value: 15,
+                isPositive: true,
+                label: "vs mês anterior",
+              }}
+            />
+
+            <StatCard
+              title="Notificações"
+              value={stats?.notifications.unread || 0}
+              description="Mensagens não lidas"
+              icon={<Bell className="h-4 w-4" />}
+              href="/collaborator/notifications"
+              badge={
+                stats?.notifications.unread
+                  ? {
+                      text: "Nova",
+                      variant: "destructive",
+                    }
+                  : undefined
+              }
+            />
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-2">
+            <DashboardChart
+              title="Atividades Mensais"
+              description="Progresso ao longo dos últimos 6 meses"
+              data={progressData}
+              type="line"
+            />
+
+            <DashboardChart
+              title="Distribuição de Atividades"
+              description="Suas atividades por categoria"
+              data={chartData}
+              type="pie"
+            />
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            <div className="lg:col-span-2">
+              <RecentActivity />
+            </div>
+            <div className="space-y-6">
+              <QuickActions />
+              <WeeklyProgress />
+            </div>
+          </div>
+        </TabsContent>
+
+        <TabsContent value="learning" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-3">
+            <StatCard
+              title="Taxa de Conclusão"
+              value={`${stats?.trainings.completionRate || 0}%`}
+              description="Porcentagem de treinamentos concluídos"
+              icon={<Award className="h-4 w-4" />}
+              progress={{
+                value: stats?.trainings.completed || 0,
+                max: stats?.trainings.total || 1,
+                label: "Progresso geral",
+              }}
+            />
+
+            <StatCard
+              title="Módulos Completados"
+              value={stats?.modules.completed || 0}
+              description={`De ${stats?.modules.total || 0} disponíveis`}
+              icon={<BookOpen className="h-4 w-4" />}
+              href="/collaborator/modules"
+              trend={{
+                value: stats?.modules.completionRate || 0,
+                isPositive: true,
+                label: "taxa de conclusão",
+              }}
+            />
+
+            <StatCard
+              title="Aulas Assistidas"
+              value={stats?.lessons.completed || 0}
+              description={`De ${stats?.lessons.total || 0} aulas`}
+              icon={<Clock className="h-4 w-4" />}
+              href="/collaborator/lessons"
+              progress={{
+                value: stats?.lessons.completed || 0,
+                max: stats?.lessons.total || 1,
+                label: "Progresso das aulas",
+              }}
+            />
+          </div>
+
+          <DashboardChart
+            title="Progresso de Aprendizado"
+            description="Evolução mensal dos seus estudos"
+            data={progressData}
+            type="bar"
+          />
+        </TabsContent>
+
+        <TabsContent value="financial" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <StatCard
+              title="Total Recebido"
+              value={formatCurrency(stats?.financials.totalEarnings || 0)}
+              description="Valor total já recebido"
+              icon={<DollarSign className="h-4 w-4" />}
+              trend={{
+                value: 12,
+                isPositive: true,
+                label: "vs mês anterior",
+              }}
+            />
+
+            <StatCard
+              title="Valor Pendente"
+              value={formatCurrency(stats?.financials.pendingAmount || 0)}
+              description="Aguardando aprovação"
+              icon={<Clock className="h-4 w-4" />}
+              href="/collaborator/payment-requests"
+            />
+
+            <StatCard
+              title="Solicitações Aprovadas"
+              value={stats?.paymentRequests.approved || 0}
+              description="Total de aprovações"
+              icon={<TrendingUp className="h-4 w-4" />}
+              badge={{
+                text: `${
+                  100 - (stats?.paymentRequests.rejectedPercentage || 0)
+                }% aprovação`,
+                variant: "default",
+              }}
+            />
+
+            <StatCard
+              title="Total de Solicitações"
+              value={stats?.paymentRequests.total || 0}
+              description="Histórico completo"
+              icon={<BarChart3 className="h-4 w-4" />}
+              href="/collaborator/payments"
+            />
+          </div>
+        </TabsContent>
+
+        <TabsContent value="activities" className="space-y-6">
+          <div className="grid gap-6 lg:grid-cols-2">
+            <RecentActivity />
+            <QuickActions />
+          </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

@@ -1,10 +1,11 @@
 import axios, {
-  AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosResponse,
   AxiosError,
+  AxiosInstance,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
 } from 'axios';
 import Cookies from 'js-cookie';
+import { performLogout } from './auth';
 
 interface ErrorResponse {
   status: number;
@@ -25,10 +26,10 @@ const http: AxiosInstance = axios.create({
 // Response interceptor
 http.interceptors.response.use(
   (response: AxiosResponse) => response,
-  (error: AxiosError) => {
+  async (error: AxiosError) => {
     if (error.response && error.response.status === 401) {
-      Cookies.remove('auth_token');
-      window.location.href = '/login';
+      // Token inválido ou expirado - faz logout completo
+      await performLogout();
     }
     return Promise.reject(error);
   },

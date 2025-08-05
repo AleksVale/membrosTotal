@@ -1,10 +1,9 @@
 "use client";
 
-import * as React from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
+import * as React from "react";
 
-import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -12,12 +11,17 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
+
+interface DateRange {
+  from?: Date;
+  to?: Date;
+}
 
 export function CalendarDateRangePicker({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const [date, setDate] = React.useState<any | undefined>({
+  const [date, setDate] = React.useState<DateRange | undefined>({
     from: new Date(2025, 3, 1), // April 1, 2025
     to: new Date(2025, 3, 30), // April 30, 2025
   });

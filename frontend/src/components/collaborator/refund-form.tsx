@@ -28,14 +28,14 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  useCreatePaymentRequest,
-  useUpdatePaymentRequest,
-  useUploadPaymentRequestFile,
-} from "@/hooks/collaborator/use-payment-requests";
-import { usePaymentRequestTypes } from "@/hooks/useAutocomplete";
+  useCreateRefund,
+  useRefundTypes,
+  useUpdateRefund,
+  useUploadRefundFile,
+} from "@/hooks/collaborator/use-refunds";
 
 // Schema de validação
-const paymentRequestSchema = z.object({
+const refundSchema = z.object({
   description: z
     .string()
     .min(5, "A descrição deve ter pelo menos 5 caracteres")
@@ -43,58 +43,55 @@ const paymentRequestSchema = z.object({
   value: z
     .number({ required_error: "O valor é obrigatório" })
     .min(0.01, "O valor deve ser maior que zero"),
-  paymentRequestTypeId: z.number({
-    required_error: "O tipo de pagamento é obrigatório",
+  refundTypeId: z.number({
+    required_error: "O tipo de reembolso é obrigatório",
   }),
-  requestDate: z.date({
-    required_error: "A data da solicitação é obrigatória",
+  refundDate: z.date({
+    required_error: "A data do reembolso é obrigatória",
   }),
 });
 
-type PaymentRequestFormValues = z.infer<typeof paymentRequestSchema>;
+type RefundFormValues = z.infer<typeof refundSchema>;
 
-interface PaymentRequestType {
+interface RefundType {
   id: number;
   label: string;
 }
 
-interface PaymentRequestFormProps {
-  paymentRequestId?: number;
-  initialData?: PaymentRequestFormValues;
+interface RefundFormProps {
+  refundId?: number;
+  initialData?: RefundFormValues;
   onSuccess?: () => void;
 }
 
-export function PaymentRequestForm({
-  paymentRequestId,
+export function RefundForm({
+  refundId,
   initialData,
   onSuccess,
-}: PaymentRequestFormProps) {
+}: RefundFormProps) {
   const [file, setFile] = useState<File | null>(null);
 
   // Mutations
-  const createPaymentRequest = useCreatePaymentRequest();
-  const updatePaymentRequest = useUpdatePaymentRequest();
-  const uploadFile = useUploadPaymentRequestFile();
+  const createRefund = useCreateRefund();
+  const updateRefund = useUpdateRefund();
+  const uploadFile = useUploadRefundFile();
 
   const isSubmitting =
-    createPaymentRequest.isPending ||
-    updatePaymentRequest.isPending ||
-    uploadFile.isPending;
+    createRefund.isPending || updateRefund.isPending || uploadFile.isPending;
 
   // Formulário
-  const form = useForm<PaymentRequestFormValues>({
-    resolver: zodResolver(paymentRequestSchema),
+  const form = useForm<RefundFormValues>({
+    resolver: zodResolver(refundSchema),
     defaultValues: initialData || {
       description: "",
       value: 0,
-      paymentRequestTypeId: 0,
-      requestDate: new Date(),
+      refundTypeId: 0,
+      refundDate: new Date(),
     },
   });
 
-  // Buscar tipos de pagamento
-  const { data: paymentRequestTypes, isLoading: isLoadingTypes } =
-    usePaymentRequestTypes();
+  // Buscar tipos de reembolso
+  const { data: refundTypes, isLoading: isLoadingTypes } = useRefundTypes();
 
   // Atualizar form quando initialData mudar
   useEffect(() => {
@@ -109,31 +106,31 @@ export function PaymentRequestForm({
     }
   };
 
-  const onSubmit = async (data: PaymentRequestFormValues) => {
+  const onSubmit = async (data: RefundFormValues) => {
     try {
-      // Formatear data para o backend (formato YYYY-MM-DD)
+      // Formatar data para o backend (formato YYYY-MM-DD)
       const formattedData = {
         ...data,
-        requestDate: data.requestDate.toISOString().split("T")[0],
+        refundDate: data.refundDate.toISOString().split("T")[0],
       };
 
-      if (paymentRequestId) {
+      if (refundId) {
         // Atualizar solicitação existente
-        await updatePaymentRequest.mutateAsync({
-          id: paymentRequestId,
+        await updateRefund.mutateAsync({
+          id: refundId,
           data: formattedData,
         });
 
         // Upload do arquivo se fornecido
         if (file) {
           await uploadFile.mutateAsync({
-            id: paymentRequestId,
+            id: refundId,
             file,
           });
         }
       } else {
         // Criar nova solicitação
-        const result = await createPaymentRequest.mutateAsync(formattedData);
+        const result = await createRefund.mutateAsync(formattedData);
 
         // Upload do arquivo se fornecido
         if (file && result.id) {
@@ -172,7 +169,7 @@ export function PaymentRequestForm({
                       <FormLabel>Descrição</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Descreva o motivo da solicitação de pagamento"
+                          placeholder="Descreva o motivo do reembolso"
                           className="min-h-[120px]"
                           disabled={isSubmitting}
                           {...field}
@@ -210,10 +207,10 @@ export function PaymentRequestForm({
 
                   <FormField
                     control={form.control}
-                    name="paymentRequestTypeId"
+                    name="refundTypeId"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Tipo de Pagamento</FormLabel>
+                        <FormLabel>Tipo de Reembolso</FormLabel>
                         <Select
                           disabled={isSubmitting || isLoadingTypes}
                           onValueChange={(value) =>
@@ -234,7 +231,7 @@ export function PaymentRequestForm({
                                 Carregando...
                               </SelectItem>
                             ) : (
-                              paymentRequestTypes?.map((type) => (
+                              refundTypes?.map((type: RefundType) => (
                                 <SelectItem
                                   key={type.id}
                                   value={type.id.toString()}
@@ -249,29 +246,29 @@ export function PaymentRequestForm({
                       </FormItem>
                     )}
                   />
-
-                  <FormField
-                    control={form.control}
-                    name="requestDate"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Data da Solicitação</FormLabel>
-                        <FormControl>
-                          <DatePicker
-                            date={field.value}
-                            onSelect={field.onChange}
-                            placeholder="Selecione a data da solicitação"
-                            disabled={isSubmitting}
-                          />
-                        </FormControl>
-                        <FormDescription>
-                          Data em que a despesa foi realizada
-                        </FormDescription>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="refundDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Data do Gasto</FormLabel>
+                      <FormControl>
+                        <DatePicker
+                          date={field.value}
+                          onSelect={field.onChange}
+                          placeholder="Selecione a data do gasto"
+                          disabled={isSubmitting}
+                        />
+                      </FormControl>
+                      <FormDescription>
+                        Data em que o gasto foi realizado
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormItem>
                   <FormLabel>Comprovante</FormLabel>
@@ -284,7 +281,7 @@ export function PaymentRequestForm({
                     />
                   </FormControl>
                   <FormDescription>
-                    Anexe um comprovante para sua solicitação (opcional)
+                    Anexe um comprovante para seu reembolso (obrigatório)
                   </FormDescription>
                 </FormItem>
 
@@ -298,7 +295,7 @@ export function PaymentRequestForm({
                     ) : (
                       <>
                         <Save className="mr-2 h-4 w-4" />
-                        {paymentRequestId ? "Atualizar" : "Enviar Solicitação"}
+                        {refundId ? "Atualizar" : "Enviar Solicitação"}
                       </>
                     )}
                   </Button>

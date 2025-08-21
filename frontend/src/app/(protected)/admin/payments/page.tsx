@@ -1,19 +1,18 @@
 "use client";
 
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { DollarSign } from "lucide-react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
 
 // Components
-import { PaymentLayout } from "@/components/payments/payment-layout";
 import { PaymentFilters } from "@/components/payments/payment-filters";
 import { PaymentItemList } from "@/components/payments/payment-item-list";
-import { QueryKeys } from "@/shared/constants/queryKeys";
+import { PaymentLayout } from "@/components/payments/payment-layout";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -22,11 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { QueryKeys } from "@/shared/constants/queryKeys";
 
 // HTTP
 import http from "@/lib/http";
-import { toast } from "react-toastify";
 import { AutocompleteItem } from "@/shared/types/autocomplete";
+import { toast } from "react-toastify";
 
 interface Payment {
   id: number;
@@ -301,7 +301,10 @@ export default function PaymentsPage() {
             id: payment.id,
             description: payment.description,
             value: payment.value,
-            userFullName: `${payment.user.firstName} ${payment.user.lastName}`,
+            userFullName:
+              `${payment.user?.firstName || ""} ${
+                payment.user?.lastName || ""
+              }`.trim() || "Usuário sem nome",
             categoryLabel: payment.paymentType.name,
             status: payment.status,
             createdAt: payment.createdAt,

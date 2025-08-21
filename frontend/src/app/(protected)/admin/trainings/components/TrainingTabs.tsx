@@ -1,15 +1,15 @@
 "use client";
 
+import { Loader2, Plus, UsersRound } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { Plus, Loader2, UsersRound } from "lucide-react";
 
 // API e Hooks
-import { useQuery } from "@tanstack/react-query";
-import { QueryKeys } from "@/shared/constants/queryKeys";
 import http from "@/lib/http";
+import { QueryKeys } from "@/shared/constants/queryKeys";
+import { useQuery } from "@tanstack/react-query";
 
 // Componentes
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import {
@@ -20,7 +20,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
@@ -232,7 +232,11 @@ export function TrainingTabs({
               <TableBody>
                 {users.map((user) => (
                   <TableRow key={user.id}>
-                    <TableCell className="font-medium">{`${user.firstName} ${user.lastName}`}</TableCell>
+                    <TableCell className="font-medium">
+                      {`${user?.firstName || ""} ${
+                        user?.lastName || ""
+                      }`.trim() || "Usuário sem nome"}
+                    </TableCell>
                     <TableCell>{user.email}</TableCell>
                     <TableCell>
                       <Badge

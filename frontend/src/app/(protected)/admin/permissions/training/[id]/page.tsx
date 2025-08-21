@@ -34,6 +34,11 @@ export default function TrainingPermissionPage() {
   } = useTrainingPermissions(trainingId);
 
   const permissions = permissionsData?.users || [];
+
+  // Debug logs
+  console.log("[DEBUG] permissionsData:", permissionsData);
+  console.log("[DEBUG] permissions array:", permissions);
+  console.log("[DEBUG] permissions length:", permissions.length);
   const { data: searchResults = [], isLoading: isSearching } =
     useSearchUsers(searchTerm);
   const updatePermissions = useUpdateTrainingPermissions();
@@ -97,9 +102,14 @@ export default function TrainingPermissionPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <Loader2 className="h-8 w-8 animate-spin" />
+        <p className="ml-2">Carregando permissões...</p>
       </div>
     );
   }
+
+  // Debug logs
+  console.log("[DEBUG] About to render, permissions:", permissions);
+  console.log("[DEBUG] permissionsData:", permissionsData);
 
   return (
     <div className="space-y-6">
@@ -136,29 +146,34 @@ export default function TrainingPermissionPage() {
             {permissions && permissions.length > 0 ? (
               <ScrollArea className="h-[400px]">
                 <div className="space-y-3">
-                  {permissions.map((permission) => (
-                    <div
-                      key={permission.id}
-                      className="flex items-center justify-between p-3 rounded-lg border bg-card"
-                    >
-                      <div>
-                        <div className="font-medium">
-                          {permission.user.firstName} {permission.user.lastName}
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          {permission.user.email}
-                        </div>
-                      </div>
-                      <Button
-                        variant="destructive"
-                        size="sm"
-                        onClick={() => handleRemoveUser(permission.userId)}
-                        disabled={updatePermissions.isPending}
+                  {permissions.map((permission) => {
+                    console.log("[DEBUG] Rendering permission:", permission);
+                    return (
+                      <div
+                        key={permission.id}
+                        className="flex items-center justify-between p-3 rounded-lg border bg-card"
                       >
-                        Remover
-                      </Button>
-                    </div>
-                  ))}
+                        <div>
+                          <div className="font-medium">
+                            {permission.user?.firstName || "Nome não informado"}{" "}
+                            {permission.user?.lastName ||
+                              "Sobrenome não informado"}
+                          </div>
+                          <div className="text-sm text-muted-foreground">
+                            {permission.user?.email || "Email não informado"}
+                          </div>
+                        </div>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleRemoveUser(permission.userId)}
+                          disabled={updatePermissions.isPending}
+                        >
+                          Remover
+                        </Button>
+                      </div>
+                    );
+                  })}
                 </div>
               </ScrollArea>
             ) : (

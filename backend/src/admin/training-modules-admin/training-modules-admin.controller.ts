@@ -45,13 +45,26 @@ export class TrainingModulesAdminController {
   @ApiResponse({ type: PostResponse, status: 201 })
   @Post()
   async create(@Body() createTrainingModulesAdminDto: CreateModuleAdminDTO) {
-    const module = await this.trainingModulesAdminService.create(
-      createTrainingModulesAdminDto,
-    );
-    return {
-      id: module.id,
-      success: true,
-    };
+    console.log('[DEBUG] Received module creation data:', createTrainingModulesAdminDto);
+    console.log('[DEBUG] Data types:', {
+      title: typeof createTrainingModulesAdminDto.title,
+      description: typeof createTrainingModulesAdminDto.description,
+      trainingId: typeof createTrainingModulesAdminDto.trainingId,
+      order: typeof createTrainingModulesAdminDto.order,
+    });
+    
+    try {
+      const module = await this.trainingModulesAdminService.create(
+        createTrainingModulesAdminDto,
+      );
+      return {
+        id: module.id,
+        success: true,
+      };
+    } catch (error) {
+      console.error('[ERROR] Module creation failed:', error);
+      throw error;
+    }
   }
 
   @ApiOkResponsePaginated(ModuleDTO)

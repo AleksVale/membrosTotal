@@ -404,7 +404,10 @@ export function PermissionManager({
                 .filter(
                   (permission) =>
                     searchFilter === "" ||
-                    `${permission.user.firstName} ${permission.user.lastName}`
+                    `${permission.user?.firstName || ""} ${
+                      permission.user?.lastName || ""
+                    }`.trim() ||
+                    "Usuário sem nome"
                       .toLowerCase()
                       .includes(searchFilter.toLowerCase()) ||
                     permission.user.email
@@ -430,14 +433,15 @@ export function PermissionManager({
                       <Avatar className="h-10 w-10">
                         <AvatarFallback>
                           {getUserInitials(
-                            permission.user.firstName,
+                            permission.user?.firstName || "",
                             permission.user.lastName
                           )}
                         </AvatarFallback>
                       </Avatar>
                       <div>
                         <p className="font-medium">
-                          {permission.user.firstName} {permission.user.lastName}
+                          {permission.user?.firstName || ""}{" "}
+                          {permission.user?.lastName || ""}
                         </p>
                         <p className="text-sm text-muted-foreground">
                           {permission.user.email}

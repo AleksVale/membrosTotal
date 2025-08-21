@@ -4,8 +4,8 @@ import { createPaginator } from 'prisma-pagination';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { TrainingDTO } from './dto/training-response.dto';
 import {
-    TrainingDetailStatsDto,
-    TrainingStatsDto,
+  TrainingDetailStatsDto,
+  TrainingStatsDto,
 } from './dto/training-stats.dto';
 import { TrainingQuery } from './training-admin.service';
 
@@ -221,7 +221,7 @@ export class TrainingRepository {
   }
 
   async getUsersWithPermission(trainingId: number) {
-    return this.prisma.permissionUserTraining.findMany({
+    const permissions = await this.prisma.permissionUserTraining.findMany({
       where: {
         trainingId,
       },
@@ -236,6 +236,18 @@ export class TrainingRepository {
         },
       },
     });
+
+    // Transformar para a estrutura esperada pelo frontend
+    return permissions.map(permission => ({
+      id: permission.id,
+      userId: permission.userId,
+      user: {
+        id: permission.User.id,
+        email: permission.User.email,
+        firstName: permission.User.firstName,
+        lastName: permission.User.lastName,
+      }
+    }));
   }
 
   async getGlobalStats(): Promise<TrainingStatsDto> {

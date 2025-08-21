@@ -87,6 +87,8 @@ export class TrainingModulesAdminService {
     const users = await this.moduleRepository.getUsersWithPermission(id);
     const totalUsers = users.length;
 
+    console.log(`[DEBUG] Module permissions for ID ${id}:`, { users, totalUsers });
+
     return {
       users,
       totalUsers,

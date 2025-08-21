@@ -1,50 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import {
-  Calendar,
-  MoreHorizontal,
-  Search,
-  Video,
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
-import http from "@/lib/http";
-import { toast } from "react-toastify";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -56,6 +11,51 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import http from "@/lib/http";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import {
+  Calendar,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
+  MoreHorizontal,
+  Search,
+  Video,
+  XCircle,
+} from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Meeting {
   id: number;
@@ -352,8 +352,8 @@ export default function MeetingsPage() {
                             <div className="mt-1">
                               {meeting.UserMeeting.map((userMeeting) => (
                                 <div key={userMeeting.User.id}>
-                                  {userMeeting.User.firstName}{" "}
-                                  {userMeeting.User.lastName}
+                                  {userMeeting.User?.firstName || ""}{" "}
+                                  {userMeeting.User?.lastName || ""}
                                 </div>
                               ))}
                             </div>
@@ -429,8 +429,8 @@ export default function MeetingsPage() {
                             <div className="flex flex-col gap-1">
                               {meeting.UserMeeting.map((userMeeting) => (
                                 <span key={userMeeting.User.id}>
-                                  {userMeeting.User.firstName}{" "}
-                                  {userMeeting.User.lastName}
+                                  {userMeeting.User?.firstName || ""}{" "}
+                                  {userMeeting.User?.lastName || ""}
                                 </span>
                               ))}
                             </div>

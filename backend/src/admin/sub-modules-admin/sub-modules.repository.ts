@@ -36,7 +36,7 @@ export class SubModuleRepository {
   }
 
   async getUsersWithPermission(submoduleId: number) {
-    return this.prisma.permissionUserSubModule.findMany({
+    const permissions = await this.prisma.permissionUserSubModule.findMany({
       where: {
         submoduleId,
       },
@@ -51,6 +51,18 @@ export class SubModuleRepository {
         },
       },
     });
+
+    // Transformar para a estrutura esperada pelo frontend
+    return permissions.map(permission => ({
+      id: permission.id,
+      userId: permission.userId,
+      user: {
+        id: permission.User.id,
+        email: permission.User.email,
+        firstName: permission.User.firstName,
+        lastName: permission.User.lastName,
+      }
+    }));
   }
 
   async update(

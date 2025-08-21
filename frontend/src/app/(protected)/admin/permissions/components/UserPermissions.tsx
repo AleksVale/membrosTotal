@@ -272,12 +272,15 @@ export function UserPermissions({ searchTerm }: UserPermissionsProps) {
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarFallback className="text-xs">
-                                {getUserInitials(user.firstName, user.lastName)}
+                                {getUserInitials(
+                                  user?.firstName || "",
+                                  user?.lastName || ""
+                                )}
                               </AvatarFallback>
                             </Avatar>
                             <div>
                               <p className="font-medium">
-                                {user.firstName} {user.lastName}
+                                {user?.firstName || ""} {user?.lastName || ""}
                               </p>
                               <p className="text-sm text-muted-foreground">
                                 {user.email}

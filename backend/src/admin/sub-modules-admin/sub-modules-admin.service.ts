@@ -54,6 +54,8 @@ export class SubModulesAdminService {
     const users = await this.subModulesRepository.getUsersWithPermission(id);
     const totalUsers = users.length;
     
+    console.log(`[DEBUG] Submodule permissions for ID ${id}:`, { users, totalUsers });
+    
     return {
       users,
       totalUsers,

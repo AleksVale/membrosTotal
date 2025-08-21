@@ -37,11 +37,13 @@ export class AutocompleteService {
           break;
         case 'users':
           console.log(`[DEBUG] Fetching users for autocomplete`);
-          response.users = await prismaExtended.user.findMany({
+          response.users = await this.prisma.user.findMany({
             select: {
               id: true,
-              fullName: true,
+              firstName: true,
+              lastName: true,
               email: true,
+              status: true,
             },
             where: {
               status: 'ACTIVE', // Only fetch active users

@@ -200,16 +200,19 @@ export function useSearchUsers(search?: string) {
       // Map para garantir a estrutura correta
       const mappedUsers = users.map((user: {
         id: number; 
-        fullName?: string;
-        name?: string;
         firstName?: string;
         lastName?: string;
         email?: string;
-      }) => ({
-        id: user.id,
-        fullName: user.fullName || user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
-        email: user.email || ''
-      }));
+      }) => {
+        const fullName = `${user.firstName || ''} ${user.lastName || ''}`.trim();
+        const mappedUser = {
+          id: user.id,
+          fullName: fullName || 'Usuário sem nome',
+          email: user.email || 'Sem email'
+        };
+        console.log('[DEBUG] Mapping user:', user, 'to:', mappedUser);
+        return mappedUser;
+      });
       
       console.log('[DEBUG] Mapped users:', mappedUsers);
       

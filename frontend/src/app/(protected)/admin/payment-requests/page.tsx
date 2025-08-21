@@ -1,7 +1,7 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
 import { useMediaQuery } from "@/hooks/use-media-query";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
@@ -10,10 +10,9 @@ import { usePaginationFilters } from "@/hooks/use-pagination-filters";
 import { usePaymentActions } from "@/hooks/use-payment-actions";
 
 // Components
-import { PaymentLayout } from "@/components/payments/payment-layout";
 import { PaymentFilters } from "@/components/payments/payment-filters";
 import { PaymentItemList } from "@/components/payments/payment-item-list";
-import { QueryKeys } from "@/shared/constants/queryKeys";
+import { PaymentLayout } from "@/components/payments/payment-layout";
 import {
   Select,
   SelectContent,
@@ -21,6 +20,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { QueryKeys } from "@/shared/constants/queryKeys";
 
 // HTTP
 import http from "@/lib/http";
@@ -261,7 +261,10 @@ export default function PaymentRequestsPage() {
           id: request.id,
           description: request.description,
           value: request.value,
-          userFullName: `${request.user.firstName} ${request.user.lastName}`,
+          userFullName:
+            `${request.user?.firstName || ""} ${
+              request.user?.lastName || ""
+            }`.trim() || "Usuário sem nome",
           categoryLabel: request.PaymentRequestType?.label,
           status: request.status,
           createdAt: request.createdAt,

@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -10,16 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -28,20 +18,30 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
 import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useMediaQuery } from "@/hooks/use-media-query";
+import http from "@/lib/http";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Loader2,
   MoreHorizontal,
   Search,
   UserPlus,
-  Loader2,
-  ChevronLeft,
-  ChevronRight,
 } from "lucide-react";
-import http from "@/lib/http";
-import { toast } from "react-toastify";
 import Link from "next/link";
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface User {
   id: number;
@@ -195,13 +195,13 @@ export default function UsersPage() {
                           <div className="flex items-center gap-2">
                             <Avatar>
                               <AvatarFallback>
-                                {user.firstName[0]}
-                                {user.lastName[0]}
+                                {user?.firstName?.[0] || "U"}
+                                {user?.lastName?.[0] || "S"}
                               </AvatarFallback>
                             </Avatar>
                             <div>
                               <p className="font-medium">
-                                {user.firstName} {user.lastName}
+                                {user?.firstName || ""} {user?.lastName || ""}
                               </p>
                               <p className="text-sm text-muted-foreground">
                                 {user.email}
@@ -308,13 +308,13 @@ export default function UsersPage() {
                             <div className="flex items-center gap-2">
                               <Avatar>
                                 <AvatarFallback>
-                                  {user.firstName[0]}
-                                  {user.lastName[0]}
+                                  {user?.firstName?.[0] || "U"}
+                                  {user?.lastName?.[0] || "S"}
                                 </AvatarFallback>
                               </Avatar>
                               <div>
                                 <p className="font-medium">
-                                  {user.firstName} {user.lastName}
+                                  {user?.firstName || ""} {user?.lastName || ""}
                                 </p>
                                 <p className="text-sm text-muted-foreground">
                                   {user.document}

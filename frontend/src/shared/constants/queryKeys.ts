@@ -120,6 +120,9 @@ export const QueryKeys = {
       all: ['collaborator', 'payments'],
       list: (params?: string) => ['collaborator', 'payments', 'list', params],
       detail: (id: number) => ['collaborator', 'payments', 'detail', id],
+      overview: ['collaborator', 'payments', 'overview'],
+      monthly: (months: number) => ['collaborator', 'payments', 'monthly', months],
+      categories: ['collaborator', 'payments', 'categories'],
     },
     paymentRequests: {
       all: ['collaborator', 'paymentRequests'],

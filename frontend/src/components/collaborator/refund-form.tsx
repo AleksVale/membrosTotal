@@ -29,10 +29,10 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import {
   useCreateRefund,
-  useRefundTypes,
   useUpdateRefund,
   useUploadRefundFile,
 } from "@/hooks/collaborator/use-refunds";
+import { useRefundTypes } from "@/hooks/useAutocomplete";
 
 // Schema de validação
 const refundSchema = z.object({
@@ -55,7 +55,7 @@ type RefundFormValues = z.infer<typeof refundSchema>;
 
 interface RefundType {
   id: number;
-  label: string;
+  label?: string;
 }
 
 interface RefundFormProps {
@@ -236,7 +236,7 @@ export function RefundForm({
                                   key={type.id}
                                   value={type.id.toString()}
                                 >
-                                  {type.label}
+                                  {type.label || `Tipo ${type.id}`}
                                 </SelectItem>
                               ))
                             )}

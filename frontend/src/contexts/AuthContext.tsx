@@ -8,6 +8,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
 } from "react";
@@ -23,6 +24,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
+  isLoading: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
 }
@@ -33,6 +35,7 @@ export function AuthProvider({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   const login = useCallback(
@@ -72,14 +75,33 @@ export function AuthProvider({
     await performLogout();
   }, []);
 
+  const checkAuth = useCallback(async () => {
+    try {
+      const token = Cookies.get("auth_token");
+      if (token) {
+        const response = await http.get("/auth/profile");
+        setUser(response.data);
+      }
+    } catch {
+      Cookies.remove("auth_token");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
   const value = useMemo(
     () => ({
       user,
       isAuthenticated: !!user,
+      isLoading,
       login,
       logout,
     }),
-    [login, logout, user]
+    [login, logout, user, isLoading]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

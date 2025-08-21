@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { useRefundTypes } from "@/hooks/collaborator/use-refunds";
+import { useRefundTypes } from "@/hooks/useAutocomplete";
 
 // Schema de validação
 const filterSchema = z.object({
@@ -134,7 +134,7 @@ export function RefundFilter({
                         <SelectItem value="">Todas as categorias</SelectItem>
                         {refundTypes?.map((type) => (
                           <SelectItem key={type.id} value={type.id.toString()}>
-                            {type.label}
+                            {type.label || `Tipo ${type.id}`}
                           </SelectItem>
                         ))}
                       </SelectContent>

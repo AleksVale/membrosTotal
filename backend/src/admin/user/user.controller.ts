@@ -1,15 +1,15 @@
 import {
-    Body,
-    Controller,
-    DefaultValuePipe,
-    Delete,
-    Get,
-    Param,
-    ParseIntPipe,
-    Patch,
-    Post,
-    Query,
-    UseGuards,
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiOkResponsePaginated } from 'src/common/decorators/apiResponseDecorator';
@@ -94,13 +94,21 @@ export class UserController {
     @Query('email') email?: string,
     @Query('profile') profile?: string,
   ) {
-    return this.userService.findAll({
-      page,
-      per_page,
-      name,
-      email,
-      profile,
-    });
+    console.log(`[DEBUG] Searching users with:`, { page, per_page, name, email, profile });
+    try {
+      const result = this.userService.findAll({
+        page,
+        per_page,
+        name,
+        email,
+        profile,
+      });
+      console.log(`[DEBUG] Users search result:`, result);
+      return result;
+    } catch (error) {
+      console.error(`[ERROR] Error searching users:`, error);
+      throw error;
+    }
   }
   
   @ApiResponse({

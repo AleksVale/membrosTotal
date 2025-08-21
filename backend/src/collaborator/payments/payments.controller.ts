@@ -1,34 +1,35 @@
-import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import {
-  Controller,
-  Get,
-  Post,
+  BadRequestException,
   Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  UploadedFile,
-  HttpStatus,
-  Query,
+  Controller,
   DefaultValuePipe,
+  Delete,
+  Get,
+  HttpStatus,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
-import { PaymentsService } from './payments.service';
-import { CreatePaymentDto } from './dto/create-payment.dto';
-import { UpdatePaymentDto } from './dto/update-payment.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { CurrentUser } from 'src/public/auth/current-user-decorator';
 import { ApiOkResponse, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { ApiOkResponsePaginated } from '../../common/decorators/apiResponseDecorator';
-import { PaymentResponseDTO } from './dto/payment-response.dto';
+import { CurrentUser } from 'src/public/auth/current-user-decorator';
 import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { RoleGuard } from 'src/public/auth/role/role.guard';
 import { Roles } from 'src/public/auth/roles/roles.decorator';
-import { CreatePaymentResponseDTO } from './dto/create-payment-response.dto';
 import { SuccessResponse } from 'src/utils/success-response.dto';
+import { ApiOkResponsePaginated } from '../../common/decorators/apiResponseDecorator';
+import { CreatePaymentResponseDTO } from './dto/create-payment-response.dto';
+import { CreatePaymentDto } from './dto/create-payment.dto';
 import { DeletePaymentDto } from './dto/delete-payment.dto';
+import { PaymentResponseDTO } from './dto/payment-response.dto';
+import { UpdatePaymentDto } from './dto/update-payment.dto';
+import { PaymentsService } from './payments.service';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
@@ -48,6 +49,26 @@ export class PaymentsController {
     await this.paymentsService.createFile(file, user, +id);
 
     return { success: true };
+  }
+
+  @Get(':id/file')
+  @ApiResponse({ type: SuccessResponse, status: HttpStatus.OK })
+  async getFile(
+    @CurrentUser() user: TokenPayload,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    const payment = await this.paymentsService.findOne(+id);
+    
+    if (!payment || payment.userId !== user.id) {
+      throw new BadRequestException('Pagamento não encontrado');
+    }
+
+    if (!payment.photoKey) {
+      throw new BadRequestException('Arquivo não encontrado');
+    }
+
+    const signedUrl = await this.paymentsService.getSignedUrl(payment.photoKey);
+    return { signedUrl };
   }
 
   @ApiResponse({ type: CreatePaymentResponseDTO, status: HttpStatus.CREATED })
@@ -70,12 +91,16 @@ export class PaymentsController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('per_page', new DefaultValuePipe(10), ParseIntPipe) per_page: number,
     @Query('status') status: string,
+    @Query('search') search: string,
+    @Query('paymentTypeId') paymentTypeId: string,
   ) {
     return this.paymentsService.findAll({
       page,
       per_page,
       userId: user.id,
       status,
+      search,
+      paymentTypeId: paymentTypeId ? parseInt(paymentTypeId) : undefined,
     });
   }
 

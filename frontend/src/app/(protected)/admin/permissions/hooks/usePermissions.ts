@@ -32,7 +32,7 @@ export interface AddPermissionData {
 
 // Training Permissions
 export function useTrainingPermissions(trainingId: number) {
-  return useQuery<Permission[]>({
+  return useQuery<{ users: Permission[]; totalUsers: number }>({
     queryKey: QueryKeys.trainings.permissions(trainingId),
     queryFn: async () => {
       const response = await http.get(`/training-admin/${trainingId}/permissions`);
@@ -189,32 +189,45 @@ export function useSearchUsers(search?: string) {
   return useQuery<SearchUser[]>({
     queryKey: ["users-search", search],
     queryFn: async () => {
+      console.log('[DEBUG] Searching users with term:', search);
+
       const response = await http.get(`/autocomplete?fields=users`);
+      console.log('[DEBUG] Autocomplete response:', response.data);
+      
       const users = response.data.users || [];
+      console.log('[DEBUG] Raw users from API:', users);
       
       // Map para garantir a estrutura correta
       const mappedUsers = users.map((user: {
         id: number; 
+        fullName?: string;
         name?: string;
         firstName?: string;
         lastName?: string;
         email?: string;
       }) => ({
         id: user.id,
-        fullName: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        fullName: user.fullName || user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
         email: user.email || ''
       }));
       
-      if (search) {
-        return mappedUsers.filter((user: SearchUser) => 
-          user.fullName.toLowerCase().includes(search.toLowerCase()) ||
-          user.email.toLowerCase().includes(search.toLowerCase())
-        );
+      console.log('[DEBUG] Mapped users:', mappedUsers);
+      
+      // Se não há termo de busca ou é muito curto, retorna todos
+      if (!search || search.trim().length < 2) {
+        console.log('[DEBUG] No search term, returning all users');
+        return mappedUsers;
       }
       
-      return mappedUsers;
+      const filteredUsers = mappedUsers.filter((user: SearchUser) => 
+        user.fullName.toLowerCase().includes(search.toLowerCase()) ||
+        user.email.toLowerCase().includes(search.toLowerCase())
+      );
+      
+      console.log('[DEBUG] Filtered users:', filteredUsers);
+      return filteredUsers;
     },
-    enabled: !!search || search === "",
+    enabled: true, // Always enabled to show all users initially
     staleTime: 300000,
   });
 }

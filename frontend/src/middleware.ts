@@ -1,19 +1,24 @@
-import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get('auth_token')?.value
+  
+  // Se não houver token e estiver tentando acessar rotas protegidas
   if (!token && (
     request.nextUrl.pathname.startsWith('/dashboard') ||
     request.nextUrl.pathname.startsWith('/admin') ||
-    request.nextUrl.pathname.startsWith('/employee')
+    request.nextUrl.pathname.startsWith('/collaborator') ||
+    request.nextUrl.pathname === '/'
   )) {
     return NextResponse.redirect(new URL('/login', request.url))
   }
 
-  // Se houver token e estiver na página de login, redireciona para dashboard
+  // Se houver token e estiver na página de login, redireciona para dashboard apropriado
   if (token && request.nextUrl.pathname === '/login') {
-    return NextResponse.redirect(new URL('/dashboard', request.url))
+    // Aqui você pode implementar lógica para redirecionar baseado no perfil do usuário
+    // Por enquanto, redireciona para collaborator/dashboard
+    return NextResponse.redirect(new URL('/collaborator/dashboard', request.url))
   }
 
   return NextResponse.next()
@@ -22,9 +27,10 @@ export function middleware(request: NextRequest) {
 // Configura quais rotas o middleware deve interceptar
 export const config = {
   matcher: [
+    '/',
     '/dashboard/:path*',
     '/admin/:path*',
-    '/employee/:path*',
+    '/collaborator/:path*',
     '/login'
   ]
 } 

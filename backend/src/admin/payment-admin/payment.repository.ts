@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { createPaginator } from 'prisma-pagination';
-import { IFindAllPaymentAdmin } from './payment-admin.service';
-import { PaymentResponseAdminDTO } from './dto/payment-response-admin.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { IFindAllPayment } from '../../collaborator/payments/payments.service';
+import { PaymentResponseAdminDTO } from './dto/payment-response-admin.dto';
+import { IFindAllPaymentAdmin } from './payment-admin.service';
 
 @Injectable()
 export class PaymentRepository {
@@ -77,22 +77,76 @@ export class PaymentRepository {
     });
     const paginate = createPaginator({ perPage: options.per_page });
 
+    const where: Prisma.PaymentWhereInput = {
+      status: options.status,
+      userId: options.user,
+    };
+
+    // Adicionar busca por texto se fornecida
+    if (options.search) {
+      where.OR = [
+        {
+          description: {
+            contains: options.search,
+            mode: 'insensitive',
+          },
+        },
+        {
+          reason: {
+            contains: options.search,
+            mode: 'insensitive',
+          },
+        },
+      ];
+    }
+
+    // Adicionar filtro por tipo de pagamento se fornecido
+    if (options.paymentTypeId && !isNaN(options.paymentTypeId)) {
+      where.paymentTypeId = options.paymentTypeId;
+    }
+
     return paginate<PaymentResponseAdminDTO, Prisma.PaymentFindManyArgs>(
       prismaExtended.payment,
       {
-        where: {
-          status: options.status,
-          userId: options.user,
-        },
+        where,
         orderBy: [{ status: 'asc' }, { createdAt: 'asc' }],
         include: {
-          PaymentType: true,
-          User: true,
+          PaymentType: {
+            select: {
+              id: true,
+              label: true,
+            },
+          },
+          User: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
+            },
+          },
         },
       },
       {
         page: options.page,
       },
     );
+  }
+
+  async findAllRaw(options: { userId: number }) {
+    return this.prisma.payment.findMany({
+      where: {
+        userId: options.userId,
+      },
+      include: {
+        PaymentType: {
+          select: {
+            id: true,
+            label: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    });
   }
 }

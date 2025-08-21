@@ -96,8 +96,15 @@ export class TrainingAdminController {
     @Param('id', ParseIntPipe) id: number,
     @Body() body: AddPermissionAdminDTO,
   ): Promise<SuccessResponse> {
-    await this.trainingAdminService.addPermission(id, body);
-    return { success: true };
+    console.log(`[DEBUG] Updating permissions for training ID: ${id}`, body);
+    try {
+      await this.trainingAdminService.addPermission(id, body);
+      console.log(`[DEBUG] Permissions updated successfully for training ${id}`);
+      return { success: true };
+    } catch (error) {
+      console.error(`[ERROR] Error updating permissions for training ${id}:`, error);
+      throw error;
+    }
   }
 
   @ApiResponse({ status: 200, type: SuccessResponse })
@@ -130,7 +137,15 @@ export class TrainingAdminController {
   @ApiResponse({ status: 200 })
   @Get(':id/permissions')
   async getPermissions(@Param('id', ParseIntPipe) id: number) {
-    return this.trainingAdminService.getPermissions(id);
+    console.log(`[DEBUG] Getting permissions for training ID: ${id}`);
+    try {
+      const result = await this.trainingAdminService.getPermissions(id);
+      console.log(`[DEBUG] Permissions result:`, result);
+      return result;
+    } catch (error) {
+      console.error(`[ERROR] Error getting permissions for training ${id}:`, error);
+      throw error;
+    }
   }
 
   @Get(':id')

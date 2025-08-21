@@ -55,10 +55,10 @@ export function useCollaboratorPayments(params: URLSearchParams) {
 
 export function usePaymentTypes() {
   return useQuery({
-    queryKey: QueryKeys.autocomplete.fields(["payment"]),
+    queryKey: QueryKeys.autocomplete.fields(["paymentTypes"]),
     queryFn: async () => {
-      const response = await http.get("/autocomplete?fields=payment");
-      return response.data.payment || [];
+      const response = await http.get("/autocomplete?fields=paymentTypes");
+      return response.data.paymentTypes || [];
     },
     staleTime: 300000, // 5 minutos
   });
@@ -155,5 +155,41 @@ export function useUploadPaymentFile() {
     onError: () => {
       toast.error("Erro ao enviar arquivo");
     },
+  });
+}
+
+// Hook para estatísticas gerais
+export function usePaymentOverviewStats() {
+  return useQuery({
+    queryKey: QueryKeys.collaborator.payments.overview,
+    queryFn: async () => {
+      const response = await http.get("/collaborator/payment-stats/overview");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+}
+
+// Hook para dados mensais
+export function usePaymentMonthlyStats(months: number = 6) {
+  return useQuery({
+    queryKey: QueryKeys.collaborator.payments.monthly(months),
+    queryFn: async () => {
+      const response = await http.get(`/collaborator/payment-stats/monthly?months=${months}`);
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+}
+
+// Hook para estatísticas por categoria
+export function usePaymentCategoryStats() {
+  return useQuery({
+    queryKey: QueryKeys.collaborator.payments.categories,
+    queryFn: async () => {
+      const response = await http.get("/collaborator/payment-stats/categories");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutos
   });
 } 

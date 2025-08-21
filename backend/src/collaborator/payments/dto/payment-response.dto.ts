@@ -6,7 +6,7 @@ export class PaymentTypeDTO {
   id!: number;
 
   @ApiProperty()
-  name!: string;
+  label!: string;
 }
 
 export class PaymentResponseDTO {

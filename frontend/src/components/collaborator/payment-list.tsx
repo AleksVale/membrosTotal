@@ -138,6 +138,16 @@ export function PaymentList({
     if (selectedPaymentId && onCancel) {
       onCancel(selectedPaymentId, cancelReason);
       setCancelDialogOpen(false);
+      setCancelReason("");
+      setSelectedPaymentId(null);
+    }
+  };
+
+  const handleDialogClose = (open: boolean) => {
+    setCancelDialogOpen(open);
+    if (!open) {
+      setCancelReason("");
+      setSelectedPaymentId(null);
     }
   };
 
@@ -184,40 +194,80 @@ export function PaymentList({
                         <StatusBadge status={payment.status} />
                       </TableCell>
                       <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className="h-8 w-8 p-0">
-                              <MoreHorizontal className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-
-                            {payment.photoKey && onDownloadFile && (
-                              <DropdownMenuItem
-                                onClick={() => onDownloadFile(payment.id)}
+                        <Dialog
+                          open={
+                            cancelDialogOpen && selectedPaymentId === payment.id
+                          }
+                          onOpenChange={handleDialogClose}
+                          modal
+                        >
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Cancelar Pagamento</DialogTitle>
+                              <DialogDescription>
+                                Por favor, informe o motivo do cancelamento do
+                                pagamento.
+                              </DialogDescription>
+                            </DialogHeader>
+                            <Textarea
+                              placeholder="Motivo do cancelamento"
+                              value={cancelReason}
+                              onChange={(e) => setCancelReason(e.target.value)}
+                              className="min-h-[100px]"
+                              autoFocus
+                            />
+                            <DialogFooter>
+                              <Button
+                                variant="outline"
+                                onClick={() => handleDialogClose(false)}
                               >
-                                <Download className="mr-2 h-4 w-4" />
-                                Baixar Comprovante
-                              </DropdownMenuItem>
-                            )}
-
-                            {payment.status === "PENDING" && onCancel && (
-                              <DropdownMenuItem
-                                onClick={() => handleCancelClick(payment.id)}
-                                className="text-destructive"
-                                disabled={
-                                  isPending?.cancel &&
-                                  isPending.cancel(payment.id)
-                                }
+                                Cancelar
+                              </Button>
+                              <Button
+                                variant="destructive"
+                                onClick={handleConfirmCancel}
+                                disabled={!cancelReason.trim()}
                               >
-                                <Trash2 className="mr-2 h-4 w-4" />
-                                Cancelar Pagamento
-                              </DropdownMenuItem>
-                            )}
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                                Confirmar Cancelamento
+                              </Button>
+                            </DialogFooter>
+                          </DialogContent>
+
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" className="h-8 w-8 p-0">
+                                <MoreHorizontal className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+
+                              {payment.photoKey && onDownloadFile && (
+                                <DropdownMenuItem
+                                  onClick={() => onDownloadFile(payment.id)}
+                                >
+                                  <Download className="mr-2 h-4 w-4" />
+                                  Baixar Comprovante
+                                </DropdownMenuItem>
+                              )}
+
+                              {payment.status === "PENDING" && onCancel && (
+                                <DropdownMenuItem
+                                  onClick={() => handleCancelClick(payment.id)}
+                                  className="text-destructive"
+                                  disabled={
+                                    isPending?.cancel &&
+                                    isPending.cancel(payment.id)
+                                  }
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Cancelar Pagamento
+                                </DropdownMenuItem>
+                              )}
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </Dialog>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -242,38 +292,6 @@ export function PaymentList({
           </div>
         </CardContent>
       </Card>
-
-      <Dialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Cancelar Pagamento</DialogTitle>
-            <DialogDescription>
-              Por favor, informe o motivo do cancelamento do pagamento.
-            </DialogDescription>
-          </DialogHeader>
-          <Textarea
-            placeholder="Motivo do cancelamento"
-            value={cancelReason}
-            onChange={(e) => setCancelReason(e.target.value)}
-            className="min-h-[100px]"
-          />
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setCancelDialogOpen(false)}
-            >
-              Cancelar
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleConfirmCancel}
-              disabled={!cancelReason.trim()}
-            >
-              Confirmar Cancelamento
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </>
   );
 }

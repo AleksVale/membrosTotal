@@ -86,65 +86,61 @@ export function SubmoduleCard({
           <h3 className="font-medium text-lg line-clamp-2">
             {submodule.title}
           </h3>
-          <AlertDialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8"
-                  disabled={isDeleting}
-                >
-                  {isDeleting ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <MoreVertical className="h-4 w-4" />
-                  )}
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {onView && (
-                  <DropdownMenuItem onClick={() => onView(submodule.id)}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    <span>Ver detalhes</span>
-                  </DropdownMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <MoreVertical className="h-4 w-4" />
                 )}
-                {onEdit && (
-                  <DropdownMenuItem onClick={() => onEdit(submodule.id)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    <span>Editar</span>
-                  </DropdownMenuItem>
-                )}
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {onView && (
+                <DropdownMenuItem onClick={() => onView(submodule.id)}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  <span>Ver detalhes</span>
+                </DropdownMenuItem>
+              )}
+              {onEdit && (
+                <DropdownMenuItem onClick={() => onEdit(submodule.id)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  <span>Editar</span>
+                </DropdownMenuItem>
+              )}
 
-                {onManageLessons && (
-                  <DropdownMenuItem
-                    onClick={() => onManageLessons(submodule.id)}
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Gerenciar Aulas</span>
-                  </DropdownMenuItem>
-                )}
+              {onManageLessons && (
+                <DropdownMenuItem onClick={() => onManageLessons(submodule.id)}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Gerenciar Aulas</span>
+                </DropdownMenuItem>
+              )}
 
-                {onDelete && (
-                  <>
-                    <DropdownMenuSeparator />
+              {onDelete && (
+                <>
+                  <DropdownMenuSeparator />
+                  <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <DropdownMenuItem className="text-destructive focus:text-destructive">
                         <Trash className="mr-2 h-4 w-4" />
                         <span>Excluir</span>
                       </DropdownMenuItem>
                     </AlertDialogTrigger>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {onDelete && (
-              <DeleteSubmoduleAlert
-                submoduleId={submodule.id}
-                onDelete={onDelete}
-              />
-            )}
-          </AlertDialog>
+                    <DeleteSubmoduleAlert
+                      submoduleId={submodule.id}
+                      onDelete={onDelete}
+                    />
+                  </AlertDialog>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
           {submodule.description}

@@ -1,21 +1,21 @@
 "use client";
 
-import { Card, CardFooter, CardHeader } from "@/components/ui/card";
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Edit, Eye, MoreVertical, FileText } from "lucide-react";
-import Image from "next/image";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
+import { Card, CardFooter, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { DeleteModuleAlert } from "./DeleteModuleAlert";
 import { getImageUrl } from "@/lib/image-utils";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Edit, Eye, FileText, MoreVertical } from "lucide-react";
+import Image from "next/image";
+import { DeleteModuleAlert } from "./DeleteModuleAlert";
 
 interface Module {
   id: number;
@@ -65,53 +65,52 @@ export function ModuleCard({
       <CardHeader className="p-4 pb-0 flex-grow">
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-lg line-clamp-2">{module.title}</h3>
-          <AlertDialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                {onView && (
-                  <DropdownMenuItem onClick={() => onView(module.id)}>
-                    <Eye className="mr-2 h-4 w-4" />
-                    <span>Ver detalhes</span>
-                  </DropdownMenuItem>
-                )}
-                {onEdit && (
-                  <DropdownMenuItem onClick={() => onEdit(module.id)}>
-                    <Edit className="mr-2 h-4 w-4" />
-                    <span>Editar</span>
-                  </DropdownMenuItem>
-                )}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              {onView && (
+                <DropdownMenuItem onClick={() => onView(module.id)}>
+                  <Eye className="mr-2 h-4 w-4" />
+                  <span>Ver detalhes</span>
+                </DropdownMenuItem>
+              )}
+              {onEdit && (
+                <DropdownMenuItem onClick={() => onEdit(module.id)}>
+                  <Edit className="mr-2 h-4 w-4" />
+                  <span>Editar</span>
+                </DropdownMenuItem>
+              )}
 
-                {onManageSubmodules && (
-                  <DropdownMenuItem
-                    onClick={() => onManageSubmodules(module.id)}
-                  >
-                    <FileText className="mr-2 h-4 w-4" />
-                    <span>Gerenciar Submódulos</span>
-                  </DropdownMenuItem>
-                )}
+              {onManageSubmodules && (
+                <DropdownMenuItem onClick={() => onManageSubmodules(module.id)}>
+                  <FileText className="mr-2 h-4 w-4" />
+                  <span>Gerenciar Submódulos</span>
+                </DropdownMenuItem>
+              )}
 
-                {onDelete && (
-                  <>
-                    <DropdownMenuSeparator />
+              {onDelete && (
+                <>
+                  <DropdownMenuSeparator />
+                  <AlertDialog>
                     <AlertDialogTrigger asChild>
                       <DropdownMenuItem className="text-destructive focus:text-destructive">
                         <FileText className="mr-2 h-4 w-4" />
                         <span>Excluir</span>
                       </DropdownMenuItem>
                     </AlertDialogTrigger>
-                  </>
-                )}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            {onDelete && (
-              <DeleteModuleAlert moduleId={module.id} onDelete={onDelete} />
-            )}
-          </AlertDialog>
+                    <DeleteModuleAlert
+                      moduleId={module.id}
+                      onDelete={onDelete}
+                    />
+                  </AlertDialog>
+                </>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
           {module.description}

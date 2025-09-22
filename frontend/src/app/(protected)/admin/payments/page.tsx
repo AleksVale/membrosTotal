@@ -36,14 +36,15 @@ interface Payment {
   createdAt: string;
   updatedAt: string;
   photoKey?: string;
-  paymentType: {
+  PaymentType: {
     id: number;
-    name: string;
+    label: string;
   };
-  user: {
+  User: {
     id: number;
     firstName: string;
     lastName: string;
+    email: string;
   };
 }
 
@@ -147,7 +148,7 @@ export default function PaymentsPage() {
 
   // Pay payment mutation
   const payPaymentMutation = useMutation({
-    mutationFn: (id: number) => http.patch(`/payment-admin/${id}/pay`),
+    mutationFn: (id: number) => http.patch(`/payment-admin/${id}/finish`),
     onSuccess: () => {
       toast.success("Pagamento realizado com sucesso");
       queryClient.invalidateQueries({ queryKey: QueryKeys.payments.all });
@@ -302,10 +303,10 @@ export default function PaymentsPage() {
             description: payment.description,
             value: payment.value,
             userFullName:
-              `${payment.user?.firstName || ""} ${
-                payment.user?.lastName || ""
+              `${payment.User?.firstName || ""} ${
+                payment.User?.lastName || ""
               }`.trim() || "Usuário sem nome",
-            categoryLabel: payment.paymentType.name,
+            categoryLabel: payment.PaymentType?.label || "Tipo não definido",
             status: payment.status,
             createdAt: payment.createdAt,
             photoKey: payment.photoKey,

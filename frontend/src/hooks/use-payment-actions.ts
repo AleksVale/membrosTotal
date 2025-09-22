@@ -1,6 +1,6 @@
+import http from "@/lib/http";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import http from "@/lib/http";
 
 interface UsePaymentActionsProps {
   paymentType: "refund" | "payment-request" | "payment";
@@ -9,28 +9,28 @@ interface UsePaymentActionsProps {
 
 export function usePaymentActions({
   paymentType,
-  invalidateQueryKey
+  invalidateQueryKey,
 }: UsePaymentActionsProps) {
   const queryClient = useQueryClient();
   const baseUrl = `/${paymentType}-admin`;
 
   // Map payment types to endpoints
   const endpoints = {
-    "refund": {
+    refund: {
       patch: (id: number) => `${baseUrl}/${id}`,
       upload: (id: number) => `${baseUrl}/${id}/file`,
-      download: (id: number) => `${baseUrl}/signed_url/${id}`
+      download: (id: number) => `${baseUrl}/signed_url/${id}`,
     },
     "payment-request": {
       patch: (id: number) => `${baseUrl}/${id}`,
       upload: (id: number) => `${baseUrl}/${id}/finish/file`,
-      download: (id: number) => `${baseUrl}/signed_url/${id}`
+      download: (id: number) => `${baseUrl}/signed_url/${id}`,
     },
-    "payment": {
-      patch: (id: number) => `${baseUrl}/${id}`,
-      upload: (id: number) => `${baseUrl}/${id}/file`,
-      download: (id: number) => `${baseUrl}/signed_url/${id}`
-    }
+    payment: {
+      patch: (id: number) => `${baseUrl}/${id}/finish`, // Usando endpoint específico para payments
+      upload: (id: number) => `${baseUrl}/${id}/finish/file`, // Upload para payments também é no finish
+      download: (id: number) => `${baseUrl}/signed_url/${id}`,
+    },
   };
 
   // Pay mutation
@@ -44,11 +44,23 @@ export function usePaymentActions({
       reason?: string;
       file?: File | null;
     }) => {
-      // Update status to PAID
-      const paymentResponse = await http.patch(endpoints[paymentType].patch(id), {
-        status: "PAID",
-        reason,
-      });
+      let paymentResponse;
+
+      if (paymentType === "payment") {
+        // For payments, use the specific /finish endpoint
+        paymentResponse = await http.patch(endpoints[paymentType].patch(id));
+
+        // If reason is provided, update it separately
+        if (reason) {
+          await http.patch(`${baseUrl}/${id}`, { reason });
+        }
+      } else {
+        // For refunds and payment-requests, use normal PATCH with status and reason
+        paymentResponse = await http.patch(endpoints[paymentType].patch(id), {
+          status: "PAID",
+          reason,
+        });
+      }
 
       // Upload file if provided
       if (file) {

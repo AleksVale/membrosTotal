@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { PaymentForm } from "@/components/payments/payment-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import http from "@/lib/http";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface Payment {
@@ -13,6 +13,17 @@ interface Payment {
   description: string;
   expertId: number;
   paymentTypeId: number;
+  paymentDate?: string;
+  PaymentType?: {
+    id: number;
+    label: string;
+  };
+  User?: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 }
 
 export default function EditPaymentPage() {
@@ -49,7 +60,20 @@ export default function EditPaymentPage() {
         <CardTitle>Editar Pagamento</CardTitle>
       </CardHeader>
       <CardContent>
-        <PaymentForm initialData={payment} paymentId={payment.id} />
+        {payment && (
+          <PaymentForm
+            initialData={{
+              value: payment.value,
+              description: payment.description,
+              expertId: payment.expertId,
+              paymentTypeId: payment.paymentTypeId,
+              paymentDate: payment.paymentDate
+                ? new Date(payment.paymentDate)
+                : new Date(),
+            }}
+            paymentId={payment.id}
+          />
+        )}
       </CardContent>
     </Card>
   );

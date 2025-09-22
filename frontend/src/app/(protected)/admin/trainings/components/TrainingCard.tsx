@@ -1,22 +1,22 @@
+import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Edit, Eye, MoreVertical, Users } from "lucide-react";
-import Image from "next/image";
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import {
   DropdownMenu,
-  DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Edit, Eye, MoreVertical, Users } from "lucide-react";
+import Image from "next/image";
 import { DeleteTrainingAlert } from "./DeleteTrainingAlert";
 
 interface TrainingCardProps {
@@ -72,33 +72,32 @@ export function TrainingCard({ training, onView, onEdit }: TrainingCardProps) {
       <CardHeader className="p-4 pb-0 flex-grow">
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-lg line-clamp-2">{training.title}</h3>
-          <AlertDialog>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-8 w-8">
-                  <MoreVertical className="h-4 w-4" />
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem onClick={() => onView(training.id)}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  Visualizar
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => onEdit(training.id)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  Editar
-                </DropdownMenuItem>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon" className="h-8 w-8">
+                <MoreVertical className="h-4 w-4" />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={() => onView(training.id)}>
+                <Eye className="mr-2 h-4 w-4" />
+                Visualizar
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => onEdit(training.id)}>
+                <Edit className="mr-2 h-4 w-4" />
+                Editar
+              </DropdownMenuItem>
+              <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <DropdownMenuItem className="text-red-600">
                     <Eye className="mr-2 h-4 w-4" />
                     Excluir
                   </DropdownMenuItem>
                 </AlertDialogTrigger>
-              </DropdownMenuContent>
-            </DropdownMenu>
-
-            <DeleteTrainingAlert trainingId={training.id} />
-          </AlertDialog>
+                <DeleteTrainingAlert trainingId={training.id} />
+              </AlertDialog>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
           {training.description}

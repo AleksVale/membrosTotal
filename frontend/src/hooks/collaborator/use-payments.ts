@@ -20,6 +20,12 @@ interface Payment {
     id: number;
     label: string;
   };
+  User?: {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+  };
 }
 
 interface PaymentResponse {
@@ -74,7 +80,9 @@ export function useCreatePayment() {
     },
     onSuccess: () => {
       toast.success("Pagamento registrado com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.payments.all });
+      queryClient.invalidateQueries({
+        queryKey: QueryKeys.collaborator.payments.all,
+      });
     },
     onError: () => {
       toast.error("Erro ao registrar pagamento");
@@ -93,15 +101,14 @@ export function useUpdatePayment() {
       id: number;
       data: Partial<CreatePaymentData>;
     }) => {
-      const response = await http.patch(
-        `/collaborator/payments/${id}`,
-        data
-      );
+      const response = await http.patch(`/collaborator/payments/${id}`, data);
       return response.data;
     },
     onSuccess: () => {
       toast.success("Pagamento atualizado com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.payments.all });
+      queryClient.invalidateQueries({
+        queryKey: QueryKeys.collaborator.payments.all,
+      });
     },
     onError: () => {
       toast.error("Erro ao atualizar pagamento");
@@ -121,7 +128,9 @@ export function useCancelPayment() {
     },
     onSuccess: () => {
       toast.success("Pagamento cancelado com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.payments.all });
+      queryClient.invalidateQueries({
+        queryKey: QueryKeys.collaborator.payments.all,
+      });
     },
     onError: () => {
       toast.error("Erro ao cancelar pagamento");
@@ -136,7 +145,7 @@ export function useUploadPaymentFile() {
     mutationFn: async ({ id, file }: { id: number; file: File }) => {
       const formData = new FormData();
       formData.append("file", file);
-      
+
       const response = await http.post(
         `/collaborator/payments/${id}/file`,
         formData,
@@ -150,7 +159,9 @@ export function useUploadPaymentFile() {
     },
     onSuccess: () => {
       toast.success("Arquivo enviado com sucesso");
-      queryClient.invalidateQueries({ queryKey: QueryKeys.collaborator.payments.all });
+      queryClient.invalidateQueries({
+        queryKey: QueryKeys.collaborator.payments.all,
+      });
     },
     onError: () => {
       toast.error("Erro ao enviar arquivo");
@@ -175,7 +186,9 @@ export function usePaymentMonthlyStats(months: number = 6) {
   return useQuery({
     queryKey: QueryKeys.collaborator.payments.monthly(months),
     queryFn: async () => {
-      const response = await http.get(`/collaborator/payment-stats/monthly?months=${months}`);
+      const response = await http.get(
+        `/collaborator/payment-stats/monthly?months=${months}`
+      );
       return response.data;
     },
     staleTime: 5 * 60 * 1000, // 5 minutos
@@ -192,4 +205,4 @@ export function usePaymentCategoryStats() {
     },
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
-} 
+}

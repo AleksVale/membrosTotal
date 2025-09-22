@@ -99,10 +99,15 @@ export class TrainingAdminController {
     console.log(`[DEBUG] Updating permissions for training ID: ${id}`, body);
     try {
       await this.trainingAdminService.addPermission(id, body);
-      console.log(`[DEBUG] Permissions updated successfully for training ${id}`);
+      console.log(
+        `[DEBUG] Permissions updated successfully for training ${id}`,
+      );
       return { success: true };
     } catch (error) {
-      console.error(`[ERROR] Error updating permissions for training ${id}:`, error);
+      console.error(
+        `[ERROR] Error updating permissions for training ${id}:`,
+        error,
+      );
       throw error;
     }
   }
@@ -120,6 +125,12 @@ export class TrainingAdminController {
   @ApiResponse({ status: 200, type: TrainingStatsDto })
   async getGlobalStats() {
     return this.trainingAdminService.getGlobalStats();
+  }
+
+  @Get('hierarchy')
+  @ApiResponse({ status: 200 })
+  async getHierarchy() {
+    return this.trainingAdminService.getHierarchy();
   }
 
   @ApiResponse({ status: 200 })
@@ -150,7 +161,10 @@ export class TrainingAdminController {
       console.log(`[DEBUG] Permissions result:`, result);
       return result;
     } catch (error) {
-      console.error(`[ERROR] Error getting permissions for training ${id}:`, error);
+      console.error(
+        `[ERROR] Error getting permissions for training ${id}:`,
+        error,
+      );
       throw error;
     }
   }

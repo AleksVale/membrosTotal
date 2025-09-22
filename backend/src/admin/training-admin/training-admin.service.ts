@@ -81,7 +81,10 @@ export class TrainingAdminService {
     const users = await this.trainingRepository.getUsersWithPermission(id);
     const totalUsers = users.length;
 
-    console.log(`[DEBUG] Training permissions for ID ${id}:`, { users, totalUsers });
+    console.log(`[DEBUG] Training permissions for ID ${id}:`, {
+      users,
+      totalUsers,
+    });
 
     return {
       users,
@@ -127,10 +130,12 @@ export class TrainingAdminService {
     const totalSubmodules = await this.submoduleRepository.countSubmodules();
 
     // Get active permissions count (total of all permissions)
-    const activePermissions = await this.trainingRepository.countActivePermissions();
+    const activePermissions =
+      await this.trainingRepository.countActivePermissions();
 
     // Get recent changes (permissions created or modified in the last 24 hours)
-    const recentChanges = await this.trainingRepository.countRecentPermissionChanges();
+    const recentChanges =
+      await this.trainingRepository.countRecentPermissionChanges();
 
     return {
       totalUsers,
@@ -145,5 +150,9 @@ export class TrainingAdminService {
 
   async getUsersWithPermission(trainingId: number) {
     return this.trainingRepository.getUsersWithPermission(trainingId);
+  }
+
+  async getHierarchy() {
+    return this.trainingRepository.getHierarchy();
   }
 }

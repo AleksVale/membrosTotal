@@ -179,12 +179,13 @@ export class TrainingRepository {
 
   async countActivePermissions() {
     // Count all permissions across all entities
-    const [trainingPermissions, modulePermissions, submodulePermissions] = await Promise.all([
-      this.prisma.permissionUserTraining.count(),
-      this.prisma.permissionUserModule.count(),
-      this.prisma.permissionUserSubModule.count(),
-    ]);
-    
+    const [trainingPermissions, modulePermissions, submodulePermissions] =
+      await Promise.all([
+        this.prisma.permissionUserTraining.count(),
+        this.prisma.permissionUserModule.count(),
+        this.prisma.permissionUserSubModule.count(),
+      ]);
+
     return trainingPermissions + modulePermissions + submodulePermissions;
   }
 
@@ -192,8 +193,12 @@ export class TrainingRepository {
     // Get permissions created or updated in the last 24 hours
     const yesterday = new Date();
     yesterday.setDate(yesterday.getDate() - 1);
-    
-    const [recentTrainingPermissions, recentModulePermissions, recentSubmodulePermissions] = await Promise.all([
+
+    const [
+      recentTrainingPermissions,
+      recentModulePermissions,
+      recentSubmodulePermissions,
+    ] = await Promise.all([
       this.prisma.permissionUserTraining.count({
         where: {
           createdAt: {
@@ -216,8 +221,12 @@ export class TrainingRepository {
         },
       }),
     ]);
-    
-    return recentTrainingPermissions + recentModulePermissions + recentSubmodulePermissions;
+
+    return (
+      recentTrainingPermissions +
+      recentModulePermissions +
+      recentSubmodulePermissions
+    );
   }
 
   async getUsersWithPermission(trainingId: number) {
@@ -238,7 +247,7 @@ export class TrainingRepository {
     });
 
     // Transformar para a estrutura esperada pelo frontend
-    return permissions.map(permission => ({
+    return permissions.map((permission) => ({
       id: permission.id,
       userId: permission.userId,
       user: {
@@ -246,7 +255,7 @@ export class TrainingRepository {
         email: permission.User.email,
         firstName: permission.User.firstName,
         lastName: permission.User.lastName,
-      }
+      },
     }));
   }
 
@@ -325,5 +334,37 @@ export class TrainingRepository {
       completionRate: completionRate,
       averageCompletionTime: 0, // Implemente conforme necessário
     };
+  }
+
+  async getHierarchy() {
+    return this.prisma.training.findMany({
+      where: {
+        status: TrainingStatus.ACTIVE,
+      },
+      include: {
+        Module: {
+          orderBy: {
+            order: 'asc',
+          },
+          include: {
+            submodules: {
+              orderBy: {
+                order: 'asc',
+              },
+              include: {
+                lessons: {
+                  orderBy: {
+                    order: 'asc',
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 }

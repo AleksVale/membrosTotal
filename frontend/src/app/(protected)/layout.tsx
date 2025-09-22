@@ -170,7 +170,16 @@ export default function Layout({ children }: { children: React.ReactNode }) {
                         href="/admin/trainings"
                         icon={<BookOpen size={20} />}
                         label="Treinamentos"
-                        active={pathname.startsWith("/admin/trainings")}
+                        active={
+                          pathname.startsWith("/admin/trainings") &&
+                          !pathname.includes("/premium")
+                        }
+                      />
+                      <SidebarItem
+                        href="/admin/trainings/premium"
+                        icon={<BookOpen size={20} />}
+                        label="Premium"
+                        active={pathname.startsWith("/admin/trainings/premium")}
                       />
                       <SidebarItem
                         href="/admin/modules"

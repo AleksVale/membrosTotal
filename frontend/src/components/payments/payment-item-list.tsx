@@ -109,17 +109,22 @@ export function PaymentItemList<T>({
     setSelectedItemId(id);
     setReason("");
     setFile(null);
-    setDialogType("PAY");
+    // Pequeno delay para garantir que o dropdown feche antes do dialog abrir
+    setTimeout(() => {
+      setDialogType("PAY");
+    }, 100);
   };
 
   const handleCancelClick = (id: number) => {
     setSelectedItemId(id);
     setReason("");
-    setDialogType("CANCEL");
+    // Pequeno delay para garantir que o dropdown feche antes do dialog abrir
+    setTimeout(() => {
+      setDialogType("CANCEL");
+    }, 100);
   };
 
   const handleDialogClose = (open: boolean) => {
-    console.log(open);
     if (!open) {
       setDialogType(null);
       setSelectedItemId(null);
@@ -200,7 +205,7 @@ export function PaymentItemList<T>({
   );
 
   const renderItemActions = (item: ReturnType<typeof getItemProps>) => (
-    <DropdownMenu>
+    <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 p-0">
           <MoreHorizontal className="h-4 w-4" />
@@ -250,112 +255,121 @@ export function PaymentItemList<T>({
 
   return (
     <>
-      <Dialog open={dialogType !== null} onOpenChange={handleDialogClose}>
-        {/* Indicador de carregamento sobreposto quando estiver refetchando */}
-        {isFetching && items.length > 0 && <Loading size={22} />}
+      {/* Indicador de carregamento sobreposto quando estiver refetchando */}
+      {isFetching && items.length > 0 && <Loading size={22} />}
 
-        {isMobile ? (
-          // Layout Mobile (cards)
-          <div className="space-y-4">
-            {items.length === 0
-              ? renderEmptyState()
-              : items.map((item) => {
-                  const props = getItemProps(item);
-                  return (
-                    <div
-                      key={props.id}
-                      className="border rounded-lg p-4 shadow-sm"
-                    >
-                      <div className="flex items-center justify-between mb-2">
-                        <h3 className="font-medium truncate">
-                          {props.description}
-                        </h3>
-                        {renderItemActions(props)}
-                      </div>
+      {isMobile ? (
+        // Layout Mobile (cards)
+        <div className="space-y-4">
+          {items.length === 0
+            ? renderEmptyState()
+            : items.map((item) => {
+                const props = getItemProps(item);
+                return (
+                  <div
+                    key={props.id}
+                    className="border rounded-lg p-4 shadow-sm"
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-medium truncate">
+                        {props.description}
+                      </h3>
+                      {renderItemActions(props)}
+                    </div>
 
+                    <div>
+                      <span className="text-muted-foreground">Valor:</span>
+                      <div>{formatCurrency(props.value)}</div>
+                    </div>
+
+                    <div>
+                      <span className="text-muted-foreground">Status:</span>
                       <div>
-                        <span className="text-muted-foreground">Valor:</span>
-                        <div>{formatCurrency(props.value)}</div>
-                      </div>
-
-                      <div>
-                        <span className="text-muted-foreground">Status:</span>
-                        <div>
-                          <StatusBadge status={props.status} />
-                        </div>
-                      </div>
-
-                      <div>
-                        <span className="text-muted-foreground">Usuário:</span>
-                        <div>{props.userFullName}</div>
-                      </div>
-
-                      <div>
-                        <span className="text-muted-foreground">
-                          Categoria:
-                        </span>
-                        <div>{props.categoryLabel || "N/A"}</div>
-                      </div>
-
-                      <div className="col-span-2">
-                        <span className="text-muted-foreground">Data:</span>
-                        <div>{formatDate(props.createdAt)}</div>
+                        <StatusBadge status={props.status} />
                       </div>
                     </div>
-                  );
-                })}
-          </div>
-        ) : (
-          // Layout Desktop (tabela)
-          <div className="relative">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Descrição</TableHead>
-                  <TableHead>Valor</TableHead>
-                  <TableHead>Usuário</TableHead>
-                  <TableHead>Categoria</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Data</TableHead>
-                  <TableHead className="w-[100px]">Ações</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {items.length === 0 ? (
-                  <TableRow>
-                    <TableCell
-                      colSpan={TABLE_COLUMN_COUNT}
-                      className="text-center py-6"
-                    >
-                      {hasActiveFilters ? filterEmptyMessage : emptyMessage}
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  items.map((item) => {
-                    const props = getItemProps(item);
-                    return (
-                      <TableRow key={props.id}>
-                        <TableCell className="max-w-[200px] truncate">
-                          {props.description}
-                        </TableCell>
-                        <TableCell>{formatCurrency(props.value)}</TableCell>
-                        <TableCell>{props.userFullName}</TableCell>
-                        <TableCell>{props.categoryLabel || "N/A"}</TableCell>
-                        <TableCell>
-                          <StatusBadge status={props.status} />
-                        </TableCell>
-                        <TableCell>{formatDate(props.createdAt)}</TableCell>
-                        <TableCell>{renderItemActions(props)}</TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        )}
 
-        {/* Dialog único com renderização condicional */}
+                    <div>
+                      <span className="text-muted-foreground">Usuário:</span>
+                      <div>{props.userFullName}</div>
+                    </div>
+
+                    <div>
+                      <span className="text-muted-foreground">Categoria:</span>
+                      <div>{props.categoryLabel || "N/A"}</div>
+                    </div>
+
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Data:</span>
+                      <div>{formatDate(props.createdAt)}</div>
+                    </div>
+                  </div>
+                );
+              })}
+        </div>
+      ) : (
+        // Layout Desktop (tabela)
+        <div className="relative">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Descrição</TableHead>
+                <TableHead>Valor</TableHead>
+                <TableHead>Usuário</TableHead>
+                <TableHead>Categoria</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Data</TableHead>
+                <TableHead className="w-[100px]">Ações</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {items.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={TABLE_COLUMN_COUNT}
+                    className="text-center py-6"
+                  >
+                    {hasActiveFilters ? filterEmptyMessage : emptyMessage}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                items.map((item) => {
+                  const props = getItemProps(item);
+                  return (
+                    <TableRow key={props.id}>
+                      <TableCell className="max-w-[200px] truncate">
+                        {props.description}
+                      </TableCell>
+                      <TableCell>{formatCurrency(props.value)}</TableCell>
+                      <TableCell>{props.userFullName}</TableCell>
+                      <TableCell>{props.categoryLabel || "N/A"}</TableCell>
+                      <TableCell>
+                        <StatusBadge status={props.status} />
+                      </TableCell>
+                      <TableCell>{formatDate(props.createdAt)}</TableCell>
+                      <TableCell>{renderItemActions(props)}</TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
+            </TableBody>
+          </Table>
+        </div>
+      )}
+
+      <Pagination
+        currentPage={pagination.page}
+        totalPages={pagination.totalPages}
+        totalItems={pagination.totalItems}
+        itemsPerPage={pagination.perPage}
+        itemsCount={items.length}
+        onPageChange={pagination.onPageChange}
+        isMobile={isMobile}
+        isLoading={isLoading || isFetching}
+      />
+
+      {/* Dialog único com renderização condicional - FORA do wrapper */}
+      <Dialog open={dialogType !== null} onOpenChange={handleDialogClose}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>
@@ -420,7 +434,7 @@ export function PaymentItemList<T>({
               }
               disabled={
                 !reason.trim() ||
-                (selectedItemId
+                (selectedItemId !== null
                   ? dialogType === "PAY"
                     ? isPending.pay(selectedItemId)
                     : isPending.cancel(selectedItemId)
@@ -431,17 +445,6 @@ export function PaymentItemList<T>({
             </Button>
           </DialogFooter>
         </DialogContent>
-
-        <Pagination
-          currentPage={pagination.page}
-          totalPages={pagination.totalPages}
-          totalItems={pagination.totalItems}
-          itemsPerPage={pagination.perPage}
-          itemsCount={items.length}
-          onPageChange={pagination.onPageChange}
-          isMobile={isMobile}
-          isLoading={isLoading || isFetching}
-        />
       </Dialog>
     </>
   );

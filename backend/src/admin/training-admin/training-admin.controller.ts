@@ -128,6 +128,18 @@ export class TrainingAdminController {
     return this.trainingAdminService.getPermissionsStats();
   }
 
+  @Get(':id/stats')
+  @ApiResponse({ status: 200, type: TrainingDetailStatsDto })
+  async getTrainingStats(@Param('id', ParseIntPipe) id: number) {
+    return this.trainingAdminService.getTrainingStats(id);
+  }
+
+  @Get(':id')
+  @ApiResponse({ type: GetTrainingResponse, status: 200 })
+  findOne(@Param('id') id: string) {
+    return this.trainingAdminService.findOne(+id);
+  }
+
   @ApiResponse({ status: 200 })
   @Get('permissions/:id')
   async getPermissions(@Param('id', ParseIntPipe) id: number) {
@@ -141,17 +153,5 @@ export class TrainingAdminController {
       console.error(`[ERROR] Error getting permissions for training ${id}:`, error);
       throw error;
     }
-  }
-
-  @Get(':id/stats')
-  @ApiResponse({ status: 200, type: TrainingDetailStatsDto })
-  async getTrainingStats(@Param('id', ParseIntPipe) id: number) {
-    return this.trainingAdminService.getTrainingStats(id);
-  }
-
-  @Get(':id')
-  @ApiResponse({ type: GetTrainingResponse, status: 200 })
-  findOne(@Param('id') id: string) {
-    return this.trainingAdminService.findOne(+id);
   }
 }

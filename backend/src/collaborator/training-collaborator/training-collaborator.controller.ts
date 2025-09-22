@@ -1,12 +1,12 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
-import { TrainingCollaboratorService } from './training-collaborator.service';
-import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
-import { RoleGuard } from 'src/public/auth/role/role.guard';
-import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 import { CurrentUser } from 'src/public/auth/current-user-decorator';
+import { JwtAuthGuard } from 'src/public/auth/jwt-auth.guard';
 import { TokenPayload } from 'src/public/auth/jwt.strategy';
+import { RoleGuard } from 'src/public/auth/role/role.guard';
+import { Roles } from 'src/public/auth/roles/roles.decorator';
 import { TrainingCollaboratorResponseDto } from './dto/training-collaborator-response.dto';
+import { TrainingCollaboratorService } from './training-collaborator.service';
 
 @UseGuards(JwtAuthGuard, RoleGuard)
 @Roles(['employee'])
@@ -22,6 +22,7 @@ export class TrainingCollaboratorController {
   })
   @Get()
   findAll(@CurrentUser() user: TokenPayload) {
+    console.log(`[DEBUG] Controller: Finding trainings for user:`, user);
     return this.trainingCollaboratorService.findAll(user);
   }
 }

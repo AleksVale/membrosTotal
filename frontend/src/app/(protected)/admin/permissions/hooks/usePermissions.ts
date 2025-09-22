@@ -35,7 +35,7 @@ export function useTrainingPermissions(trainingId: number) {
   return useQuery<{ users: Permission[]; totalUsers: number }>({
     queryKey: QueryKeys.trainings.permissions(trainingId),
     queryFn: async () => {
-      const response = await http.get(`/training-admin/${trainingId}/permissions`);
+      const response = await http.get(`/training-admin/permissions/${trainingId}`);
       return response.data;
     },
     enabled: !!trainingId,
@@ -189,13 +189,9 @@ export function useSearchUsers(search?: string) {
   return useQuery<SearchUser[]>({
     queryKey: ["users-search", search],
     queryFn: async () => {
-      console.log('[DEBUG] Searching users with term:', search);
-
       const response = await http.get(`/autocomplete?fields=users`);
-      console.log('[DEBUG] Autocomplete response:', response.data);
       
       const users = response.data.users || [];
-      console.log('[DEBUG] Raw users from API:', users);
       
       // Map para garantir a estrutura correta
       const mappedUsers = users.map((user: {
@@ -210,15 +206,11 @@ export function useSearchUsers(search?: string) {
           fullName: fullName || 'Usuário sem nome',
           email: user.email || 'Sem email'
         };
-        console.log('[DEBUG] Mapping user:', user, 'to:', mappedUser);
         return mappedUser;
       });
       
-      console.log('[DEBUG] Mapped users:', mappedUsers);
-      
       // Se não há termo de busca ou é muito curto, retorna todos
       if (!search || search.trim().length < 2) {
-        console.log('[DEBUG] No search term, returning all users');
         return mappedUsers;
       }
       
@@ -227,7 +219,6 @@ export function useSearchUsers(search?: string) {
         user.email.toLowerCase().includes(search.toLowerCase())
       );
       
-      console.log('[DEBUG] Filtered users:', filteredUsers);
       return filteredUsers;
     },
     enabled: true, // Always enabled to show all users initially

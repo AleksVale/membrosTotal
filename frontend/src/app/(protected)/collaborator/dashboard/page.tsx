@@ -82,6 +82,33 @@ export default function CollaboratorDashboardPage() {
     refetchInterval: 10 * 60 * 1000, // 10 minutos
   });
 
+  const { data: monthlyProgress, isLoading: isLoadingProgress } = useQuery({
+    queryKey: ["collaborator", "monthly-progress"],
+    queryFn: async () => {
+      const response = await http.get("/collaborator/home/monthly-progress");
+      return response.data;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutos
+  });
+
+  const { data: recentActivities, isLoading: isLoadingActivities } = useQuery({
+    queryKey: ["collaborator", "recent-activities"],
+    queryFn: async () => {
+      const response = await http.get("/collaborator/home/recent-activities");
+      return response.data;
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutos
+  });
+
+  const { data: weeklyProgress, isLoading: isLoadingWeekly } = useQuery({
+    queryKey: ["collaborator", "weekly-progress"],
+    queryFn: async () => {
+      const response = await http.get("/collaborator/home/weekly-progress");
+      return response.data;
+    },
+    staleTime: 10 * 60 * 1000, // 10 minutos
+  });
+
   if (isLoading) {
     return <Loading />;
   }
@@ -118,22 +145,19 @@ export default function CollaboratorDashboardPage() {
     { name: "Reuniões", value: stats?.meetings.thisMonth || 0 },
   ];
 
-  const progressData = [
-    { name: "Jan", value: 12 },
-    { name: "Fev", value: 19 },
-    { name: "Mar", value: 15 },
-    { name: "Abr", value: 25 },
-    { name: "Mai", value: 22 },
-    { name: "Jun", value: 30 },
-  ];
+  const progressData =
+    monthlyProgress?.map((month: any) => ({
+      name: month.name,
+      value: month.total,
+    })) || [];
 
   return (
     <div className="flex flex-col gap-6">
       <WelcomeHeader
         stats={{
           completionRate: stats?.trainings.completionRate || 0,
-          streak: 5, // Dados simulados - pode ser integrado com API futuramente
-          todayTasks: 3,
+          streak: stats?.trainings.total || 0,
+          todayTasks: stats?.meetings.upcoming || 0,
         }}
       />
 
@@ -194,9 +218,9 @@ export default function CollaboratorDashboardPage() {
               icon={<Calendar className="h-4 w-4" />}
               href="/collaborator/meetings"
               trend={{
-                value: 15,
-                isPositive: true,
-                label: "vs mês anterior",
+                value: stats?.meetings.thisMonth || 0,
+                isPositive: (stats?.meetings.thisMonth || 0) > 0,
+                label: "este mês",
               }}
             />
 
@@ -235,11 +259,11 @@ export default function CollaboratorDashboardPage() {
 
           <div className="grid gap-6 lg:grid-cols-3">
             <div className="lg:col-span-2">
-              <RecentActivity />
+              <RecentActivity activities={recentActivities} />
             </div>
             <div className="space-y-6">
               <QuickActions />
-              <WeeklyProgress />
+              <WeeklyProgress weekData={weeklyProgress} />
             </div>
           </div>
         </TabsContent>
@@ -301,9 +325,9 @@ export default function CollaboratorDashboardPage() {
               description="Valor total já recebido"
               icon={<DollarSign className="h-4 w-4" />}
               trend={{
-                value: 12,
-                isPositive: true,
-                label: "vs mês anterior",
+                value: (stats?.financials.totalEarnings || 0) > 0 ? 100 : 0,
+                isPositive: (stats?.financials.totalEarnings || 0) > 0,
+                label: "ganhos acumulados",
               }}
             />
 
@@ -340,7 +364,7 @@ export default function CollaboratorDashboardPage() {
 
         <TabsContent value="activities" className="space-y-6">
           <div className="grid gap-6 lg:grid-cols-2">
-            <RecentActivity />
+            <RecentActivity activities={recentActivities} />
             <QuickActions />
           </div>
         </TabsContent>

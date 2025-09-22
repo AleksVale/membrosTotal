@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,40 +12,38 @@ import { Loading } from "@/components/ui/loading";
 import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { CheckCircle, Clock, Lock } from "lucide-react";
+
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 interface Module {
   id: number;
   title: string;
-  description: string;
-  status: "COMPLETED" | "IN_PROGRESS" | "LOCKED";
-  progress: number;
+  description?: string;
+  thumbnail?: string;
+  order: number;
   trainingId: number;
-  trainingTitle: string;
-}
-
-interface ModulesResponse {
-  data: Module[];
-  meta: {
-    total: number;
-    page: number;
-    per_page: number;
-    last_page: number;
-  };
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function CollaboratorModulesPage() {
   const searchParams = useSearchParams();
   const trainingId = searchParams.get("trainingId");
 
-  const { data, isLoading, isError } = useQuery<ModulesResponse>({
+  const { data, isLoading, isError } = useQuery<Module[]>({
     queryKey: QueryKeys.collaborator.modules.list(trainingId || "all"),
     queryFn: async () => {
+      console.log(
+        "[DEBUG] Frontend: Fetching modules with trainingId:",
+        trainingId
+      );
+
       const response = await http.get("/collaborator/module-collaborator", {
         params: { trainingId: trainingId || undefined },
       });
+
+      console.log("[DEBUG] Frontend: Modules API response:", response.data);
       return response.data;
     },
     staleTime: 60000, // 1 minuto
@@ -69,39 +66,7 @@ export default function CollaboratorModulesPage() {
     );
   }
 
-  const modules = data?.data || [];
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "COMPLETED":
-        return (
-          <Badge
-            variant="default"
-            className="bg-success text-success-foreground"
-          >
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Concluído
-          </Badge>
-        );
-      case "IN_PROGRESS":
-        return (
-          <Badge
-            variant="default"
-            className="bg-primary text-primary-foreground"
-          >
-            <Clock className="h-3 w-3 mr-1" />
-            Em andamento
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="secondary">
-            <Lock className="h-3 w-3 mr-1" />
-            Bloqueado
-          </Badge>
-        );
-    }
-  };
+  const modules = data || [];
 
   const groupedModules = modules.reduce<Record<number, Module[]>>(
     (acc, module) => {
@@ -144,7 +109,7 @@ export default function CollaboratorModulesPage() {
           <div key={trainingId} className="mb-8">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">
-                {modules[0].trainingTitle}
+                Treinamento #{trainingId}
               </h2>
               <Button asChild variant="outline" size="sm">
                 <Link href={`/collaborator/trainings/${trainingId}`}>
@@ -159,38 +124,17 @@ export default function CollaboratorModulesPage() {
                   <CardHeader className="pb-2">
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-lg">{module.title}</CardTitle>
-                      {getStatusBadge(module.status)}
                     </div>
-                    <CardDescription className="line-clamp-2">
-                      {module.description}
-                    </CardDescription>
+                    {module.description && (
+                      <CardDescription className="line-clamp-2">
+                        {module.description}
+                      </CardDescription>
+                    )}
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
-                      <div className="text-xs text-muted-foreground mb-1">
-                        Progresso: {module.progress}%
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div
-                          className="bg-primary h-2 rounded-full"
-                          style={{ width: `${module.progress}%` }}
-                        />
-                      </div>
-                    </div>
-                    <Button
-                      asChild
-                      className="w-full"
-                      disabled={module.status === "LOCKED"}
-                      variant={
-                        module.status === "LOCKED" ? "secondary" : "default"
-                      }
-                    >
+                    <Button asChild className="w-full">
                       <Link href={`/collaborator/modules/${module.id}`}>
-                        {module.status === "LOCKED"
-                          ? "Bloqueado"
-                          : module.status === "COMPLETED"
-                          ? "Revisar"
-                          : "Continuar"}
+                        Acessar Módulo
                       </Link>
                     </Button>
                   </CardContent>

@@ -21,9 +21,13 @@ interface DayProgress {
 
 interface WeeklyProgressProps {
   className?: string;
+  weekData?: DayProgress[];
 }
 
-export function WeeklyProgress({ className = "" }: WeeklyProgressProps) {
+export function WeeklyProgress({
+  className = "",
+  weekData,
+}: WeeklyProgressProps) {
   const getCurrentWeek = (): DayProgress[] => {
     const today = new Date();
     const currentDay = today.getDay(); // 0 = domingo, 1 = segunda, etc.
@@ -63,9 +67,12 @@ export function WeeklyProgress({ className = "" }: WeeklyProgressProps) {
     return weekDays;
   };
 
-  const weekData = getCurrentWeek();
-  const totalCompleted = weekData.reduce((sum, day) => sum + day.completed, 0);
-  const totalTasks = weekData.reduce((sum, day) => sum + day.total, 0);
+  const displayWeekData = weekData || getCurrentWeek();
+  const totalCompleted = displayWeekData.reduce(
+    (sum, day) => sum + day.completed,
+    0
+  );
+  const totalTasks = displayWeekData.reduce((sum, day) => sum + day.total, 0);
   const overallProgress = (totalCompleted / totalTasks) * 100;
 
   const getProgressColor = (percentage: number) => {
@@ -118,7 +125,7 @@ export function WeeklyProgress({ className = "" }: WeeklyProgressProps) {
         </div>
 
         <div className="grid grid-cols-7 gap-2">
-          {weekData.map((day, index) => {
+          {displayWeekData.map((day, index) => {
             const dayProgress =
               day.total > 0 ? (day.completed / day.total) * 100 : 0;
 

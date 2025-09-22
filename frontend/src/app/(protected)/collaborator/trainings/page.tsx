@@ -1,6 +1,5 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,7 +13,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
 import { useQuery } from "@tanstack/react-query";
-import { BookOpen, CheckCircle, Clock } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -22,9 +20,10 @@ interface Training {
   id: number;
   title: string;
   description: string;
-  status: "COMPLETED" | "IN_PROGRESS" | "NOT_STARTED";
-  progress: number;
-  coverImage?: string;
+  tutor: string;
+  thumbnail?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface TrainingsResponse {
@@ -44,9 +43,13 @@ export default function CollaboratorTrainingsPage() {
     queryKey: QueryKeys.collaborator.trainings.list(activeTab),
     queryFn: async () => {
       const status = activeTab !== "all" ? activeTab : undefined;
+      console.log("[DEBUG] Frontend: Fetching trainings with status:", status);
+
       const response = await http.get("/collaborator/training-collaborator", {
         params: { status },
       });
+
+      console.log("[DEBUG] Frontend: API response:", response.data);
       return response.data;
     },
     staleTime: 60000, // 1 minuto
@@ -69,39 +72,7 @@ export default function CollaboratorTrainingsPage() {
     );
   }
 
-  const trainings = data?.data || [];
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "COMPLETED":
-        return (
-          <Badge
-            variant="default"
-            className="bg-success text-success-foreground"
-          >
-            <CheckCircle className="h-3 w-3 mr-1" />
-            Concluído
-          </Badge>
-        );
-      case "IN_PROGRESS":
-        return (
-          <Badge
-            variant="default"
-            className="bg-primary text-primary-foreground"
-          >
-            <Clock className="h-3 w-3 mr-1" />
-            Em andamento
-          </Badge>
-        );
-      default:
-        return (
-          <Badge variant="outline">
-            <BookOpen className="h-3 w-3 mr-1" />
-            Não iniciado
-          </Badge>
-        );
-    }
-  };
+  const trainings = data || [];
 
   return (
     <div className="flex flex-col gap-6">
@@ -133,11 +104,11 @@ export default function CollaboratorTrainingsPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
               {trainings.map((training) => (
                 <Card key={training.id} className="overflow-hidden">
-                  {training.coverImage && (
+                  {training.thumbnail && (
                     <div
                       className="h-40 bg-cover bg-center"
                       style={{
-                        backgroundImage: `url(${training.coverImage})`,
+                        backgroundImage: `url(${training.thumbnail})`,
                       }}
                     />
                   )}
@@ -146,31 +117,18 @@ export default function CollaboratorTrainingsPage() {
                       <CardTitle className="text-lg">
                         {training.title}
                       </CardTitle>
-                      {getStatusBadge(training.status)}
+                      <div className="text-sm text-muted-foreground">
+                        Tutor: {training.tutor}
+                      </div>
                     </div>
                     <CardDescription className="line-clamp-2">
                       {training.description}
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="mb-4">
-                      <div className="text-xs text-muted-foreground mb-1">
-                        Progresso: {training.progress}%
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div
-                          className="bg-primary h-2 rounded-full"
-                          style={{ width: `${training.progress}%` }}
-                        />
-                      </div>
-                    </div>
                     <Button asChild className="w-full">
                       <Link href={`/collaborator/trainings/${training.id}`}>
-                        {training.status === "NOT_STARTED"
-                          ? "Iniciar"
-                          : training.status === "COMPLETED"
-                          ? "Revisar"
-                          : "Continuar"}
+                        Acessar Treinamento
                       </Link>
                     </Button>
                   </CardContent>

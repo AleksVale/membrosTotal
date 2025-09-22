@@ -26,4 +26,22 @@ export class HomeController {
   async getDashboardStats(@CurrentUser() currentUser: TokenPayload) {
     return await this.homeService.getDashboardStats(currentUser);
   }
+
+  @ApiResponse({ description: 'Dados de progresso mensal dos últimos 6 meses' })
+  @Get('monthly-progress')
+  async getMonthlyProgress(@CurrentUser() currentUser: TokenPayload) {
+    return await this.homeService.getMonthlyProgressData(currentUser);
+  }
+
+  @ApiResponse({ description: 'Atividades recentes do colaborador' })
+  @Get('recent-activities')
+  async getRecentActivities(@CurrentUser() currentUser: TokenPayload) {
+    return await this.homeService.getRecentActivities(currentUser);
+  }
+
+  @ApiResponse({ description: 'Progresso semanal do colaborador' })
+  @Get('weekly-progress')
+  async getWeeklyProgress(@CurrentUser() currentUser: TokenPayload) {
+    return await this.homeService.getWeeklyProgress(currentUser);
+  }
 }

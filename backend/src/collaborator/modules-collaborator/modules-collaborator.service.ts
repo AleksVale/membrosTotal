@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { ModuleCollaboratorRepository } from './modules-collaborator.repository';
-import { TokenPayload } from 'src/public/auth/jwt.strategy';
 import { AwsService } from 'src/common/aws/aws.service';
+import { TokenPayload } from 'src/public/auth/jwt.strategy';
+import { ModuleCollaboratorRepository } from './modules-collaborator.repository';
 
 @Injectable()
 export class ModuleCollaboratorService {
@@ -11,10 +11,14 @@ export class ModuleCollaboratorService {
   ) {}
 
   async findAll(user: TokenPayload, trainingId?: number) {
+    console.log(`[DEBUG] Service: Finding modules for user ${user.id}, trainingId: ${trainingId}`);
+    
     const result = await this.moduleCollaboratorRepository.findAll(
       user,
       trainingId,
     );
+    console.log(`[DEBUG] Service: Raw modules result from repository:`, result);
+    
     const modules = await Promise.all(
       result.map(async (module) => {
         if (module.thumbnail) {
@@ -24,6 +28,8 @@ export class ModuleCollaboratorService {
         return module;
       }),
     );
+    
+    console.log(`[DEBUG] Service: Final modules result:`, modules);
     return modules;
   }
 }

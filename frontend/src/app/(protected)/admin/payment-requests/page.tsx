@@ -43,7 +43,7 @@ interface PaymentRequest {
     id: number;
     label: string;
   };
-  user: {
+  User: {
     id: number;
     firstName: string;
     lastName: string;
@@ -262,8 +262,8 @@ export default function PaymentRequestsPage() {
           description: request.description,
           value: request.value,
           userFullName:
-            `${request.user?.firstName || ""} ${
-              request.user?.lastName || ""
+            `${request.User?.firstName || ""} ${
+              request.User?.lastName || ""
             }`.trim() || "Usuário sem nome",
           categoryLabel: request.PaymentRequestType?.label,
           status: request.status,

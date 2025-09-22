@@ -43,7 +43,7 @@ interface Refund {
     id: number;
     label: string;
   };
-  user: {
+  User: {
     id: number;
     firstName: string;
     lastName: string;
@@ -257,8 +257,8 @@ export default function RefundsPage() {
           description: refund.description,
           value: refund.value,
           userFullName:
-            `${refund.user?.firstName || ""} ${
-              refund.user?.lastName || ""
+            `${refund.User?.firstName || ""} ${
+              refund.User?.lastName || ""
             }`.trim() || "Usuário sem nome",
           categoryLabel: refund.RefundType?.label,
           status: refund.status,

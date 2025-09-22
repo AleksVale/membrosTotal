@@ -44,11 +44,29 @@ export class TrainingModulesAdminService {
   }
 
   async findOne(id: number) {
+    console.log(`[DEBUG] Finding module with ID: ${id}`);
     const module = await this.moduleRepository.find({ id });
-    if (!module) throw new NotFoundException('ID inválido');
-    const photo = await this.awsService.getStoredObject(
-      module.thumbnail as string,
-    );
+
+    if (!module) {
+      console.log(`[DEBUG] Module with ID ${id} not found`);
+      throw new NotFoundException('ID inválido');
+    }
+
+    console.log(`[DEBUG] Module found:`, module);
+
+    let photo: string | null = null;
+    try {
+      if (module.thumbnail) {
+        console.log(`[DEBUG] Getting photo for thumbnail: ${module.thumbnail}`);
+        photo = await this.awsService.getStoredObject(module.thumbnail);
+      } else {
+        console.log(`[DEBUG] No thumbnail found for module ${id}`);
+      }
+    } catch (error) {
+      console.error(`[ERROR] Error getting photo for module ${id}:`, error);
+      // Continue without the photo instead of failing completely
+    }
+
     return { module, stream: photo };
   }
 
@@ -87,7 +105,10 @@ export class TrainingModulesAdminService {
     const users = await this.moduleRepository.getUsersWithPermission(id);
     const totalUsers = users.length;
 
-    console.log(`[DEBUG] Module permissions for ID ${id}:`, { users, totalUsers });
+    console.log(`[DEBUG] Module permissions for ID ${id}:`, {
+      users,
+      totalUsers,
+    });
 
     return {
       users,

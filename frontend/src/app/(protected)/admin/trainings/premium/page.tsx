@@ -2,6 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { Plus, RefreshCw } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -51,6 +52,8 @@ interface ApiLesson {
 }
 
 export default function TrainingsPremiumPage() {
+  const router = useRouter();
+
   // Buscar dados hierárquicos dos treinamentos
   const {
     data: trainings,
@@ -127,7 +130,22 @@ export default function TrainingsPremiumPage() {
   };
 
   const handleEdit = (item: TreeItem) => {
-    toast.info(`Editar ${item.type}: ${item.title} - Em desenvolvimento`);
+    switch (item.type) {
+      case "training":
+        router.push(`/admin/trainings/${item.id}/edit`);
+        break;
+      case "module":
+        router.push(`/admin/trainings`);
+        break;
+      case "submodule":
+        router.push(`/admin/submodules/${item.id}/edit`);
+        break;
+      case "lesson":
+        router.push(`/admin/lessons/${item.id}/edit`);
+        break;
+      default:
+        toast.info(`Editar ${item.type}: ${item.title} - Tipo não suportado`);
+    }
   };
 
   const handleDelete = (item: TreeItem) => {

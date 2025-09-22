@@ -315,16 +315,8 @@ export default function ModulesListPage() {
                     <ModuleCard
                       key={module.id}
                       module={module}
-                      onView={(id) =>
-                        router.push(
-                          `/admin/trainings/${module.trainingId}/modules/${id}`
-                        )
-                      }
-                      onEdit={(id) =>
-                        router.push(
-                          `/admin/trainings/${module.trainingId}/modules/${id}/edit`
-                        )
-                      }
+                      onView={(id) => router.push(`/admin/modules/${id}`)}
+                      onEdit={(id) => router.push(`/admin/modules/${id}/edit`)}
                       onDelete={handleDeleteModule}
                       onManageSubmodules={(id) =>
                         router.push(
@@ -337,14 +329,8 @@ export default function ModulesListPage() {
               ) : (
                 <ModuleList
                   modules={modules}
-                  onView={(id, trainingId) =>
-                    router.push(`/admin/trainings/${trainingId}/modules/${id}`)
-                  }
-                  onEdit={(id, trainingId) =>
-                    router.push(
-                      `/admin/trainings/${trainingId}/modules/${id}/edit`
-                    )
-                  }
+                  onView={(id) => router.push(`/admin/modules/${id}`)}
+                  onEdit={(id) => router.push(`/admin/modules/${id}/edit`)}
                   onDelete={handleDeleteModule}
                   onManageSubmodules={(id, trainingId) =>
                     router.push(

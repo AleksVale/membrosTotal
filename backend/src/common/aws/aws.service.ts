@@ -1,11 +1,11 @@
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from '@aws-sdk/client-s3';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Env } from 'src/env';
-import {
-  S3Client,
-  PutObjectCommand,
-  GetObjectCommand,
-} from '@aws-sdk/client-s3';
 
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 
@@ -82,14 +82,28 @@ export class AwsService {
   }
 
   async getStoredObject(photoKey: string) {
-    const uploadResult = await getSignedUrl(
-      this.s3,
-      new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: photoKey,
-      }),
-      { expiresIn: 3600 },
-    );
-    return uploadResult;
+    if (!photoKey || photoKey.trim().length === 0) {
+      console.log('[DEBUG] PhotoKey is null, undefined, or empty');
+      return null;
+    }
+
+    try {
+      console.log(`[DEBUG] Getting signed URL for photoKey: ${photoKey}`);
+      const uploadResult = await getSignedUrl(
+        this.s3,
+        new GetObjectCommand({
+          Bucket: this.bucketName,
+          Key: photoKey,
+        }),
+        { expiresIn: 3600 },
+      );
+      return uploadResult;
+    } catch (error) {
+      console.error(
+        `[ERROR] Error getting signed URL for photoKey ${photoKey}:`,
+        error,
+      );
+      return null;
+    }
   }
 }

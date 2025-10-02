@@ -15,7 +15,6 @@ import { useQuery } from "@tanstack/react-query";
 
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
 interface Module {
   id: number;
@@ -28,7 +27,7 @@ interface Module {
   updatedAt: string;
 }
 
-function CollaboratorModulesPage() {
+export default function CollaboratorModulesPage() {
   const searchParams = useSearchParams();
   const trainingId = searchParams.get("trainingId");
 
@@ -146,13 +145,5 @@ function CollaboratorModulesPage() {
         ))
       )}
     </div>
-  );
-}
-
-export default function CollaboratorModulesPageWrapper() {
-  return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <CollaboratorModulesPage />
-    </Suspense>
   );
 }

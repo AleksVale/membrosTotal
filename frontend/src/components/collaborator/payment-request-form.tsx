@@ -53,11 +53,6 @@ const paymentRequestSchema = z.object({
 
 type PaymentRequestFormValues = z.infer<typeof paymentRequestSchema>;
 
-interface PaymentRequestType {
-  id: number;
-  label: string;
-}
-
 interface PaymentRequestFormProps {
   paymentRequestId?: number;
   initialData?: PaymentRequestFormValues;

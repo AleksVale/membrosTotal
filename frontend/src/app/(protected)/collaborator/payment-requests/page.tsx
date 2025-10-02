@@ -3,7 +3,7 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { ListFilter, Loader2, PlusCircle, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // Custom hooks
 import {
@@ -38,7 +38,7 @@ import { toast } from "react-toastify";
 // HTTP
 import http from "@/lib/http";
 
-export default function CollaboratorPaymentRequestsPage() {
+function CollaboratorPaymentRequestsPage() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [activeTab, setActiveTab] = useState("list");
@@ -275,5 +275,13 @@ export default function CollaboratorPaymentRequestsPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function CollaboratorPaymentRequestsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <CollaboratorPaymentRequestsPage />
+    </Suspense>
   );
 }

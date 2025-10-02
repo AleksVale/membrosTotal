@@ -3,7 +3,7 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
@@ -66,7 +66,7 @@ interface RefundType {
 }
 
 // Componente principal da página
-export default function RefundsPage() {
+function RefundsPage() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -269,5 +269,13 @@ export default function RefundsPage() {
         filterEmptyMessage="Nenhum reembolso encontrado com os filtros aplicados"
       />
     </PaymentLayout>
+  );
+}
+
+export default function RefundsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <RefundsPage />
+    </Suspense>
   );
 }

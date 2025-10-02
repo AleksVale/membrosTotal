@@ -12,18 +12,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { getImageUrl } from "@/lib/image-utils";
+import { use } from "react";
 import { DeleteLessonAlert } from "../components/DeleteLessonAlert";
 import { useDeleteLesson, useLesson } from "../hooks/useLessonMutations";
 
 interface LessonDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function LessonDetailPage({ params }: LessonDetailPageProps) {
   const router = useRouter();
-  const lessonId = Number(params.id);
+  const { id } = use(params);
+  const lessonId = Number(id);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const { data: lesson, isLoading, error } = useLesson(lessonId);

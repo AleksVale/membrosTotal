@@ -9,7 +9,7 @@ import {
   Search,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
@@ -38,7 +38,7 @@ import {
 import { LessonCard } from "./components/LessonCard";
 import { LessonList } from "./components/LessonList";
 
-export default function LessonsListPage() {
+function LessonsListPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const submoduleId = searchParams.get("submoduleId")
@@ -303,5 +303,13 @@ export default function LessonsListPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function LessonsPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <LessonsListPage />
+    </Suspense>
   );
 }

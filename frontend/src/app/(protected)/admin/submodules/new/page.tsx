@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 
 import http from "@/lib/http";
 import { SubmoduleForm, SubmoduleFormData } from "../components/SubmoduleForm";
 import { useCreateSubmodule } from "../hooks/useSubmoduleMutations";
 
-export default function NewSubmodulePage() {
+function NewSubmodulePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const moduleId = searchParams.get("moduleId")
@@ -59,5 +59,13 @@ export default function NewSubmodulePage() {
         submitText="Criar Submódulo"
       />
     </div>
+  );
+}
+
+export default function NewSubmodulePageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <NewSubmodulePage />
+    </Suspense>
   );
 }

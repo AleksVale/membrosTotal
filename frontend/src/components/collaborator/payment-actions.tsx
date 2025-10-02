@@ -6,17 +6,11 @@ import { BarChart3, Calendar, FileText, TrendingUp } from "lucide-react";
 
 interface PaymentActionsProps {
   onNewPayment: () => void;
-  onExportData: () => void;
-  onFilterToggle: () => void;
-  showFilters: boolean;
   pendingCount: number;
 }
 
 export function PaymentActions({
   onNewPayment,
-  onExportData,
-  onFilterToggle,
-  showFilters,
   pendingCount,
 }: PaymentActionsProps) {
   return (

@@ -3,7 +3,7 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { ListFilter, Loader2, PlusCircle, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 // Custom hooks
 import {
@@ -43,7 +43,7 @@ import { toast } from "react-toastify";
 // HTTP
 import http from "@/lib/http";
 
-export default function PaymentsPage() {
+function PaymentsPage() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [activeTab, setActiveTab] = useState("list");
@@ -281,11 +281,6 @@ export default function PaymentsPage() {
             </div>
             <PaymentActions
               onNewPayment={() => setActiveTab("new")}
-              onExportData={() => {
-                toast.success("Relatório será enviado por email!");
-              }}
-              onFilterToggle={() => setShowFilters(!showFilters)}
-              showFilters={showFilters}
               pendingCount={statsData?.pendingPayments || 0}
             />
           </div>
@@ -301,5 +296,13 @@ export default function PaymentsPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function PaymentsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <PaymentsPage />
+    </Suspense>
   );
 }

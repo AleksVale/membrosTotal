@@ -9,7 +9,7 @@ import {
   Search,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import { toast } from "react-toastify";
 
 // Custom hooks
@@ -40,7 +40,7 @@ import { CreateModuleDialog } from "./components/CreateModuleDialog";
 import { ModuleCard } from "./components/ModuleCard";
 import { ModuleList } from "./components/ModuleList";
 
-export default function ModulesListPage() {
+function ModulesListPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const trainingId = searchParams.get("trainingId")
@@ -356,5 +356,13 @@ export default function ModulesListPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ModulesPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <ModulesListPage />
+    </Suspense>
   );
 }

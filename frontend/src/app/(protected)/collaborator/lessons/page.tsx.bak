@@ -24,7 +24,6 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
 interface Lesson {
   id: number;
@@ -47,7 +46,7 @@ interface LessonsResponse {
   };
 }
 
-function CollaboratorLessonsPage() {
+export default function CollaboratorLessonsPage() {
   const searchParams = useSearchParams();
   const submoduleId = searchParams.get("submoduleId");
 
@@ -254,13 +253,5 @@ function CollaboratorLessonsPage() {
         ))
       )}
     </div>
-  );
-}
-
-export default function CollaboratorLessonsPageWrapper() {
-  return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <CollaboratorLessonsPage />
-    </Suspense>
   );
 }

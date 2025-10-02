@@ -4,7 +4,7 @@ import { useMediaQuery } from "@/hooks/use-media-query";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { DollarSign } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
@@ -58,7 +58,7 @@ interface PaymentsResponse {
   };
 }
 
-export default function PaymentsPage() {
+function PaymentsPage() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const isMobile = useMediaQuery("(max-width: 768px)");
@@ -316,5 +316,13 @@ export default function PaymentsPage() {
         />
       </PaymentLayout>
     </div>
+  );
+}
+
+export default function PaymentsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <PaymentsPage />
+    </Suspense>
   );
 }

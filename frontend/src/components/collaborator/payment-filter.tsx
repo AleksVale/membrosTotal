@@ -132,11 +132,16 @@ export function PaymentFilter({
                       </FormControl>
                       <SelectContent>
                         <SelectItem value="">Todas as categorias</SelectItem>
-                        {paymentTypes?.map((type) => (
-                          <SelectItem key={type.id} value={type.id.toString()}>
-                            {type.label}
-                          </SelectItem>
-                        ))}
+                        {paymentTypes?.map(
+                          (type: { id: number; label: string }) => (
+                            <SelectItem
+                              key={type.id}
+                              value={type.id.toString()}
+                            >
+                              {type.label}
+                            </SelectItem>
+                          )
+                        )}
                       </SelectContent>
                     </Select>
                   </FormItem>

@@ -58,7 +58,7 @@ export function CalendarDateRangePicker({
             initialFocus
             mode="range"
             defaultMonth={date?.from}
-            selected={date}
+            selected={date as { from: Date; to?: Date } | undefined}
             onSelect={setDate}
             numberOfMonths={2}
           />

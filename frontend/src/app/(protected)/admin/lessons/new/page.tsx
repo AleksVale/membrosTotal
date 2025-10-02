@@ -1,13 +1,13 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { useMemo } from "react";
+import { Suspense, useMemo } from "react";
 
 import http from "@/lib/http";
 import { LessonForm, LessonFormData } from "../components/LessonForm";
 import { useCreateLesson } from "../hooks/useLessonMutations";
 
-export default function NewLessonPage() {
+function NewLessonPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const submoduleId = searchParams.get("submoduleId");
@@ -65,5 +65,13 @@ export default function NewLessonPage() {
         submitText="Criar Aula"
       />
     </div>
+  );
+}
+
+export default function NewLessonPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <NewLessonPage />
+    </Suspense>
   );
 }

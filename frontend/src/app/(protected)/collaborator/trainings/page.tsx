@@ -50,7 +50,7 @@ export default function CollaboratorTrainingsPage() {
       });
 
       console.log("[DEBUG] Frontend: API response:", response.data);
-      return response.data;
+      return response.data ?? [];
     },
     staleTime: 60000, // 1 minuto
   });
@@ -72,7 +72,7 @@ export default function CollaboratorTrainingsPage() {
     );
   }
 
-  const trainings = data || [];
+  const trainings = data;
 
   return (
     <div className="flex flex-col gap-6">
@@ -92,7 +92,7 @@ export default function CollaboratorTrainingsPage() {
         </TabsList>
 
         <TabsContent value={activeTab} className="mt-4">
-          {trainings.length === 0 ? (
+          {trainings?.data.length === 0 ? (
             <Card>
               <CardContent className="py-10 text-center">
                 <p className="text-muted-foreground mb-4">
@@ -102,7 +102,7 @@ export default function CollaboratorTrainingsPage() {
             </Card>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {trainings.map((training) => (
+              {trainings?.data.map((training) => (
                 <Card key={training.id} className="overflow-hidden">
                   {training.thumbnail && (
                     <div

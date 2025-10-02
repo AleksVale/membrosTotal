@@ -107,7 +107,7 @@ export function PaymentChart({
                 cy="50%"
                 labelLine={false}
                 label={({ name, percent }) =>
-                  `${name} ${(percent * 100).toFixed(0)}%`
+                  `${name} ${(percent ? percent * 100 : 0).toFixed(0)}%`
                 }
                 outerRadius={80}
                 fill="#8884d8"
@@ -118,10 +118,11 @@ export function PaymentChart({
                 ))}
               </Pie>
               <Tooltip
-                formatter={(value: number, name: string, props: any) => [
-                  formatCurrency(props.payload.amount),
-                  props.payload.name,
-                ]}
+                formatter={(value: number) => [formatCurrency(value), ""]}
+                contentStyle={{
+                  backgroundColor: "#fff",
+                  border: "1px solid #ccc",
+                }}
               />
             </PieChart>
           </ResponsiveContainer>

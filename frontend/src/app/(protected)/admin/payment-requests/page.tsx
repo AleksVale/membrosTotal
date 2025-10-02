@@ -3,7 +3,7 @@
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
@@ -66,7 +66,7 @@ interface PaymentRequestType {
 }
 
 // Componente principal da página
-export default function PaymentRequestsPage() {
+function PaymentRequestsPage() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
 
@@ -274,5 +274,13 @@ export default function PaymentRequestsPage() {
         filterEmptyMessage="Nenhuma solicitação encontrada com os filtros aplicados"
       />
     </PaymentLayout>
+  );
+}
+
+export default function PaymentRequestsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <PaymentRequestsPage />
+    </Suspense>
   );
 }

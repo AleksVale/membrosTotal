@@ -65,6 +65,7 @@ interface DashboardStats {
 }
 
 export default function CollaboratorDashboardPage() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { user } = useAuth();
 
   const {
@@ -82,7 +83,7 @@ export default function CollaboratorDashboardPage() {
     refetchInterval: 10 * 60 * 1000, // 10 minutos
   });
 
-  const { data: monthlyProgress, isLoading: isLoadingProgress } = useQuery({
+  const { data: monthlyProgress } = useQuery({
     queryKey: ["collaborator", "monthly-progress"],
     queryFn: async () => {
       const response = await http.get("/collaborator/home/monthly-progress");
@@ -91,7 +92,7 @@ export default function CollaboratorDashboardPage() {
     staleTime: 10 * 60 * 1000, // 10 minutos
   });
 
-  const { data: recentActivities, isLoading: isLoadingActivities } = useQuery({
+  const { data: recentActivities } = useQuery({
     queryKey: ["collaborator", "recent-activities"],
     queryFn: async () => {
       const response = await http.get("/collaborator/home/recent-activities");
@@ -100,7 +101,7 @@ export default function CollaboratorDashboardPage() {
     staleTime: 5 * 60 * 1000, // 5 minutos
   });
 
-  const { data: weeklyProgress, isLoading: isLoadingWeekly } = useQuery({
+  const { data: weeklyProgress } = useQuery({
     queryKey: ["collaborator", "weekly-progress"],
     queryFn: async () => {
       const response = await http.get("/collaborator/home/weekly-progress");
@@ -146,7 +147,7 @@ export default function CollaboratorDashboardPage() {
   ];
 
   const progressData =
-    monthlyProgress?.map((month: any) => ({
+    monthlyProgress?.map((month: { name: string; total: number }) => ({
       name: month.name,
       value: month.total,
     })) || [];

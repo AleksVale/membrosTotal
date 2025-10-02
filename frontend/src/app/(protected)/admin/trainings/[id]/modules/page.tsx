@@ -1,24 +1,33 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
 import {
-  PlusCircle,
-  ListFilter,
+  ArrowLeft,
   Grid,
   List,
-  Search,
+  ListFilter,
   Loader2,
-  ArrowLeft,
+  PlusCircle,
+  Search,
 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { Suspense, useState } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
 import { useModules } from "./hooks/useModules";
 
 // Components
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -26,20 +35,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Pagination } from "@/components/ui/pagination";
+import http from "@/lib/http";
 import { ModuleCard } from "./components/ModuleCard";
 import { ModuleList } from "./components/ModuleList";
-import http from "@/lib/http";
 
-export default function ModulesPage() {
+function ModulesPage() {
   const router = useRouter();
   const params = useParams();
   const trainingId = Number(params.id);
@@ -335,5 +335,13 @@ export default function ModulesPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function ModulesPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <ModulesPage />
+    </Suspense>
   );
 }

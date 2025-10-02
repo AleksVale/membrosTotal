@@ -43,7 +43,7 @@ export function WeeklyProgress({
 
       // Dados simulados para demonstração
       let completed = 0;
-      let total = 5;
+      const total = 5;
 
       if (date < today) {
         // Dias passados - valores aleatórios de exemplo
@@ -74,13 +74,6 @@ export function WeeklyProgress({
   );
   const totalTasks = displayWeekData.reduce((sum, day) => sum + day.total, 0);
   const overallProgress = (totalCompleted / totalTasks) * 100;
-
-  const getProgressColor = (percentage: number) => {
-    if (percentage >= 80) return "bg-green-500";
-    if (percentage >= 60) return "bg-blue-500";
-    if (percentage >= 40) return "bg-yellow-500";
-    return "bg-gray-300";
-  };
 
   return (
     <Card className={className}>

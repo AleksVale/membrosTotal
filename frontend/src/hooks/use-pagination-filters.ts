@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 
 interface UsePaginationFiltersProps {
   defaultPerPage?: number;
@@ -14,7 +14,9 @@ export function usePaginationFilters({
 
   // Extrair parâmetros da URL
   const initialPage = Number(searchParams.get("page") || "1");
-  const initialPerPage = Number(searchParams.get("per_page") || defaultPerPage.toString());
+  const initialPerPage = Number(
+    searchParams.get("per_page") || defaultPerPage.toString()
+  );
   const initialSearch = searchParams.get("search") || "";
 
   // Estados
@@ -24,15 +26,17 @@ export function usePaginationFilters({
   const [debouncedSearch, setDebouncedSearch] = useState(initialSearch);
   const [isSearching, setIsSearching] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
-  
+
   // Mapa de filtros - armazena todos os filtros em um objeto
-  const [filters, setFilters] = useState<Record<string, string | undefined>>({});
+  const [filters, setFilters] = useState<Record<string, string | undefined>>(
+    {}
+  );
 
   // Atualiza um filtro específico
   const setFilter = (key: string, value: string | undefined) => {
-    setFilters(prev => ({
+    setFilters((prev) => ({
       ...prev,
-      [key]: value
+      [key]: value,
     }));
     if (page !== 1) setPage(1); // Reset para primeira página ao filtrar
   };
@@ -53,29 +57,29 @@ export function usePaginationFilters({
       setIsSearching(false);
     }, 500);
     return () => clearTimeout(timer);
-  }, [search]);
+  }, [search, page, setPage]);
 
   const buildQueryString = useCallback(() => {
     const params = new URLSearchParams();
-    
+
     if (page > 1) params.set("page", page.toString());
     if (perPage !== defaultPerPage) params.set("per_page", perPage.toString());
     if (debouncedSearch) params.set("search", debouncedSearch);
-    
+
     Object.entries(filters).forEach(([key, value]) => {
       if (value) {
         const paramKey = paramMapping[key] || key;
         params.set(paramKey, value);
       }
     });
-    
+
     return params.toString() ? `?${params.toString()}` : "";
-  }, [page, perPage, defaultPerPage, debouncedSearch, filters]);
+  }, [page, perPage, defaultPerPage, debouncedSearch, filters, paramMapping]);
 
   // Conta filtros ativos
   const activeFiltersCount = [
     debouncedSearch ? debouncedSearch : null,
-    ...Object.values(filters).filter(Boolean)
+    ...Object.values(filters).filter(Boolean),
   ].filter(Boolean).length;
 
   return {
@@ -94,6 +98,6 @@ export function usePaginationFilters({
     clearFilters,
     buildQueryString,
     activeFiltersCount,
-    hasActiveFilters: activeFiltersCount > 0
+    hasActiveFilters: activeFiltersCount > 0,
   };
 }

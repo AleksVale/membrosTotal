@@ -16,7 +16,6 @@ import { useQuery } from "@tanstack/react-query";
 import { ArrowLeft, CheckCircle, Clock, Lock } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
 interface Submodule {
   id: number;
@@ -38,7 +37,7 @@ interface SubmodulesResponse {
   };
 }
 
-function CollaboratorSubmodulesPage() {
+export default function CollaboratorSubmodulesPage() {
   const searchParams = useSearchParams();
   const moduleId = searchParams.get("moduleId");
 
@@ -214,13 +213,5 @@ function CollaboratorSubmodulesPage() {
         ))
       )}
     </div>
-  );
-}
-
-export default function CollaboratorSubmodulesPageWrapper() {
-  return (
-    <Suspense fallback={<div>Carregando...</div>}>
-      <CollaboratorSubmodulesPage />
-    </Suspense>
   );
 }

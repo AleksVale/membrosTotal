@@ -23,9 +23,11 @@ import http from "@/lib/http";
 import { QueryKeys } from "@/shared/constants/queryKeys";
 import {
   AutocompleteItem,
+  AutocompleteResponse,
   UserAutocompleteItem,
 } from "@/shared/types/autocomplete";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

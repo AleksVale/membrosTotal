@@ -9,7 +9,7 @@ import {
   Search,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
@@ -39,7 +39,7 @@ import { CreateSubmoduleDialog } from "./components/CreateSubmoduleDialog";
 import { SubmoduleCard } from "./components/SubmoduleCard";
 import { SubmoduleList } from "./components/SubmoduleList";
 
-export default function SubmodulesListPage() {
+function SubmodulesListPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const moduleId = searchParams.get("moduleId")
@@ -379,5 +379,13 @@ export default function SubmodulesListPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function SubmodulesPage() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <SubmodulesListPage />
+    </Suspense>
   );
 }

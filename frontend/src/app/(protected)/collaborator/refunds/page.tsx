@@ -30,12 +30,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+// HTTP
 import { toast } from "react-toastify";
 
 // HTTP
 import http from "@/lib/http";
+import { Suspense } from "react";
 
-export default function RefundsPage() {
+function CollaboratorRefundsPage() {
   const router = useRouter();
   const isMobile = useMediaQuery("(max-width: 768px)");
   const [activeTab, setActiveTab] = useState("list");
@@ -266,5 +269,13 @@ export default function RefundsPage() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+export default function CollaboratorRefundsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <CollaboratorRefundsPage />
+    </Suspense>
   );
 }

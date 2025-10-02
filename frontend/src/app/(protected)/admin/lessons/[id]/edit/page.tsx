@@ -4,18 +4,20 @@ import { useRouter } from "next/navigation";
 import { useMemo } from "react";
 
 import http from "@/lib/http";
+import { use } from "react";
 import { LessonForm, LessonFormData } from "../../components/LessonForm";
 import { useLesson, useUpdateLesson } from "../../hooks/useLessonMutations";
 
 interface EditLessonPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export default function EditLessonPage({ params }: EditLessonPageProps) {
   const router = useRouter();
-  const lessonId = Number(params.id);
+  const { id } = use(params);
+  const lessonId = Number(id);
 
   const { data: lesson, isLoading } = useLesson(lessonId);
   const updateLesson = useUpdateLesson();

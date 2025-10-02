@@ -1,23 +1,32 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import {
-  PlusCircle,
-  ListFilter,
   Grid,
   List,
-  Search,
+  ListFilter,
   Loader2,
+  PlusCircle,
+  Search,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Suspense, useMemo, useState } from "react";
 
 // Custom hooks
 import { usePaginationFilters } from "@/hooks/use-pagination-filters";
 import { useTrainings } from "./hooks/useTrainings";
 
 // Components
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Pagination } from "@/components/ui/pagination";
 import {
   Select,
   SelectContent,
@@ -25,20 +34,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
 import { TrainingCard } from "./components/TrainingCard";
-import { Badge } from "@/components/ui/badge";
-import { Pagination } from "@/components/ui/pagination";
-import { TrainingStatCard } from "./components/TrainingStatCard";
 import { TrainingList } from "./components/TrainingList";
+import { TrainingStatCard } from "./components/TrainingStatCard";
 
-export default function TrainingsPage() {
+function TrainingsPage() {
   const router = useRouter();
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
@@ -355,5 +355,13 @@ export default function TrainingsPage() {
         </CardContent>
       </Card>
     </div>
+  );
+}
+
+export default function TrainingsPageWrapper() {
+  return (
+    <Suspense fallback={<div>Carregando...</div>}>
+      <TrainingsPage />
+    </Suspense>
   );
 }

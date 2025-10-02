@@ -134,7 +134,7 @@ export default function ModulePage({ params }: ModulePageProps) {
               {module.thumbnail ? (
                 <div className="relative aspect-video w-full">
                   <Image
-                    src={getImageUrl(module.thumbnail)}
+                    src={getImageUrl(module.thumbnail) ?? ""}
                     alt={`Thumbnail do módulo ${module.title}`}
                     fill
                     className="rounded-lg object-cover"

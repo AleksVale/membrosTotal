@@ -19,6 +19,14 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        # Build-time variables (NEXT_PUBLIC_* need to be available at build time)
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://api.nohau.agency/api}
     ports:
       - "3001:3001"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://api.nohau.agency/api}
+    depends_on:
+      - api
     restart: unless-stopped

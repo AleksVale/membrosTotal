@@ -3,23 +3,24 @@ import axios, {
   AxiosInstance,
   AxiosResponse,
   InternalAxiosRequestConfig,
-} from 'axios';
-import Cookies from 'js-cookie';
-import { performLogout } from './auth';
+} from "axios";
+import Cookies from "js-cookie";
+import { performLogout } from "./auth";
 
 interface ErrorResponse {
   status: number;
 }
 
-// Backend API URL
-// const serverURL = 'https://api.nohau.agency/api';
-const serverURL = 'http://localhost:3000/api';
+// Backend API URL - usa variável de ambiente ou fallback para desenvolvimento
+const serverURL =
+  process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/api";
 
+console.log("API URL:", serverURL);
 
 const http: AxiosInstance = axios.create({
   baseURL: serverURL,
   headers: {
-    'Content-type': 'application/json',
+    "Content-type": "application/json",
   },
 });
 
@@ -32,13 +33,13 @@ http.interceptors.response.use(
       await performLogout();
     }
     return Promise.reject(error);
-  },
+  }
 );
 
 // Request interceptor
 http.interceptors.request.use(
   (config: InternalAxiosRequestConfig<unknown>) => {
-    const token = Cookies.get('auth_token');
+    const token = Cookies.get("auth_token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -46,7 +47,7 @@ http.interceptors.request.use(
   },
   (error: ErrorResponse) => {
     return Promise.reject(error);
-  },
+  }
 );
 
 export default http;

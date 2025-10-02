@@ -29,10 +29,17 @@ jobs:
           MAILER_PASSWORD=${{ secrets.MAILER_PASSWORD }}
           EOL
       
+      - name: Create docker-compose .env file
+        run: |
+          cat > .env << EOL
+          NEXT_PUBLIC_API_URL=${{ secrets.NEXT_PUBLIC_API_URL }}
+          EOL
+      
       - name: Create deployment package
         run: |
           mkdir -p deploy-package
           cp docker-compose.yml deploy-package/
+          cp .env deploy-package/
           cp -r backend deploy-package/
           cp -r frontend deploy-package/
           tar -czf membros-deployment.tar.gz deploy-package/
@@ -58,6 +65,14 @@ jobs:
             mkdir -p /opt/membrosTotal
             tar -xzf /tmp/membros-deployment.tar.gz -C /opt/membrosTotal
             cd /opt/membrosTotal/deploy-package
-            docker compose build
+            docker compose down || true
+            docker compose build --no-cache
             docker compose up -d
             docker system prune -af
+            
+            # Aguardar containers iniciarem
+            sleep 10
+            
+            # Verificar se os containers estão rodando
+            docker ps | grep membros
+

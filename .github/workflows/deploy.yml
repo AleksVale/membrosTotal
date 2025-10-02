@@ -62,12 +62,24 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
+            # Parar e remover containers antigos
+            cd /opt/membrosTotal/deploy-package 2>/dev/null && docker compose down || true
+            
+            # Remover diretório antigo completamente
+            rm -rf /opt/membrosTotal/deploy-package
+            
+            # Criar estrutura nova
             mkdir -p /opt/membrosTotal
             tar -xzf /tmp/membros-deployment.tar.gz -C /opt/membrosTotal
             cd /opt/membrosTotal/deploy-package
-            docker compose down || true
+            
+            # Build com no-cache para garantir versão atual
             docker compose build --no-cache
+            
+            # Subir containers
             docker compose up -d
+            
+            # Limpar imagens e volumes antigos
             docker system prune -af
             
             # Aguardar containers iniciarem

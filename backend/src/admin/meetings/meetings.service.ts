@@ -4,11 +4,11 @@ import {
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma, StatusMeeting } from '@prisma/client';
+import { DateUtils } from 'src/utils/date';
 import { CreateMeetingDTO } from './dto/create-meeting.dto';
 import { UpdateMeetingDTO } from './dto/update-meeting.dto';
 import { MeetingRepository } from './meeting.repository';
-import { DateUtils } from 'src/utils/date';
-import { Prisma, StatusMeeting } from '@prisma/client';
 
 export interface IMeetingFilters {
   title?: string;
@@ -114,10 +114,13 @@ export class MeetingsService {
     const entity: Prisma.MeetingUpdateInput = {
       title: updateMeetingDto.title,
       link: updateMeetingDto.link,
+      description: updateMeetingDto.description,
       date: updateMeetingDto.meetingDate
         ? DateUtils.stringToDate(updateMeetingDto.meetingDate)
         : undefined,
-      status: StatusMeeting[updateMeetingDto.status ?? 'PENDING'],
+      status: updateMeetingDto.status
+        ? StatusMeeting[updateMeetingDto.status]
+        : undefined,
       UserMeeting: updateMeetingDto.users
         ? {
             createMany: {
@@ -135,5 +138,16 @@ export class MeetingsService {
     const newStatus = StatusMeeting[status];
     if (!newStatus) throw new BadRequestException('Status inválido');
     return await this.meetingRepository.update({ status: newStatus }, { id });
+  }
+
+  async remove(id: number) {
+    const meeting = await this.meetingRepository.find({ id });
+    if (!meeting) throw new NotFoundException('Reunião não encontrada');
+
+    // Deletar os relacionamentos UserMeeting primeiro
+    await this.meetingRepository.deleteMeetingUsers(id);
+
+    // Deletar a reunião
+    return await this.meetingRepository.delete({ id });
   }
 }

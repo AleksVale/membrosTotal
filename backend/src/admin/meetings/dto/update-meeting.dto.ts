@@ -6,6 +6,10 @@ const UpdateMeetingSchema = z.object({
     .string({ required_error: 'Título é obrigatório' })
     .min(3, { message: 'Título deve ter no mínimo 3 caracteres' })
     .optional(),
+  description: z
+    .string()
+    .min(3, { message: 'Descrição deve ter no mínimo 3 caracteres' })
+    .optional(),
   link: z
     .string({ required_error: 'O link da reunião deve ser informado' })
     .url({ message: 'Link deve ser uma URL válida' })

@@ -230,7 +230,9 @@ export default function MeetingsPage() {
                               <DropdownMenuSeparator />
                               <DropdownMenuItem
                                 onClick={() =>
-                                  router.push(`/admin/meetings/${meeting.id}`)
+                                  router.push(
+                                    `/admin/meetings/${meeting.id}/edit`
+                                  )
                                 }
                               >
                                 Editar
@@ -464,7 +466,9 @@ export default function MeetingsPage() {
                                 <DropdownMenuSeparator />
                                 <DropdownMenuItem
                                   onClick={() =>
-                                    router.push(`/admin/meetings/${meeting.id}`)
+                                    router.push(
+                                      `/admin/meetings/${meeting.id}/edit`
+                                    )
                                   }
                                 >
                                   Editar

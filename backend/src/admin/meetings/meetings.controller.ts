@@ -1,25 +1,26 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
-  UseGuards,
-  Query,
+  Controller,
   DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
   ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
-import { MeetingsService } from './meetings.service';
-import { CreateMeetingDTO } from './dto/create-meeting.dto';
-import { UpdateMeetingDTO } from './dto/update-meeting.dto';
 import { ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { Roles } from '../../public/auth/roles/roles.decorator';
+import { StatusMeeting } from '@prisma/client';
+import { SuccessResponse } from 'src/utils/success-response.dto';
 import { JwtAuthGuard } from '../../public/auth/jwt-auth.guard';
 import { RoleGuard } from '../../public/auth/role/role.guard';
-import { SuccessResponse } from 'src/utils/success-response.dto';
+import { Roles } from '../../public/auth/roles/roles.decorator';
+import { CreateMeetingDTO } from './dto/create-meeting.dto';
 import { MeetingResponseDTO } from './dto/meeting-response.dto';
-import { StatusMeeting } from '@prisma/client';
+import { UpdateMeetingDTO } from './dto/update-meeting.dto';
+import { MeetingsService } from './meetings.service';
 
 @ApiTags('Meetings')
 @Roles(['admin'])
@@ -112,6 +113,19 @@ export class MeetingsController {
     );
     return {
       success: !!result,
+    };
+  }
+
+  @ApiResponse({
+    type: SuccessResponse,
+    status: 200,
+    description: 'The meeting has been successfully deleted.',
+  })
+  @Delete(':id')
+  async remove(@Param('id') id: string): Promise<SuccessResponse> {
+    await this.meetingsService.remove(+id);
+    return {
+      success: true,
     };
   }
 }

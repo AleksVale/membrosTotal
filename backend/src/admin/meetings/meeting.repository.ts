@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma/prisma.service';
 import { Prisma, StatusMeeting } from '@prisma/client';
-import { DateUtils } from '../../utils/date';
 import { createPaginator } from 'prisma-pagination';
+import { PrismaService } from '../../prisma/prisma.service';
+import { DateUtils } from '../../utils/date';
 import { MeetingResponseDTO } from './dto/meeting-response.dto';
 import { IMeetingFilters } from './meetings.service';
 
@@ -110,6 +110,12 @@ export class MeetingRepository {
       where: {
         meetingId: meetingId,
       },
+    });
+  }
+
+  async delete(where: Prisma.MeetingWhereUniqueInput) {
+    return await this.prisma.meeting.delete({
+      where,
     });
   }
 

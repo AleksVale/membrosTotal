@@ -1,10 +1,10 @@
-import { Metadata } from "next";
 import LoginForm from "@/components/auth/login-form";
+import { Metadata } from "next";
 import Image from "next/image";
 
 export const metadata: Metadata = {
-  title: "Login - MembrosTotal",
-  description: "Login to your MembrosTotal account",
+  title: "Login - Colaborador Nohau",
+  description: "Login para colaboradores Nohau",
 };
 
 export default function LoginPage() {

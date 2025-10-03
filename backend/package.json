@@ -1,7 +1,7 @@
 {
-  "name": "membros",
+  "name": "colaborador-nohau-backend",
   "version": "0.0.1",
-  "description": "",
+  "description": "Sistema de gerenciamento para colaboradores Nohau - Backend",
   "author": "",
   "private": true,
   "license": "UNLICENSED",

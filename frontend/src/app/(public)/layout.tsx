@@ -23,7 +23,7 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-            storageKey="membros-total-theme"
+            storageKey="colaborador-nohau-theme"
           >
             <ClientSideToastContainer />
             <main className="min-h-screen">{children}</main>

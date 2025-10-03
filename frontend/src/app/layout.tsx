@@ -13,8 +13,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MembrosTotal - Sistema de Gerenciamento",
-  description: "Sistema de gerenciamento para o negócio",
+  title: "Colaborador Nohau - Sistema de Gerenciamento",
+  description: "Sistema de gerenciamento para colaboradores Nohau",
 };
 
 export default function RootLayout({
@@ -31,7 +31,7 @@ export default function RootLayout({
             defaultTheme="system"
             enableSystem
             disableTransitionOnChange
-            storageKey="membros-total-theme"
+            storageKey="colaborador-nohau-theme"
           >
             <ReactQueryProvider>{children}</ReactQueryProvider>
             <ClientSideToastContainer />

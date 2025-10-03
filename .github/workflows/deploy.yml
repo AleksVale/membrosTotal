@@ -63,17 +63,15 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             # Parar e remover containers antigos
-            cd /opt/membrosTotal/deploy-package 2>/dev/null && docker compose down || true
+            cd /opt/colaborador-nohau/deploy-package 2>/dev/null && docker compose down || true
             
-            # Remover diretório antigo completamente
-            rm -rf /opt/membrosTotal/deploy-package
-            
-            # Criar estrutura nova
-            mkdir -p /opt/membrosTotal
-            tar -xzf /tmp/membros-deployment.tar.gz -C /opt/membrosTotal
-            cd /opt/membrosTotal/deploy-package
-            
-            # Build com no-cache para garantir versão atual
+            # Clean old deployment
+            rm -rf /opt/colaborador-nohau/deploy-package
+
+            # Extract new deployment
+            mkdir -p /opt/colaborador-nohau
+            tar -xzf /tmp/membros-deployment.tar.gz -C /opt/colaborador-nohau
+            cd /opt/colaborador-nohau/deploy-package            # Build com no-cache para garantir versão atual
             docker compose build --no-cache
             
             # Subir containers

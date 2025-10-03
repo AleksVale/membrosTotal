@@ -20,9 +20,10 @@ export default function RootLayout({
         <body>
           <ThemeProvider
             attribute="class"
-            defaultTheme="dark"
+            defaultTheme="system"
             enableSystem
             disableTransitionOnChange
+            storageKey="membros-total-theme"
           >
             <ClientSideToastContainer />
             <main className="min-h-screen">{children}</main>

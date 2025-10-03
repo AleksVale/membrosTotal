@@ -1,11 +1,11 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MeetingForm } from "@/components/meetings/meeting-form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import http from "@/lib/http";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useParams } from "next/navigation";
 
 interface Meeting {
   id: number;
@@ -48,15 +48,21 @@ export default function EditMeetingPage() {
       if (!meetingId) throw new Error("ID da reunião não fornecido");
       const response = await http.get<Meeting>(`/meetings/${meetingId}`);
 
+      // Converter a data UTC para o timezone local no formato datetime-local
+      const dateUTC = new Date(response.data.date);
+      const year = dateUTC.getFullYear();
+      const month = String(dateUTC.getMonth() + 1).padStart(2, "0");
+      const day = String(dateUTC.getDate()).padStart(2, "0");
+      const hours = String(dateUTC.getHours()).padStart(2, "0");
+      const minutes = String(dateUTC.getMinutes()).padStart(2, "0");
+      const localDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
+
       const formattedMeeting: FormattedMeeting = {
         id: response.data.id,
         title: response.data.title,
         description: response.data.description,
         link: response.data.link,
-        meetingDate:
-          response.data.date.split("T")[0] +
-          "T" +
-          response.data.date.split("T")[1].substring(0, 5),
+        meetingDate: localDateTime,
         users: response.data.UserMeeting.map((um) => um.userId),
       };
 

@@ -1,10 +1,10 @@
+import ClientSideToastContainer from "@/components/client-toast-container";
+import ReactQueryProvider from "@/components/query";
+import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/contexts/AuthContext";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
-import ClientSideToastContainer from "@/components/client-toast-container";
-import { AuthProvider } from "@/contexts/AuthContext";
-import ReactQueryProvider from "@/components/query";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -26,7 +26,13 @@ export default function RootLayout({
     <html lang="pt-BR" suppressHydrationWarning>
       <body className={`${inter.variable} font-sans antialiased`}>
         <AuthProvider>
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+            storageKey="membros-total-theme"
+          >
             <ReactQueryProvider>{children}</ReactQueryProvider>
             <ClientSideToastContainer />
           </ThemeProvider>

@@ -1,10 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -15,7 +11,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -23,11 +18,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import http from "@/lib/http";
-import { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import * as z from "zod";
 
 const meetingSchema = z.object({
   title: z.string().min(3, "Título deve ter no mínimo 3 caracteres"),
@@ -49,6 +49,14 @@ interface User {
   fullName: string;
 }
 
+interface UserFromBackend {
+  id: number;
+  firstName: string;
+  lastName: string;
+  email: string;
+  status: string;
+}
+
 export function MeetingForm({
   initialData,
   meetingId,
@@ -64,9 +72,9 @@ export function MeetingForm({
     queryKey: ["users-for-meetings"],
     queryFn: async () => {
       const response = await http.get("/autocomplete?fields=users");
-      return response.data.users.map((user: User) => ({
+      return response.data.users.map((user: UserFromBackend) => ({
         id: user.id,
-        fullName: user.fullName,
+        fullName: `${user.firstName} ${user.lastName}`.trim(),
       }));
     },
     staleTime: 5 * 60 * 1000, // 5 minutos

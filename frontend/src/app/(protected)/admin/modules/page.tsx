@@ -286,16 +286,7 @@ function ModulesListPage() {
                 Nenhum módulo encontrado.
               </p>
               <Button
-                onClick={() => {
-                  const url = new URL(
-                    "/admin/trainings/modules/new",
-                    window.location.origin
-                  );
-                  if (trainingId) {
-                    url.searchParams.set("trainingId", trainingId.toString());
-                  }
-                  router.push(url.toString());
-                }}
+                onClick={() => setCreateDialogOpen(true)}
               >
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Criar primeiro módulo

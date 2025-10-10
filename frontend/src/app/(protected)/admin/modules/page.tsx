@@ -285,9 +285,7 @@ function ModulesListPage() {
               <p className="text-muted-foreground mb-2">
                 Nenhum módulo encontrado.
               </p>
-              <Button
-                onClick={() => setCreateDialogOpen(true)}
-              >
+              <Button onClick={() => setCreateDialogOpen(true)}>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 Criar primeiro módulo
               </Button>

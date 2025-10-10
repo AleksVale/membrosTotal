@@ -7,15 +7,9 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { Edit, Eye, MoreVertical, Users } from "lucide-react";
+import { Edit, Eye, Trash2, Users } from "lucide-react";
 import Image from "next/image";
 import { DeleteTrainingAlert } from "./DeleteTrainingAlert";
 
@@ -72,32 +66,39 @@ export function TrainingCard({ training, onView, onEdit }: TrainingCardProps) {
       <CardHeader className="p-4 pb-0 flex-grow">
         <div className="flex justify-between items-start">
           <h3 className="font-medium text-lg line-clamp-2">{training.title}</h3>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon" className="h-8 w-8">
-                <MoreVertical className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => onView(training.id)}>
-                <Eye className="mr-2 h-4 w-4" />
-                Visualizar
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onEdit(training.id)}>
-                <Edit className="mr-2 h-4 w-4" />
-                Editar
-              </DropdownMenuItem>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <DropdownMenuItem className="text-red-600">
-                    <Eye className="mr-2 h-4 w-4" />
-                    Excluir
-                  </DropdownMenuItem>
-                </AlertDialogTrigger>
-                <DeleteTrainingAlert trainingId={training.id} />
-              </AlertDialog>
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <div className="flex items-center gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => onView(training.id)}
+              title="Visualizar"
+            >
+              <Eye className="h-4 w-4" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8"
+              onClick={() => onEdit(training.id)}
+              title="Editar"
+            >
+              <Edit className="h-4 w-4" />
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                  title="Excluir"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              </AlertDialogTrigger>
+              <DeleteTrainingAlert trainingId={training.id} />
+            </AlertDialog>
+          </div>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
           {training.description}

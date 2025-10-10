@@ -1,26 +1,3 @@
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Edit, MoreHorizontal, Trash, Users } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import Link from "next/link";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -32,6 +9,21 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Edit, Eye, FileText, Trash2, Users } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 interface Training {
   id: number;
@@ -135,60 +127,67 @@ export function TrainingList({
                   })}
                 </TableCell>
                 <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Abrir menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
+                  <div className="flex items-center gap-1">
+                    {onView && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => onView(training.id)}
+                        title="Ver detalhes"
+                      >
+                        <Eye className="h-4 w-4" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-
-                      {onView && (
-                        <DropdownMenuItem onClick={() => onView(training.id)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          <span>Ver detalhes</span>
-                        </DropdownMenuItem>
-                      )}
-
-                      {onEdit && (
-                        <DropdownMenuItem onClick={() => onEdit(training.id)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          <span>Editar</span>
-                        </DropdownMenuItem>
-                      )}
-
-                      <DropdownMenuItem asChild>
-                        <Link href={`/admin/trainings/${training.id}/modules`}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          <span>Ver módulos</span>
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem asChild>
-                        <Link
-                          href={`/admin/trainings/${training.id}/permissions`}
-                        >
-                          <Users className="mr-2 h-4 w-4" />
-                          <span>Permissões</span>
-                        </Link>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuSeparator />
-
+                    )}
+                    {onEdit && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => onEdit(training.id)}
+                        title="Editar"
+                      >
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      asChild
+                      title="Ver módulos"
+                    >
+                      <Link href={`/admin/trainings/${training.id}/modules`}>
+                        <FileText className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      asChild
+                      title="Permissões"
+                    >
+                      <Link
+                        href={`/admin/trainings/${training.id}/permissions`}
+                      >
+                        <Users className="h-4 w-4" />
+                      </Link>
+                    </Button>
+                    <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <DropdownMenuItem
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                          title="Excluir"
                           onClick={() => setTrainingToDelete(training.id)}
-                          className="text-destructive focus:text-destructive"
                         >
-                          <Trash className="mr-2 h-4 w-4" />
-                          <span>Excluir</span>
-                        </DropdownMenuItem>
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
                       </AlertDialogTrigger>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    </AlertDialog>
+                  </div>
                 </TableCell>
               </TableRow>
             ))

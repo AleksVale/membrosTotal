@@ -13,7 +13,7 @@ const createTrainingSchema = z.object({
     .min(3, { message: 'Insira um nome válido' }),
   order: z
     .number({ required_error: 'A ordem é obrigatória' })
-    .min(1, { message: 'A ordem deve ser maior que 0' }),
+    .min(0, { message: 'A ordem deve ser maior ou igual a 0' }),
   status: z.enum(['ACTIVE', 'DRAFT', 'ARCHIVED']).optional(),
 });
 

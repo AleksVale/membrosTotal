@@ -20,14 +20,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -47,11 +40,11 @@ import {
   CheckCircle,
   ChevronLeft,
   ChevronRight,
+  Edit,
   Loader2,
-  MoreHorizontal,
   Search,
+  Trash2,
   Video,
-  XCircle,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -219,93 +212,85 @@ export default function MeetingsPage() {
                       >
                         <div className="flex items-center justify-between mb-2">
                           <h3 className="font-medium">{meeting.title}</h3>
-                          <DropdownMenu>
-                            <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" className="h-8 w-8 p-0">
-                                <MoreHorizontal className="h-4 w-4" />
-                              </Button>
-                            </DropdownMenuTrigger>
-                            <DropdownMenuContent align="end">
-                              <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                              <DropdownMenuSeparator />
-                              <DropdownMenuItem
-                                onClick={() =>
-                                  router.push(
-                                    `/admin/meetings/${meeting.id}/edit`
-                                  )
+                          <div className="flex items-center gap-1">
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8"
+                              onClick={() =>
+                                router.push(
+                                  `/admin/meetings/${meeting.id}/edit`
+                                )
+                              }
+                              title="Editar"
+                            >
+                              <Edit className="h-4 w-4" />
+                            </Button>
+                            {meeting.status === "PENDING" && (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                onClick={() => handleFinish(meeting.id)}
+                                disabled={
+                                  finishMeetingMutation.isPending &&
+                                  finishMeetingMutation.variables === meeting.id
                                 }
+                                title="Finalizar"
                               >
-                                Editar
-                              </DropdownMenuItem>
-                              {meeting.status === "PENDING" && (
-                                <DropdownMenuItem
-                                  onClick={() => handleFinish(meeting.id)}
-                                  disabled={
-                                    finishMeetingMutation.isPending &&
-                                    finishMeetingMutation.variables ===
-                                      meeting.id
-                                  }
+                                {finishMeetingMutation.isPending &&
+                                finishMeetingMutation.variables ===
+                                  meeting.id ? (
+                                  <Loader2 className="h-4 w-4 animate-spin" />
+                                ) : (
+                                  <CheckCircle className="h-4 w-4" />
+                                )}
+                              </Button>
+                            )}
+                            <AlertDialog>
+                              <AlertDialogTrigger asChild>
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                  title="Remover"
                                 >
-                                  {finishMeetingMutation.isPending &&
-                                  finishMeetingMutation.variables ===
-                                    meeting.id ? (
-                                    <>
-                                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                      Finalizando...
-                                    </>
-                                  ) : (
-                                    <>
-                                      <CheckCircle className="mr-2 h-4 w-4" />
-                                      Finalizar
-                                    </>
-                                  )}
-                                </DropdownMenuItem>
-                              )}
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
-                                  <DropdownMenuItem
-                                    onSelect={(e) => e.preventDefault()}
-                                    className="text-red-600"
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </AlertDialogTrigger>
+                              <AlertDialogContent>
+                                <AlertDialogHeader>
+                                  <AlertDialogTitle>
+                                    Excluir reunião
+                                  </AlertDialogTitle>
+                                  <AlertDialogDescription>
+                                    Esta ação não pode ser desfeita. Tem certeza
+                                    de que deseja excluir esta reunião?
+                                  </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                  <AlertDialogCancel>
+                                    Cancelar
+                                  </AlertDialogCancel>
+                                  <AlertDialogAction
+                                    onClick={() => handleDelete(meeting.id)}
+                                    className="bg-red-600 hover:bg-red-700"
                                   >
-                                    <XCircle className="mr-2 h-4 w-4" />
-                                    Remover
-                                  </DropdownMenuItem>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent>
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>
-                                      Excluir reunião
-                                    </AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                      Esta ação não pode ser desfeita. Tem
-                                      certeza de que deseja excluir esta
-                                      reunião?
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel>
-                                      Cancelar
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction
-                                      onClick={() => handleDelete(meeting.id)}
-                                      className="bg-red-600 hover:bg-red-700"
-                                    >
-                                      {deleteMeetingMutation.isPending &&
-                                      deleteMeetingMutation.variables ===
-                                        meeting.id ? (
-                                        <>
-                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                          Removendo...
-                                        </>
-                                      ) : (
-                                        "Remover"
-                                      )}
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
-                            </DropdownMenuContent>
-                          </DropdownMenu>
+                                    {deleteMeetingMutation.isPending &&
+                                    deleteMeetingMutation.variables ===
+                                      meeting.id ? (
+                                      <>
+                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                        Removendo...
+                                      </>
+                                    ) : (
+                                      "Remover"
+                                    )}
+                                  </AlertDialogAction>
+                                </AlertDialogFooter>
+                              </AlertDialogContent>
+                            </AlertDialog>
+                          </div>
                         </div>
 
                         <p className="text-sm text-muted-foreground mb-3">
@@ -455,93 +440,87 @@ export default function MeetingsPage() {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                  <MoreHorizontal className="h-4 w-4" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem
-                                  onClick={() =>
-                                    router.push(
-                                      `/admin/meetings/${meeting.id}/edit`
-                                    )
-                                  }
-                                >
-                                  Editar
-                                </DropdownMenuItem>
-                                {meeting.status === "PENDING" && (
-                                  <DropdownMenuItem
-                                    onClick={() => handleFinish(meeting.id)}
-                                    disabled={
-                                      finishMeetingMutation.isPending &&
-                                      finishMeetingMutation.variables ===
-                                        meeting.id
-                                    }
-                                  >
-                                    {finishMeetingMutation.isPending &&
+                            <div className="flex items-center gap-1">
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8"
+                                onClick={() =>
+                                  router.push(
+                                    `/admin/meetings/${meeting.id}/edit`
+                                  )
+                                }
+                                title="Editar"
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                              {meeting.status === "PENDING" && (
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                  onClick={() => handleFinish(meeting.id)}
+                                  disabled={
+                                    finishMeetingMutation.isPending &&
                                     finishMeetingMutation.variables ===
-                                      meeting.id ? (
-                                      <>
-                                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                        Finalizando...
-                                      </>
-                                    ) : (
-                                      <>
-                                        <CheckCircle className="mr-2 h-4 w-4" />
-                                        Finalizar
-                                      </>
-                                    )}
-                                  </DropdownMenuItem>
-                                )}
-                                <AlertDialog>
-                                  <AlertDialogTrigger asChild>
-                                    <DropdownMenuItem
-                                      onSelect={(e) => e.preventDefault()}
-                                      className="text-red-600"
+                                      meeting.id
+                                  }
+                                  title="Finalizar"
+                                >
+                                  {finishMeetingMutation.isPending &&
+                                  finishMeetingMutation.variables ===
+                                    meeting.id ? (
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                  ) : (
+                                    <CheckCircle className="h-4 w-4" />
+                                  )}
+                                </Button>
+                              )}
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                                    title="Remover"
+                                  >
+                                    <Trash2 className="h-4 w-4" />
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                      Excluir reunião
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Esta ação não pode ser desfeita. Tem
+                                      certeza de que deseja excluir esta
+                                      reunião?
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                      Cancelar
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction
+                                      onClick={() => handleDelete(meeting.id)}
+                                      className="bg-red-600 hover:bg-red-700"
                                     >
-                                      <XCircle className="mr-2 h-4 w-4" />
-                                      Remover
-                                    </DropdownMenuItem>
-                                  </AlertDialogTrigger>
-                                  <AlertDialogContent>
-                                    <AlertDialogHeader>
-                                      <AlertDialogTitle>
-                                        Excluir reunião
-                                      </AlertDialogTitle>
-                                      <AlertDialogDescription>
-                                        Esta ação não pode ser desfeita. Tem
-                                        certeza de que deseja excluir esta
-                                        reunião?
-                                      </AlertDialogDescription>
-                                    </AlertDialogHeader>
-                                    <AlertDialogFooter>
-                                      <AlertDialogCancel>
-                                        Cancelar
-                                      </AlertDialogCancel>
-                                      <AlertDialogAction
-                                        onClick={() => handleDelete(meeting.id)}
-                                        className="bg-red-600 hover:bg-red-700"
-                                      >
-                                        {deleteMeetingMutation.isPending &&
-                                        deleteMeetingMutation.variables ===
-                                          meeting.id ? (
-                                          <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Removendo...
-                                          </>
-                                        ) : (
-                                          "Remover"
-                                        )}
-                                      </AlertDialogAction>
-                                    </AlertDialogFooter>
-                                  </AlertDialogContent>
-                                </AlertDialog>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
+                                      {deleteMeetingMutation.isPending &&
+                                      deleteMeetingMutation.variables ===
+                                        meeting.id ? (
+                                        <>
+                                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                          Removendo...
+                                        </>
+                                      ) : (
+                                        "Remover"
+                                      )}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))

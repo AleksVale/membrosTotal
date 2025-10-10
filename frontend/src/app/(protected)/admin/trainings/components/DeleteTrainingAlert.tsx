@@ -10,11 +10,11 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { QueryKeys } from "@/shared/constants/queryKeys";
-import { toast } from "react-toastify";
-import { Loader2 } from "lucide-react";
 import http from "@/lib/http";
+import { QueryKeys } from "@/shared/constants/queryKeys";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 interface DeleteTrainingAlertProps {
   trainingId: number;

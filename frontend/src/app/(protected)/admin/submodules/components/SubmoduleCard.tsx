@@ -3,24 +3,10 @@
 import { AlertDialog, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardFooter, CardHeader } from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { getImageUrl } from "@/lib/image-utils";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import {
-  Edit,
-  Eye,
-  FileText,
-  Loader2,
-  MoreVertical,
-  Trash,
-} from "lucide-react";
+import { Edit, Eye, FileText, Loader2, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { DeleteSubmoduleAlert } from "./DeleteSubmoduleAlert";
 
@@ -86,61 +72,67 @@ export function SubmoduleCard({
           <h3 className="font-medium text-lg line-clamp-2">
             {submodule.title}
           </h3>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
+          <div className="flex items-center gap-1">
+            {onView && (
               <Button
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
+                onClick={() => onView(submodule.id)}
+                title="Ver detalhes"
                 disabled={isDeleting}
               >
-                {isDeleting ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <MoreVertical className="h-4 w-4" />
-                )}
+                <Eye className="h-4 w-4" />
               </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              {onView && (
-                <DropdownMenuItem onClick={() => onView(submodule.id)}>
-                  <Eye className="mr-2 h-4 w-4" />
-                  <span>Ver detalhes</span>
-                </DropdownMenuItem>
-              )}
-              {onEdit && (
-                <DropdownMenuItem onClick={() => onEdit(submodule.id)}>
-                  <Edit className="mr-2 h-4 w-4" />
-                  <span>Editar</span>
-                </DropdownMenuItem>
-              )}
-
-              {onManageLessons && (
-                <DropdownMenuItem onClick={() => onManageLessons(submodule.id)}>
-                  <FileText className="mr-2 h-4 w-4" />
-                  <span>Gerenciar Aulas</span>
-                </DropdownMenuItem>
-              )}
-
-              {onDelete && (
-                <>
-                  <DropdownMenuSeparator />
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <DropdownMenuItem className="text-destructive focus:text-destructive">
-                        <Trash className="mr-2 h-4 w-4" />
-                        <span>Excluir</span>
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                    <DeleteSubmoduleAlert
-                      submoduleId={submodule.id}
-                      onDelete={onDelete}
-                    />
-                  </AlertDialog>
-                </>
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+            )}
+            {onEdit && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onEdit(submodule.id)}
+                title="Editar"
+                disabled={isDeleting}
+              >
+                <Edit className="h-4 w-4" />
+              </Button>
+            )}
+            {onManageLessons && (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => onManageLessons(submodule.id)}
+                title="Gerenciar Aulas"
+                disabled={isDeleting}
+              >
+                <FileText className="h-4 w-4" />
+              </Button>
+            )}
+            {onDelete && (
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                    title="Excluir"
+                    disabled={isDeleting}
+                  >
+                    {isDeleting ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-4 w-4" />
+                    )}
+                  </Button>
+                </AlertDialogTrigger>
+                <DeleteSubmoduleAlert
+                  submoduleId={submodule.id}
+                  onDelete={onDelete}
+                />
+              </AlertDialog>
+            )}
+          </div>
         </div>
         <p className="text-sm text-muted-foreground line-clamp-2 mt-2">
           {submodule.description}

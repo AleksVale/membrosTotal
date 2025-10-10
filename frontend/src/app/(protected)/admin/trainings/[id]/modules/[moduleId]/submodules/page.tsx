@@ -1,24 +1,30 @@
 "use client";
 
-import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { QueryKeys } from "@/shared/constants/queryKeys";
 import http from "@/lib/http";
+import { QueryKeys } from "@/shared/constants/queryKeys";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { toast } from "react-toastify";
 import {
   ArrowLeft,
   Edit,
-  Trash,
-  PlusCircle,
-  MoreHorizontal,
+  FileText,
   Loader2,
+  PlusCircle,
+  Trash2,
 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 // Componentes
 import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Table,
   TableBody,
@@ -27,21 +33,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -51,6 +43,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
 // Tipos
@@ -82,10 +75,6 @@ export default function SubmodulesPage() {
 
   const trainingId = Number(params.id);
   const moduleId = Number(params.moduleId);
-
-  const [submoduleToDelete, setSubmoduleToDelete] = useState<number | null>(
-    null
-  );
 
   // Carregar dados do módulo
   const {
@@ -129,7 +118,6 @@ export default function SubmodulesPage() {
       queryClient.invalidateQueries({
         queryKey: QueryKeys.submodules.list(moduleId),
       });
-      setSubmoduleToDelete(null);
     },
     onError: () => {
       toast.error("Erro ao excluir submódulo");
@@ -243,45 +231,69 @@ export default function SubmodulesPage() {
                       })}
                     </TableCell>
                     <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" className="h-8 w-8 p-0">
-                            <span className="sr-only">Abrir menu</span>
-                            <MoreHorizontal className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router.push(
-                                `/admin/trainings/${trainingId}/modules/${moduleId}/submodules/${submodule.id}/edit`
-                              )
-                            }
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            <span>Editar</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router.push(
-                                `/admin/trainings/${trainingId}/modules/${moduleId}/submodules/${submodule.id}/lessons`
-                              )
-                            }
-                          >
-                            <Edit className="mr-2 h-4 w-4" />
-                            <span>Gerenciar Aulas</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => setSubmoduleToDelete(submodule.id)}
-                            className="text-destructive focus:text-destructive"
-                          >
-                            <Trash className="mr-2 h-4 w-4" />
-                            <span>Excluir</span>
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
+                      <div className="flex items-center gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() =>
+                            router.push(
+                              `/admin/trainings/${trainingId}/modules/${moduleId}/submodules/${submodule.id}/edit`
+                            )
+                          }
+                          title="Editar"
+                        >
+                          <Edit className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() =>
+                            router.push(
+                              `/admin/trainings/${trainingId}/modules/${moduleId}/submodules/${submodule.id}/lessons`
+                            )
+                          }
+                          title="Gerenciar Aulas"
+                        >
+                          <FileText className="h-4 w-4" />
+                        </Button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                              title="Excluir"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent>
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>
+                                Excluir submódulo
+                              </AlertDialogTitle>
+                              <AlertDialogDescription>
+                                Tem certeza que deseja excluir este submódulo?
+                                Esta ação não pode ser desfeita e também
+                                excluirá todas as aulas relacionadas.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                              <AlertDialogAction
+                                onClick={() =>
+                                  deleteSubmodule.mutate(submodule.id)
+                                }
+                                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                              >
+                                Confirmar exclusão
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
@@ -306,40 +318,6 @@ export default function SubmodulesPage() {
           )}
         </CardContent>
       </Card>
-
-      {/* Dialog de confirmação de exclusão */}
-      <AlertDialog
-        open={!!submoduleToDelete}
-        onOpenChange={(open) => !open && setSubmoduleToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Excluir submódulo</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir este submódulo? Esta ação não pode
-              ser desfeita e também excluirá todas as aulas relacionadas.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() =>
-                submoduleToDelete && deleteSubmodule.mutate(submoduleToDelete)
-              }
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              {deleteSubmodule.isPending ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Excluindo...
-                </>
-              ) : (
-                "Confirmar exclusão"
-              )}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

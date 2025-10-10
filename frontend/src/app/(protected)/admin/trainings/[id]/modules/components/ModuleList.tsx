@@ -1,27 +1,5 @@
 "use client";
 
-import { format } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Eye, Edit, MoreHorizontal, Trash, FileText, Lock } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { useState } from "react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -31,7 +9,21 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { format } from "date-fns";
+import { ptBR } from "date-fns/locale";
+import { Edit, Eye, FileText, Lock, Trash2 } from "lucide-react";
 
 interface Module {
   id: number;
@@ -62,8 +54,6 @@ export function ModuleList({
   onView,
   onEdit,
 }: ModuleListProps) {
-  const [moduleToDelete, setModuleToDelete] = useState<number | null>(null);
-
   if (isLoading) {
     return (
       <div className="w-full flex justify-center py-8">
@@ -126,99 +116,91 @@ export function ModuleList({
                   })}
                 </TableCell>
                 <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" className="h-8 w-8 p-0">
-                        <span className="sr-only">Abrir menu</span>
-                        <MoreHorizontal className="h-4 w-4" />
+                  <div className="flex items-center gap-1">
+                    {onView && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => onView(module.id)}
+                        title="Ver detalhes"
+                      >
+                        <Eye className="h-4 w-4" />
                       </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-
-                      {onView && (
-                        <DropdownMenuItem onClick={() => onView(module.id)}>
-                          <Eye className="mr-2 h-4 w-4" />
-                          <span>Ver detalhes</span>
-                        </DropdownMenuItem>
-                      )}
-
-                      {onEdit && (
-                        <DropdownMenuItem onClick={() => onEdit(module.id)}>
-                          <Edit className="mr-2 h-4 w-4" />
-                          <span>Editar</span>
-                        </DropdownMenuItem>
-                      )}
-
-                      <DropdownMenuItem
-                        onClick={() =>
-                          (window.location.href = `/admin/trainings/${trainingId}/modules/${module.id}/submodules`)
-                        }
+                    )}
+                    {onEdit && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8"
+                        onClick={() => onEdit(module.id)}
+                        title="Editar"
                       >
-                        <FileText className="mr-2 h-4 w-4" />
-                        <span>Submódulos</span>
-                      </DropdownMenuItem>
-
-                      <DropdownMenuItem
-                        onClick={() =>
-                          (window.location.href = `/admin/trainings/${trainingId}/modules/${module.id}/permissions`)
-                        }
-                      >
-                        <Lock className="mr-2 h-4 w-4" />
-                        <span>Permissões</span>
-                      </DropdownMenuItem>
-
-                      {onDelete && (
-                        <>
-                          <DropdownMenuSeparator />
-                          <DropdownMenuItem
-                            onClick={() => setModuleToDelete(module.id)}
-                            className="text-destructive focus:text-destructive"
+                        <Edit className="h-4 w-4" />
+                      </Button>
+                    )}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() =>
+                        (window.location.href = `/admin/trainings/${trainingId}/modules/${module.id}/submodules`)
+                      }
+                      title="Submódulos"
+                    >
+                      <FileText className="h-4 w-4" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8"
+                      onClick={() =>
+                        (window.location.href = `/admin/trainings/${trainingId}/modules/${module.id}/permissions`)
+                      }
+                      title="Permissões"
+                    >
+                      <Lock className="h-4 w-4" />
+                    </Button>
+                    {onDelete && (
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50"
+                            title="Excluir"
                           >
-                            <Trash className="mr-2 h-4 w-4" />
-                            <span>Excluir</span>
-                          </DropdownMenuItem>
-                        </>
-                      )}
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Excluir módulo</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Tem certeza que deseja excluir este módulo? Esta
+                              ação não pode ser desfeita e também excluirá todos
+                              os submódulos e aulas relacionados.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => onDelete(module.id)}
+                              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                            >
+                              Confirmar exclusão
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    )}
+                  </div>
                 </TableCell>
               </TableRow>
             ))
           )}
         </TableBody>
       </Table>
-
-      <AlertDialog
-        open={!!moduleToDelete}
-        onOpenChange={(open) => !open && setModuleToDelete(null)}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Excluir módulo</AlertDialogTitle>
-            <AlertDialogDescription>
-              Tem certeza que deseja excluir este módulo? Esta ação não pode ser
-              desfeita e também excluirá todos os submódulos e aulas
-              relacionadas.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel>Cancelar</AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => {
-                if (moduleToDelete && onDelete) {
-                  onDelete(moduleToDelete);
-                  setModuleToDelete(null);
-                }
-              }}
-              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-            >
-              Confirmar exclusão
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </div>
   );
 }

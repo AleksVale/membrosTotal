@@ -1,6 +1,7 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
 import { SignedIn, UserButton } from '@clerk/clerk-react';
 import { Button } from '@/components/ui/button';
+import { ModeToggle } from '@/components/mode-toggle';
 
 export default function Layout() {
   const location = useLocation();
@@ -33,6 +34,7 @@ export default function Layout() {
               </Link>
               <UserButton />
             </SignedIn>
+            <ModeToggle />
           </nav>
         </div>
       </header>

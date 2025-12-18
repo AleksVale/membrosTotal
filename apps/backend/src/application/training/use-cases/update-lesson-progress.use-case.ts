@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { UserProgress } from '../../../domain/training/entities/user-progress.entity';
 import { UserProgressRepositoryInterface } from '../../../domain/training/repositories/user-progress.repository.interface';
 import { ProgressResponseDto } from '../dto/progress-response.dto';
 
@@ -16,22 +14,22 @@ export class UpdateLessonProgressUseCase {
     // Try to find existing progress
     const existing = await this.userProgressRepository.findByUserAndLesson(userId, lessonId);
 
-    let progress: UserProgress;
+    let progress;
 
     if (existing) {
       // Update existing progress
-      const updated = isCompleted ? existing.markAsCompleted() : existing.markAsIncomplete();
-      progress = await this.userProgressRepository.update(existing.id, updated);
+      progress = await this.userProgressRepository.update(existing.id, {
+        isCompleted,
+        lastWatchedAt: new Date(),
+      });
     } else {
-      // Create new progress
-      const newProgress = new UserProgress(
-        randomUUID(),
+      // Create new progress (Prisma will generate UUID)
+      progress = await this.userProgressRepository.create({
         userId,
         lessonId,
         isCompleted,
-        new Date(),
-      );
-      progress = await this.userProgressRepository.create(newProgress);
+        lastWatchedAt: new Date(),
+      });
     }
 
     return new ProgressResponseDto({

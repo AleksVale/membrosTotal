@@ -1,11 +1,13 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from 'generated/prisma/client';
 import { Lesson } from '../../../domain/training/entities/lesson.entity';
 import { Module } from '../../../domain/training/entities/module.entity';
 import { SubModule } from '../../../domain/training/entities/sub-module.entity';
 import { Training } from '../../../domain/training/entities/training.entity';
 import {
-    TrainingRepositoryInterface,
-    TrainingWithHierarchy,
+  CreateTrainingData,
+  TrainingRepositoryInterface,
+  TrainingWithHierarchy,
 } from '../../../domain/training/repositories/training.repository.interface';
 import { VideoProvider } from '../../../domain/training/value-objects/video-provider.vo';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -15,7 +17,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(training: Training): Promise<Training> {
-    const prismaTraining = await (this.prisma as any).training.create({
+    const prismaTraining = await this.prisma.training.create({
       data: {
         id: training.id,
         title: training.title,
@@ -23,15 +25,112 @@ export class TrainingRepository implements TrainingRepositoryInterface {
         slug: training.slug,
         imageUrl: training.imageUrl,
         published: training.published,
-        price: training.price,
+        order: training.price, // Note: schema has 'order' but entity uses 'price'
       },
     });
 
     return this.toDomainEntity(prismaTraining);
   }
 
+  async createWithHierarchy(
+    data: CreateTrainingData,
+  ): Promise<TrainingWithHierarchy> {
+    const result = await this.prisma.$transaction(async (tx) => {
+      // Create Training (Prisma will generate UUID)
+      const prismaTraining = await tx.training.create({
+        data: {
+          title: data.title,
+          description: data.description,
+          slug: data.slug,
+          imageUrl: data.imageUrl,
+          published: data.published,
+          order: data.order,
+        },
+        include: {
+          modules: {
+            orderBy: { order: 'asc' },
+            include: {
+              subModules: {
+                orderBy: { order: 'asc' },
+                include: {
+                  lessons: {
+                    orderBy: { order: 'asc' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      // Create Modules, SubModules, and Lessons
+      for (const moduleData of data.modules) {
+        const prismaModule = await tx.module.create({
+          data: {
+            title: moduleData.title,
+            description: moduleData.description,
+            order: moduleData.order,
+            trainingId: prismaTraining.id,
+          },
+        });
+
+        for (const subModuleData of moduleData.subModules) {
+          const prismaSubModule = await tx.subModule.create({
+            data: {
+              title: subModuleData.title,
+              description: subModuleData.description,
+              order: subModuleData.order,
+              moduleId: prismaModule.id,
+            },
+          });
+
+          for (const lessonData of subModuleData.lessons) {
+            await tx.lesson.create({
+              data: {
+                title: lessonData.title,
+                description: lessonData.description,
+                order: lessonData.order,
+                videoUrl: lessonData.videoUrl,
+                videoProvider: lessonData.videoProvider,
+                duration: lessonData.duration,
+                isFree: lessonData.isFree,
+                subModuleId: prismaSubModule.id,
+              },
+            });
+          }
+        }
+      }
+
+      // Fetch the complete training with hierarchy
+      return await tx.training.findUnique({
+        where: { id: prismaTraining.id },
+        include: {
+          modules: {
+            orderBy: { order: 'asc' },
+            include: {
+              subModules: {
+                orderBy: { order: 'asc' },
+                include: {
+                  lessons: {
+                    orderBy: { order: 'asc' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+    });
+
+    if (!result) {
+      throw new Error('Failed to create training');
+    }
+
+    return this.toDomainEntityWithHierarchy(result);
+  }
+
   async findById(id: string): Promise<Training | null> {
-    const prismaTraining = await (this.prisma as any).training.findUnique({
+    const prismaTraining = await this.prisma.training.findUnique({
       where: { id },
     });
 
@@ -43,7 +142,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   }
 
   async findBySlug(slug: string): Promise<Training | null> {
-    const prismaTraining = await (this.prisma as any).training.findUnique({
+    const prismaTraining = await this.prisma.training.findUnique({
       where: { slug },
     });
 
@@ -54,8 +153,10 @@ export class TrainingRepository implements TrainingRepositoryInterface {
     return this.toDomainEntity(prismaTraining);
   }
 
-  async findByIdWithHierarchy(id: string): Promise<TrainingWithHierarchy | null> {
-    const prismaTraining = await (this.prisma as any).training.findUnique({
+  async findByIdWithHierarchy(
+    id: string,
+  ): Promise<TrainingWithHierarchy | null> {
+    const prismaTraining = await this.prisma.training.findUnique({
       where: { id },
       include: {
         modules: {
@@ -81,8 +182,10 @@ export class TrainingRepository implements TrainingRepositoryInterface {
     return this.toDomainEntityWithHierarchy(prismaTraining);
   }
 
-  async findBySlugWithHierarchy(slug: string): Promise<TrainingWithHierarchy | null> {
-    const prismaTraining = await (this.prisma as any).training.findUnique({
+  async findBySlugWithHierarchy(
+    slug: string,
+  ): Promise<TrainingWithHierarchy | null> {
+    const prismaTraining = await this.prisma.training.findUnique({
       where: { slug },
       include: {
         modules: {
@@ -109,16 +212,16 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   }
 
   async findAllPublished(): Promise<Training[]> {
-    const prismaTrainings = await (this.prisma as any).training.findMany({
+    const prismaTrainings = await this.prisma.training.findMany({
       where: { published: true },
       orderBy: { createdAt: 'desc' },
     });
 
-    return prismaTrainings.map((t: any) => this.toDomainEntity(t));
+    return prismaTrainings.map((t) => this.toDomainEntity(t));
   }
 
   async update(id: string, training: Training): Promise<Training> {
-    const prismaTraining = await (this.prisma as any).training.update({
+    const prismaTraining = await this.prisma.training.update({
       where: { id },
       data: {
         title: training.title,
@@ -126,7 +229,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
         slug: training.slug,
         imageUrl: training.imageUrl,
         published: training.published,
-        price: training.price,
+        order: training.price, // Note: schema has 'order' but entity uses 'price'
       },
     });
 
@@ -134,29 +237,21 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   }
 
   async delete(id: string): Promise<void> {
-    await (this.prisma as any).training.delete({
+    await this.prisma.training.delete({
       where: { id },
     });
   }
 
   async exists(id: string): Promise<boolean> {
-    const count = await (this.prisma as any).training.count({
+    const count = await this.prisma.training.count({
       where: { id },
     });
     return count > 0;
   }
 
-  private toDomainEntity(prismaTraining: {
-    id: string;
-    title: string;
-    description: string | null;
-    slug: string;
-    imageUrl: string | null;
-    published: boolean;
-    price: any; // Decimal from Prisma
-    createdAt: Date;
-    updatedAt: Date;
-  }): Training {
+  private toDomainEntity(
+    prismaTraining: Prisma.TrainingGetPayload<Record<string, never>>,
+  ): Training {
     return new Training(
       prismaTraining.id,
       prismaTraining.title,
@@ -164,16 +259,30 @@ export class TrainingRepository implements TrainingRepositoryInterface {
       prismaTraining.slug,
       prismaTraining.imageUrl,
       prismaTraining.published,
-      Number(prismaTraining.price),
+      prismaTraining.order, // Note: schema has 'order' but entity uses 'price'
       prismaTraining.createdAt,
       prismaTraining.updatedAt,
     );
   }
 
-  private toDomainEntityWithHierarchy(prismaTraining: any): TrainingWithHierarchy {
+  private toDomainEntityWithHierarchy(
+    prismaTraining: Prisma.TrainingGetPayload<{
+      include: {
+        modules: {
+          include: {
+            subModules: {
+              include: {
+                lessons: true;
+              };
+            };
+          };
+        };
+      };
+    }>,
+  ): TrainingWithHierarchy {
     const training = this.toDomainEntity(prismaTraining);
 
-    const modules = prismaTraining.modules.map((m: any) => ({
+    const modules = prismaTraining.modules.map((m) => ({
       module: new Module(
         m.id,
         m.title,
@@ -183,7 +292,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
         m.createdAt,
         m.updatedAt,
       ),
-      subModules: m.subModules.map((sm: any) => ({
+      subModules: m.subModules.map((sm) => ({
         subModule: new SubModule(
           sm.id,
           sm.title,
@@ -193,9 +302,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
           sm.createdAt,
           sm.updatedAt,
         ),
-        lessons: sm.lessons.map((l: any) =>
-          this.toLessonEntity(l),
-        ),
+        lessons: sm.lessons.map((l) => this.toLessonEntity(l)),
       })),
     }));
 

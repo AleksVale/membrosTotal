@@ -1,19 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from 'generated/prisma/client';
 import { Enrollment } from '../../../domain/training/entities/enrollment.entity';
-import { EnrollmentRepositoryInterface } from '../../../domain/training/repositories/enrollment.repository.interface';
+import {
+  CreateEnrollmentData,
+  EnrollmentRepositoryInterface,
+} from '../../../domain/training/repositories/enrollment.repository.interface';
 import { PrismaService } from '../../../prisma/prisma.service';
 
 @Injectable()
 export class EnrollmentRepository implements EnrollmentRepositoryInterface {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(enrollment: Enrollment): Promise<Enrollment> {
-    const prismaEnrollment = await (this.prisma as any).enrollment.create({
+  async create(data: CreateEnrollmentData): Promise<Enrollment> {
+    const prismaEnrollment = await this.prisma.enrollment.create({
       data: {
-        id: enrollment.id,
-        userId: enrollment.userId,
-        trainingId: enrollment.trainingId,
-        enrolledAt: enrollment.enrolledAt,
+        userId: data.userId,
+        trainingId: data.trainingId,
+        enrolledAt: data.enrolledAt,
       },
     });
 
@@ -21,7 +24,7 @@ export class EnrollmentRepository implements EnrollmentRepositoryInterface {
   }
 
   async findById(id: string): Promise<Enrollment | null> {
-    const prismaEnrollment = await (this.prisma as any).enrollment.findUnique({
+    const prismaEnrollment = await this.prisma.enrollment.findUnique({
       where: { id },
     });
 
@@ -36,7 +39,7 @@ export class EnrollmentRepository implements EnrollmentRepositoryInterface {
     userId: string,
     trainingId: string,
   ): Promise<Enrollment | null> {
-    const prismaEnrollment = await (this.prisma as any).enrollment.findUnique({
+    const prismaEnrollment = await this.prisma.enrollment.findUnique({
       where: {
         userId_trainingId: {
           userId,
@@ -53,25 +56,25 @@ export class EnrollmentRepository implements EnrollmentRepositoryInterface {
   }
 
   async findByUserId(userId: string): Promise<Enrollment[]> {
-    const prismaEnrollments = await (this.prisma as any).enrollment.findMany({
+    const prismaEnrollments = await this.prisma.enrollment.findMany({
       where: { userId },
       orderBy: { enrolledAt: 'desc' },
     });
 
-    return prismaEnrollments.map((e: any) => this.toDomainEntity(e));
+    return prismaEnrollments.map((e) => this.toDomainEntity(e));
   }
 
   async findByTrainingId(trainingId: string): Promise<Enrollment[]> {
-    const prismaEnrollments = await (this.prisma as any).enrollment.findMany({
+    const prismaEnrollments = await this.prisma.enrollment.findMany({
       where: { trainingId },
       orderBy: { enrolledAt: 'desc' },
     });
 
-    return prismaEnrollments.map((e: any) => this.toDomainEntity(e));
+    return prismaEnrollments.map((e) => this.toDomainEntity(e));
   }
 
   async exists(userId: string, trainingId: string): Promise<boolean> {
-    const count = await (this.prisma as any).enrollment.count({
+    const count = await this.prisma.enrollment.count({
       where: {
         userId,
         trainingId,
@@ -81,17 +84,14 @@ export class EnrollmentRepository implements EnrollmentRepositoryInterface {
   }
 
   async delete(id: string): Promise<void> {
-    await (this.prisma as any).enrollment.delete({
+    await this.prisma.enrollment.delete({
       where: { id },
     });
   }
 
-  private toDomainEntity(prismaEnrollment: {
-    id: string;
-    userId: string;
-    trainingId: string;
-    enrolledAt: Date;
-  }): Enrollment {
+  private toDomainEntity(
+    prismaEnrollment: Prisma.EnrollmentGetPayload<Record<string, never>>,
+  ): Enrollment {
     return new Enrollment(
       prismaEnrollment.id,
       prismaEnrollment.userId,

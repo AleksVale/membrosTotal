@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { Enrollment } from '../../../domain/training/entities/enrollment.entity';
 import { EnrollmentRepositoryInterface } from '../../../domain/training/repositories/enrollment.repository.interface';
 import { TrainingRepositoryInterface } from '../../../domain/training/repositories/training.repository.interface';
 import { EnrollmentResponseDto } from '../dto/enrollment-response.dto';
@@ -30,15 +28,12 @@ export class EnrollInTrainingUseCase {
       });
     }
 
-    // Create new enrollment
-    const enrollment = new Enrollment(
-      randomUUID(),
+    // Create new enrollment (Prisma will generate UUID)
+    const created = await this.enrollmentRepository.create({
       userId,
       trainingId,
-      new Date(),
-    );
-
-    const created = await this.enrollmentRepository.create(enrollment);
+      enrolledAt: new Date(),
+    });
 
     return new EnrollmentResponseDto({
       id: created.id,

@@ -1,9 +1,5 @@
 import { ConflictException, Injectable } from '@nestjs/common';
-import { randomUUID } from 'crypto';
-import { TransactionClient } from 'generated/prisma/internal/prismaNamespace';
-import { Training } from '../../../domain/training/entities/training.entity';
 import { TrainingRepositoryInterface } from '../../../domain/training/repositories/training.repository.interface';
-import { PrismaService } from '../../../prisma/prisma.service';
 import { CreateTrainingDto } from '../dto/create-training.dto';
 import { TrainingResponseDto } from '../dto/training-response.dto';
 
@@ -11,7 +7,6 @@ import { TrainingResponseDto } from '../dto/training-response.dto';
 export class CreateTrainingUseCase {
   constructor(
     private readonly trainingRepository: TrainingRepositoryInterface,
-    private readonly prisma: PrismaService,
   ) {}
 
   async execute(createDto: CreateTrainingDto): Promise<TrainingResponseDto> {
@@ -23,99 +18,42 @@ export class CreateTrainingUseCase {
       );
     }
 
-    const result = await this.prisma.$transaction(
-      async (tx: TransactionClient) => {
-        const training = new Training(
-          randomUUID(),
-          createDto.title,
-          createDto.description ?? null,
-          createDto.slug,
-          createDto.imageUrl ?? null,
-          createDto.published ?? false,
-          createDto.price ?? 0,
-          new Date(),
-          new Date(),
-        );
-
-        const prismaTraining = await tx.training.create({
-          data: {
-            id: training.id,
-            title: training.title,
-            description: training.description,
-            slug: training.slug,
-            imageUrl: training.imageUrl,
-            published: training.published,
-            price: training.price,
-          },
-        });
-
-        // Create Modules, SubModules, and Lessons
-        for (const moduleDto of createDto.modules) {
-          const moduleId = randomUUID();
-          await tx.module.create({
-            data: {
-              id: moduleId,
-              title: moduleDto.title,
-              description: moduleDto.description ?? null,
-              order: moduleDto.order,
-              trainingId: training.id,
-            },
-          });
-
-          for (const subModuleDto of moduleDto.subModules) {
-            const subModuleId = randomUUID();
-            await tx.subModule.create({
-              data: {
-                id: subModuleId,
-                title: subModuleDto.title,
-                description: subModuleDto.description ?? null,
-                order: subModuleDto.order,
-                moduleId: moduleId,
-              },
-            });
-
-            for (const lessonDto of subModuleDto.lessons) {
-              await tx.lesson.create({
-                data: {
-                  id: randomUUID(),
-                  title: lessonDto.title,
-                  description: lessonDto.description ?? null,
-                  order: lessonDto.order,
-                  videoUrl: lessonDto.videoUrl ?? null,
-                  videoProvider: lessonDto.videoProvider ?? 'external',
-                  duration: lessonDto.duration ?? 0,
-                  isFree: lessonDto.isFree ?? false,
-                  subModuleId: subModuleId,
-                },
-              });
-            }
-          }
-        }
-
-        return prismaTraining;
-      },
-    );
-
-    // Fetch the complete training with hierarchy
+    // Create training with full hierarchy using repository
     const trainingWithHierarchy =
-      await this.trainingRepository.findByIdWithHierarchy(result.id);
-    if (!trainingWithHierarchy) {
-      throw new Error('Failed to retrieve created training');
-    }
+      await this.trainingRepository.createWithHierarchy({
+        title: createDto.title,
+        description: createDto.description ?? null,
+        slug: createDto.slug,
+        imageUrl: createDto.imageUrl ?? null,
+        published: createDto.published ?? false,
+        order: createDto.price ?? 0,
+        modules: createDto.modules.map((m) => ({
+          title: m.title,
+          description: m.description ?? null,
+          order: m.order,
+          subModules: m.subModules.map((sm) => ({
+            title: sm.title,
+            description: sm.description ?? null,
+            order: sm.order,
+            lessons: sm.lessons.map((l) => ({
+              title: l.title,
+              description: l.description ?? null,
+              order: l.order,
+              videoUrl: l.videoUrl ?? null,
+              videoProvider: l.videoProvider ?? 'external',
+              duration: l.duration ?? 0,
+              isFree: l.isFree ?? false,
+            })),
+          })),
+        })),
+      });
 
     return this.toResponseDto(trainingWithHierarchy);
   }
 
-  private toResponseDto(data: {
-    training: Training;
-    modules: Array<{
-      module: any;
-      subModules: Array<{
-        subModule: any;
-        lessons: any[];
-      }>;
-    }>;
-  }): TrainingResponseDto {
+  private toResponseDto(
+    data: import('../../../domain/training/repositories/training.repository.interface').TrainingWithHierarchy,
+  ): TrainingResponseDto {
     const modules = data.modules.map((m) => ({
       id: m.module.id,
       title: m.module.title,
@@ -134,7 +72,7 @@ export class CreateTrainingUseCase {
           description: l.description,
           order: l.order,
           videoUrl: l.videoUrl,
-          videoProvider: l.videoProvider,
+          videoProvider: l.videoProvider.getValue(),
           duration: l.duration,
           isFree: l.isFree,
           subModuleId: l.subModuleId,
@@ -158,7 +96,7 @@ export class CreateTrainingUseCase {
       price: data.training.price,
       createdAt: data.training.createdAt,
       updatedAt: data.training.updatedAt,
-      modules: modules as any,
+      modules,
     });
   }
 }

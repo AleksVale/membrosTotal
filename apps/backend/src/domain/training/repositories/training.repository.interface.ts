@@ -14,12 +14,47 @@ export interface TrainingWithHierarchy {
   }>;
 }
 
+export interface CreateTrainingData {
+  title: string;
+  description: string | null;
+  slug: string;
+  imageUrl: string | null;
+  published: boolean;
+  order: number;
+  modules: Array<{
+    title: string;
+    description: string | null;
+    order: number;
+    subModules: Array<{
+      title: string;
+      description: string | null;
+      order: number;
+      lessons: Array<{
+        title: string;
+        description: string | null;
+        order: number;
+        videoUrl: string | null;
+        videoProvider: string;
+        duration: number;
+        isFree: boolean;
+      }>;
+    }>;
+  }>;
+}
+
 export abstract class TrainingRepositoryInterface {
   abstract create(training: Training): Promise<Training>;
+  abstract createWithHierarchy(
+    data: CreateTrainingData,
+  ): Promise<TrainingWithHierarchy>;
   abstract findById(id: string): Promise<Training | null>;
   abstract findBySlug(slug: string): Promise<Training | null>;
-  abstract findByIdWithHierarchy(id: string): Promise<TrainingWithHierarchy | null>;
-  abstract findBySlugWithHierarchy(slug: string): Promise<TrainingWithHierarchy | null>;
+  abstract findByIdWithHierarchy(
+    id: string,
+  ): Promise<TrainingWithHierarchy | null>;
+  abstract findBySlugWithHierarchy(
+    slug: string,
+  ): Promise<TrainingWithHierarchy | null>;
   abstract findAllPublished(): Promise<Training[]>;
   abstract update(id: string, training: Training): Promise<Training>;
   abstract delete(id: string): Promise<void>;

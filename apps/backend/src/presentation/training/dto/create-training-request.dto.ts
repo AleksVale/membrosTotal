@@ -1,15 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import {
-    IsArray,
-    IsBoolean,
-    IsInt,
-    IsNumber,
-    IsOptional,
-    IsString,
-    IsUrl,
-    Min,
-    ValidateNested,
+  IsArray,
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUrl,
+  Min,
+  ValidateNested
 } from 'class-validator';
 
 export class LessonRequestDto {
@@ -48,11 +47,6 @@ export class LessonRequestDto {
   @IsInt()
   @Min(0)
   duration?: number;
-
-  @ApiProperty({ description: 'Is lesson free', default: false, required: false })
-  @IsOptional()
-  @IsBoolean()
-  isFree?: boolean;
 }
 
 export class SubModuleRequestDto {
@@ -127,11 +121,11 @@ export class CreateTrainingRequestDto {
   @IsBoolean()
   published?: boolean;
 
-  @ApiProperty({ description: 'Price in decimal', default: 0, required: false })
+  @ApiProperty({ description: 'Order for sorting', default: 0, required: false })
   @IsOptional()
-  @IsNumber()
+  @IsInt()
   @Min(0)
-  price?: number;
+  order?: number;
 
   @ApiProperty({ description: 'Modules in this training', type: [ModuleRequestDto] })
   @IsArray()

@@ -6,17 +6,13 @@ export class Training {
     public readonly slug: string,
     public readonly imageUrl: string | null,
     public readonly published: boolean,
-    public readonly price: number,
+    public readonly order: number,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
 
   isPublished(): boolean {
     return this.published;
-  }
-
-  isFree(): boolean {
-    return this.price === 0;
   }
 
   publish(): Training {
@@ -27,7 +23,7 @@ export class Training {
       this.slug,
       this.imageUrl,
       true,
-      this.price,
+      this.order,
       this.createdAt,
       new Date(),
     );
@@ -41,13 +37,13 @@ export class Training {
       this.slug,
       this.imageUrl,
       false,
-      this.price,
+      this.order,
       this.createdAt,
       new Date(),
     );
   }
 
-  update(updates: Partial<Pick<Training, 'title' | 'description' | 'imageUrl' | 'price'>>): Training {
+  update(updates: Partial<Pick<Training, 'title' | 'description' | 'imageUrl' | 'order'>>): Training {
     return new Training(
       this.id,
       updates.title ?? this.title,
@@ -55,7 +51,7 @@ export class Training {
       this.slug,
       updates.imageUrl ?? this.imageUrl,
       this.published,
-      updates.price ?? this.price,
+      updates.order ?? this.order,
       this.createdAt,
       new Date(),
     );

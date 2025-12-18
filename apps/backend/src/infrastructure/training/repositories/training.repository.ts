@@ -25,7 +25,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
         slug: training.slug,
         imageUrl: training.imageUrl,
         published: training.published,
-        order: training.price, // Note: schema has 'order' but entity uses 'price'
+        order: training.order,
       },
     });
 
@@ -44,7 +44,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
           slug: data.slug,
           imageUrl: data.imageUrl,
           published: data.published,
-          order: data.order,
+          order: data.order ?? 0,
         },
         include: {
           modules: {
@@ -93,7 +93,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
                 videoUrl: lessonData.videoUrl,
                 videoProvider: lessonData.videoProvider,
                 duration: lessonData.duration,
-                isFree: lessonData.isFree,
+                isFree: true, // All lessons are free in internal tool
                 subModuleId: prismaSubModule.id,
               },
             });
@@ -229,7 +229,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
         slug: training.slug,
         imageUrl: training.imageUrl,
         published: training.published,
-        order: training.price, // Note: schema has 'order' but entity uses 'price'
+        order: training.order,
       },
     });
 
@@ -259,7 +259,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
       prismaTraining.slug,
       prismaTraining.imageUrl,
       prismaTraining.published,
-      prismaTraining.order, // Note: schema has 'order' but entity uses 'price'
+      prismaTraining.order,
       prismaTraining.createdAt,
       prismaTraining.updatedAt,
     );
@@ -317,7 +317,6 @@ export class TrainingRepository implements TrainingRepositoryInterface {
     videoUrl: string | null;
     videoProvider: string;
     duration: number;
-    isFree: boolean;
     subModuleId: string;
     createdAt: Date;
     updatedAt: Date;
@@ -330,7 +329,6 @@ export class TrainingRepository implements TrainingRepositoryInterface {
       prismaLesson.videoUrl,
       new VideoProvider(prismaLesson.videoProvider),
       prismaLesson.duration,
-      prismaLesson.isFree,
       prismaLesson.subModuleId,
       prismaLesson.createdAt,
       prismaLesson.updatedAt,

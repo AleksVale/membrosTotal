@@ -20,7 +20,7 @@ export interface CreateTrainingData {
   slug: string;
   imageUrl: string | null;
   published: boolean;
-  order: number;
+  order?: number;
   modules: Array<{
     title: string;
     description: string | null;
@@ -36,7 +36,6 @@ export interface CreateTrainingData {
         videoUrl: string | null;
         videoProvider: string;
         duration: number;
-        isFree: boolean;
       }>;
     }>;
   }>;

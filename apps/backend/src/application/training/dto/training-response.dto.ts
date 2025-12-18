@@ -6,7 +6,6 @@ export class LessonResponseDto {
   videoUrl: string | null;
   videoProvider: string;
   duration: number;
-  isFree: boolean;
   subModuleId: string;
   createdAt: Date;
   updatedAt: Date;
@@ -19,7 +18,6 @@ export class LessonResponseDto {
     videoUrl: string | null;
     videoProvider: string;
     duration: number;
-    isFree: boolean;
     subModuleId: string;
     createdAt: Date;
     updatedAt: Date;
@@ -31,7 +29,6 @@ export class LessonResponseDto {
     this.videoUrl = data.videoUrl;
     this.videoProvider = data.videoProvider;
     this.duration = data.duration;
-    this.isFree = data.isFree;
     this.subModuleId = data.subModuleId;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
@@ -107,7 +104,7 @@ export class TrainingResponseDto {
   slug: string;
   imageUrl: string | null;
   published: boolean;
-  price: number;
+  order: number;
   createdAt: Date;
   updatedAt: Date;
   modules?: ModuleResponseDto[];
@@ -119,7 +116,7 @@ export class TrainingResponseDto {
     slug: string;
     imageUrl: string | null;
     published: boolean;
-    price: number;
+    order: number;
     createdAt: Date;
     updatedAt: Date;
     modules?: ModuleResponseDto[];
@@ -130,7 +127,7 @@ export class TrainingResponseDto {
     this.slug = data.slug;
     this.imageUrl = data.imageUrl;
     this.published = data.published;
-    this.price = data.price;
+    this.order = data.order;
     this.createdAt = data.createdAt;
     this.updatedAt = data.updatedAt;
     this.modules = data.modules;

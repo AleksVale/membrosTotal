@@ -9,7 +9,6 @@ export class Lesson {
     public readonly videoUrl: string | null,
     public readonly videoProvider: VideoProvider,
     public readonly duration: number,
-    public readonly isFree: boolean,
     public readonly subModuleId: string,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
@@ -19,15 +18,15 @@ export class Lesson {
     return this.videoUrl !== null && this.videoUrl.length > 0;
   }
 
-  isFreeLesson(): boolean {
-    return this.isFree;
-  }
-
   getDurationInMinutes(): number {
     return Math.floor(this.duration / 60);
   }
 
-  update(updates: Partial<Pick<Lesson, 'title' | 'description' | 'order' | 'videoUrl' | 'duration' | 'isFree'>>): Lesson {
+  update(
+    updates: Partial<
+      Pick<Lesson, 'title' | 'description' | 'order' | 'videoUrl' | 'duration'>
+    >,
+  ): Lesson {
     return new Lesson(
       this.id,
       updates.title ?? this.title,
@@ -36,7 +35,6 @@ export class Lesson {
       updates.videoUrl ?? this.videoUrl,
       this.videoProvider,
       updates.duration ?? this.duration,
-      updates.isFree ?? this.isFree,
       this.subModuleId,
       this.createdAt,
       new Date(),
@@ -52,7 +50,6 @@ export class Lesson {
       this.videoUrl,
       provider,
       this.duration,
-      this.isFree,
       this.subModuleId,
       this.createdAt,
       new Date(),

@@ -43,7 +43,6 @@ export class LessonDto {
   videoUrl?: string;
   videoProvider?: string;
   duration?: number;
-  isFree?: boolean;
 
   constructor(data: {
     title: string;
@@ -52,7 +51,6 @@ export class LessonDto {
     videoUrl?: string;
     videoProvider?: string;
     duration?: number;
-    isFree?: boolean;
   }) {
     this.title = data.title;
     this.description = data.description;
@@ -60,7 +58,6 @@ export class LessonDto {
     this.videoUrl = data.videoUrl;
     this.videoProvider = data.videoProvider;
     this.duration = data.duration;
-    this.isFree = data.isFree;
   }
 }
 
@@ -70,7 +67,7 @@ export class CreateTrainingDto {
   slug: string;
   imageUrl?: string;
   published?: boolean;
-  price?: number;
+  order?: number;
   modules: ModuleDto[];
 
   constructor(data: {
@@ -79,7 +76,7 @@ export class CreateTrainingDto {
     slug: string;
     imageUrl?: string;
     published?: boolean;
-    price?: number;
+    order?: number;
     modules: ModuleDto[];
   }) {
     this.title = data.title;
@@ -87,7 +84,7 @@ export class CreateTrainingDto {
     this.slug = data.slug;
     this.imageUrl = data.imageUrl;
     this.published = data.published ?? false;
-    this.price = data.price ?? 0;
+    this.order = data.order ?? 0;
     this.modules = data.modules;
   }
 }

@@ -63,7 +63,7 @@ export class TrainingController {
       slug: createDto.slug,
       imageUrl: createDto.imageUrl,
       published: createDto.published,
-      price: createDto.price,
+      order: createDto.order,
       modules: createDto.modules.map((m) => ({
         title: m.title,
         description: m.description,
@@ -79,7 +79,6 @@ export class TrainingController {
             videoUrl: l.videoUrl,
             videoProvider: l.videoProvider,
             duration: l.duration,
-            isFree: l.isFree,
           })),
         })),
       })),

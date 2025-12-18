@@ -17,7 +17,7 @@ export class ListTrainingsUseCase {
         slug: training.slug,
         imageUrl: training.imageUrl,
         published: training.published,
-        price: training.price,
+        order: training.order,
         createdAt: training.createdAt,
         updatedAt: training.updatedAt,
       }),

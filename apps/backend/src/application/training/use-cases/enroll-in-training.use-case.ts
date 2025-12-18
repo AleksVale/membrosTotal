@@ -10,15 +10,19 @@ export class EnrollInTrainingUseCase {
     private readonly trainingRepository: TrainingRepositoryInterface,
   ) {}
 
-  async execute(userId: string, trainingId: string): Promise<EnrollmentResponseDto> {
-    // Check if training exists
+  async execute(
+    userId: string,
+    trainingId: string,
+  ): Promise<EnrollmentResponseDto> {
     const training = await this.trainingRepository.findById(trainingId);
     if (!training) {
       throw new NotFoundException(`Training with id "${trainingId}" not found`);
     }
 
-    // Check if already enrolled (idempotent)
-    const existing = await this.enrollmentRepository.findByUserAndTraining(userId, trainingId);
+    const existing = await this.enrollmentRepository.findByUserAndTraining(
+      userId,
+      trainingId,
+    );
     if (existing) {
       return new EnrollmentResponseDto({
         id: existing.id,
@@ -28,7 +32,6 @@ export class EnrollInTrainingUseCase {
       });
     }
 
-    // Create new enrollment (Prisma will generate UUID)
     const created = await this.enrollmentRepository.create({
       userId,
       trainingId,

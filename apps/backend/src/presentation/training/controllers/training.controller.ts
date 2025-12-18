@@ -1,24 +1,27 @@
 import {
-    Body,
-    Controller,
-    Get,
-    HttpCode,
-    HttpStatus,
-    Param,
-    Patch,
-    Post,
-    Query,
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
-import { Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { Roles, Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { CreateTrainingDto } from '../../../application/training/dto/create-training.dto';
 import { EnrollmentResponseDto } from '../../../application/training/dto/enrollment-response.dto';
-import { ProgressResponseDto, TrainingProgressResponseDto } from '../../../application/training/dto/progress-response.dto';
+import {
+  ProgressResponseDto,
+  TrainingProgressResponseDto,
+} from '../../../application/training/dto/progress-response.dto';
 import { TrainingResponseDto } from '../../../application/training/dto/training-response.dto';
 import { CreateTrainingUseCase } from '../../../application/training/use-cases/create-training.use-case';
 import { EnrollInTrainingUseCase } from '../../../application/training/use-cases/enroll-in-training.use-case';
@@ -44,8 +47,9 @@ export class TrainingController {
   ) {}
 
   @Post()
+  @Roles(['admin'])
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Create a new training (Admin/Collaborator only)' })
+  @ApiOperation({ summary: 'Create a new training (Admin only)' })
   @ApiResponse({
     status: 201,
     description: 'Training created successfully',
@@ -53,7 +57,14 @@ export class TrainingController {
   })
   @ApiResponse({ status: 400, description: 'Bad request - validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
-  @ApiResponse({ status: 409, description: 'Training with this slug already exists' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
+  })
+  @ApiResponse({
+    status: 409,
+    description: 'Training with this slug already exists',
+  })
   async createTraining(
     @Body() createDto: CreateTrainingRequestDto,
   ): Promise<TrainingResponseDto> {

@@ -99,22 +99,36 @@ export class TrainingController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'List all published trainings' })
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'List all trainings (Admin only)' })
   @ApiResponse({
     status: 200,
-    description: 'List of published trainings',
+    description: 'List of trainings',
     type: [TrainingResponseDto],
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
   })
   async listTrainings(): Promise<TrainingResponseDto[]> {
     return this.listTrainingsUseCase.execute();
   }
 
   @Get(':id')
-  @ApiOperation({ summary: 'Get training details' })
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Get training details (Admin only)' })
   @ApiResponse({
     status: 200,
     description: 'Training details retrieved successfully',
     type: TrainingResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
   })
   @ApiResponse({ status: 404, description: 'Training not found' })
   async getTraining(
@@ -126,15 +140,20 @@ export class TrainingController {
   }
 
   @Post(':id/enroll')
+  @Roles(['admin'])
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Enroll in a training' })
+  @ApiOperation({ summary: 'Enroll user in a training (Admin only)' })
   @ApiResponse({
     status: 200,
     description: 'Successfully enrolled in training',
     type: EnrollmentResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
+  })
   @ApiResponse({ status: 404, description: 'Training not found' })
   async enrollInTraining(
     @Param('id') trainingId: string,
@@ -144,14 +163,19 @@ export class TrainingController {
   }
 
   @Get('my/enrollments')
+  @Roles(['admin'])
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get current user enrollments' })
+  @ApiOperation({ summary: 'Get user enrollments (Admin only)' })
   @ApiResponse({
     status: 200,
     description: 'User enrollments retrieved successfully',
     type: [EnrollmentResponseDto],
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
+  })
   async getMyEnrollments(
     @Session() session: UserSession,
   ): Promise<EnrollmentResponseDto[]> {
@@ -159,14 +183,19 @@ export class TrainingController {
   }
 
   @Get(':id/progress')
+  @Roles(['admin'])
   @ApiBearerAuth('JWT-auth')
-  @ApiOperation({ summary: 'Get user progress for a training' })
+  @ApiOperation({ summary: 'Get user progress for a training (Admin only)' })
   @ApiResponse({
     status: 200,
     description: 'Training progress retrieved successfully',
     type: TrainingProgressResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
+  })
   @ApiResponse({ status: 404, description: 'Training not found' })
   async getTrainingProgress(
     @Param('id') trainingId: string,
@@ -176,9 +205,10 @@ export class TrainingController {
   }
 
   @Patch('lessons/:lessonId/progress')
+  @Roles(['admin'])
   @ApiBearerAuth('JWT-auth')
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Update lesson progress' })
+  @ApiOperation({ summary: 'Update lesson progress (Admin only)' })
   @ApiResponse({
     status: 200,
     description: 'Lesson progress updated successfully',
@@ -186,6 +216,10 @@ export class TrainingController {
   })
   @ApiResponse({ status: 400, description: 'Bad request - validation error' })
   @ApiResponse({ status: 401, description: 'Unauthorized' })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
+  })
   async updateLessonProgress(
     @Param('lessonId') lessonId: string,
     @Body() updateDto: UpdateProgressRequestDto,

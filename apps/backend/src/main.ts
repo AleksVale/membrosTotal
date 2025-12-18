@@ -76,11 +76,10 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
-  // Scalar API Reference
   app.use(
     '/api',
     apiReference({
-      theme: 'default',
+      theme: 'mars',
       spec: {
         content: document,
       },

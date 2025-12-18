@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { auth } from './auth';
 import { envValidationSchema } from './config/env.validation';
 import { PresentationAuthModule } from './presentation/auth/auth.module';
+import { PresentationTrainingModule } from './presentation/training/training.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -30,6 +31,7 @@ import { PrismaModule } from './prisma/prisma.module';
     AuthModule.forRoot({ auth }),
     PrismaModule,
     PresentationAuthModule,
+    PresentationTrainingModule,
   ],
   controllers: [AppController],
   providers: [

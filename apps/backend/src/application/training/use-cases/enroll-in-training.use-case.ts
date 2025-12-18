@@ -1,0 +1,50 @@
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { randomUUID } from 'crypto';
+import { Enrollment } from '../../../domain/training/entities/enrollment.entity';
+import { EnrollmentRepositoryInterface } from '../../../domain/training/repositories/enrollment.repository.interface';
+import { TrainingRepositoryInterface } from '../../../domain/training/repositories/training.repository.interface';
+import { EnrollmentResponseDto } from '../dto/enrollment-response.dto';
+
+@Injectable()
+export class EnrollInTrainingUseCase {
+  constructor(
+    private readonly enrollmentRepository: EnrollmentRepositoryInterface,
+    private readonly trainingRepository: TrainingRepositoryInterface,
+  ) {}
+
+  async execute(userId: string, trainingId: string): Promise<EnrollmentResponseDto> {
+    // Check if training exists
+    const training = await this.trainingRepository.findById(trainingId);
+    if (!training) {
+      throw new NotFoundException(`Training with id "${trainingId}" not found`);
+    }
+
+    // Check if already enrolled (idempotent)
+    const existing = await this.enrollmentRepository.findByUserAndTraining(userId, trainingId);
+    if (existing) {
+      return new EnrollmentResponseDto({
+        id: existing.id,
+        userId: existing.userId,
+        trainingId: existing.trainingId,
+        enrolledAt: existing.enrolledAt,
+      });
+    }
+
+    // Create new enrollment
+    const enrollment = new Enrollment(
+      randomUUID(),
+      userId,
+      trainingId,
+      new Date(),
+    );
+
+    const created = await this.enrollmentRepository.create(enrollment);
+
+    return new EnrollmentResponseDto({
+      id: created.id,
+      userId: created.userId,
+      trainingId: created.trainingId,
+      enrolledAt: created.enrolledAt,
+    });
+  }
+}

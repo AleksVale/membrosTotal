@@ -15,16 +15,18 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean        @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  role          String?   @default("collaborator")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  role          String?        @default("collaborator")
   sessions      Session[]
   accounts      Account[]
+  enrollments   Enrollment[]
+  progress      UserProgress[]
 
   @@unique([email])
   @@map("user")
@@ -76,4 +78,106 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+// ==============================
+// TRAINING MODULE (LMS)
+// ==============================
+
+model Training {
+  id          String   @id @default(uuid())
+  title       String
+  description String?  @db.Text
+  slug        String   @unique
+  imageUrl    String?
+  published   Boolean  @default(false)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  modules     Module[]
+  enrollments Enrollment[]
+
+  @@map("training")
+}
+
+model Module {
+  id          String      @id @default(uuid())
+  title       String
+  description String?
+  order       Int
+  trainingId  String
+  training    Training    @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+  subModules  SubModule[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([trainingId])
+  @@map("module")
+}
+
+model SubModule {
+  id          String   @id @default(uuid())
+  title       String
+  description String?
+  order       Int
+  moduleId    String
+  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  lessons     Lesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([moduleId])
+  @@map("sub_module")
+}
+
+model Lesson {
+  id            String         @id @default(uuid())
+  title         String
+  description   String?        @db.Text
+  order         Int
+  videoUrl      String?
+  videoProvider String         @default("external")
+  duration      Int            @default(0)
+  isFree        Boolean        @default(false)
+  subModuleId   String
+  subModule     SubModule      @relation(fields: [subModuleId], references: [id], onDelete: Cascade)
+  userProgress  UserProgress[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([subModuleId])
+  @@map("lesson")
+}
+
+model Enrollment {
+  id         String   @id @default(uuid())
+  userId     String
+  trainingId String
+  enrolledAt DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  training Training @relation(fields: [trainingId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, trainingId])
+  @@index([userId])
+  @@map("enrollment")
+}
+
+model UserProgress {
+  id            String   @id @default(uuid())
+  userId        String
+  lessonId      String
+  isCompleted   Boolean  @default(false)
+  lastWatchedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@map("user_progress")
 }

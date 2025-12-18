@@ -7,6 +7,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { auth } from './auth';
 import { envValidationSchema } from './config/env.validation';
+import { PresentationAuthModule } from './presentation/auth/auth.module';
 import { PrismaModule } from './prisma/prisma.module';
 
 @Module({
@@ -28,6 +29,7 @@ import { PrismaModule } from './prisma/prisma.module';
     ]),
     AuthModule.forRoot({ auth }),
     PrismaModule,
+    PresentationAuthModule,
   ],
   controllers: [AppController],
   providers: [

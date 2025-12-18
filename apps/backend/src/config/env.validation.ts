@@ -14,12 +14,9 @@ export const envValidationSchema = Joi.object({
   }),
 
   // Frontend
-  FRONTEND_URL: Joi.string()
-    .uri()
-    .default('http://localhost:5173')
-    .messages({
-      'string.uri': 'FRONTEND_URL must be a valid URI',
-    }),
+  FRONTEND_URL: Joi.string().uri().default('http://localhost:5173').messages({
+    'string.uri': 'FRONTEND_URL must be a valid URI',
+  }),
 
   // Better Auth (optional)
   BETTER_AUTH_SECRET: Joi.string().optional(),

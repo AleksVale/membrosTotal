@@ -6,8 +6,12 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 import { Session, UserSession } from '@thallesp/nestjs-better-auth';
+import { LessonResponseDto } from '../../../application/training/dto/lesson-response.dto';
 import { ModuleResponseDto } from '../../../application/training/dto/module-response.dto';
+import { SubModuleResponseDto } from '../../../application/training/dto/sub-module-response.dto';
 import { TrainingResponseDto } from '../../../application/training/dto/training-response.dto';
+import { GetEnrolledModuleSubModulesUseCase } from '../../../application/training/use-cases/get-enrolled-module-sub-modules.use-case';
+import { GetEnrolledSubModuleLessonsUseCase } from '../../../application/training/use-cases/get-enrolled-sub-module-lessons.use-case';
 import { GetEnrolledTrainingModulesUseCase } from '../../../application/training/use-cases/get-enrolled-training-modules.use-case';
 import { GetEnrolledTrainingsUseCase } from '../../../application/training/use-cases/get-enrolled-trainings.use-case';
 import {
@@ -22,6 +26,8 @@ export class CollaboratorTrainingController {
   constructor(
     private readonly getEnrolledTrainingsUseCase: GetEnrolledTrainingsUseCase,
     private readonly getEnrolledTrainingModulesUseCase: GetEnrolledTrainingModulesUseCase,
+    private readonly getEnrolledModuleSubModulesUseCase: GetEnrolledModuleSubModulesUseCase,
+    private readonly getEnrolledSubModuleLessonsUseCase: GetEnrolledSubModuleLessonsUseCase,
   ) {}
 
   @Get('trainings')
@@ -67,6 +73,66 @@ export class CollaboratorTrainingController {
     return this.getEnrolledTrainingModulesUseCase.execute(
       session.user.id,
       trainingId,
+    );
+  }
+
+  @Get('modules/:moduleId/submodules')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get submodules for a module',
+    description:
+      'Returns list of submodules for a module. User must be enrolled in the training that contains this module, and training must be published.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Submodules retrieved successfully',
+    type: [SubModuleResponseDto],
+  })
+  @ApiUnauthorizedResponse()
+  @ApiForbiddenResponse(
+    'User is not enrolled in this training or training is not published',
+  )
+  @ApiNotFoundResponse(
+    'Module or Training',
+    'Module with id "xxx" not found or Training not found',
+  )
+  async getEnrolledModuleSubModules(
+    @Param('moduleId') moduleId: string,
+    @Session() session: UserSession,
+  ): Promise<SubModuleResponseDto[]> {
+    return this.getEnrolledModuleSubModulesUseCase.execute(
+      session.user.id,
+      moduleId,
+    );
+  }
+
+  @Get('submodules/:subModuleId/lessons')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get lessons for a submodule',
+    description:
+      'Returns list of lessons for a submodule. User must be enrolled in the training that contains this submodule, and training must be published.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lessons retrieved successfully',
+    type: [LessonResponseDto],
+  })
+  @ApiUnauthorizedResponse()
+  @ApiForbiddenResponse(
+    'User is not enrolled in this training or training is not published',
+  )
+  @ApiNotFoundResponse(
+    'SubModule, Module, or Training',
+    'SubModule with id "xxx" not found, Module not found, or Training not found',
+  )
+  async getEnrolledSubModuleLessons(
+    @Param('subModuleId') subModuleId: string,
+    @Session() session: UserSession,
+  ): Promise<LessonResponseDto[]> {
+    return this.getEnrolledSubModuleLessonsUseCase.execute(
+      session.user.id,
+      subModuleId,
     );
   }
 }

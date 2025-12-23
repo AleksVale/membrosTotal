@@ -57,5 +57,6 @@ export abstract class TrainingRepositoryInterface {
   abstract findAllPublished(): Promise<Training[]>;
   abstract update(id: string, training: Training): Promise<Training>;
   abstract delete(id: string): Promise<void>;
+  abstract softDelete(id: string): Promise<void>;
   abstract exists(id: string): Promise<boolean>;
 }

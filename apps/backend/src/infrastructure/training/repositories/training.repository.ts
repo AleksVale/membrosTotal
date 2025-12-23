@@ -130,8 +130,8 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   }
 
   async findById(id: string): Promise<Training | null> {
-    const prismaTraining = await this.prisma.training.findUnique({
-      where: { id },
+    const prismaTraining = await this.prisma.training.findFirst({
+      where: { id, deletedAt: null },
     });
 
     if (!prismaTraining) {
@@ -142,8 +142,8 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   }
 
   async findBySlug(slug: string): Promise<Training | null> {
-    const prismaTraining = await this.prisma.training.findUnique({
-      where: { slug },
+    const prismaTraining = await this.prisma.training.findFirst({
+      where: { slug, deletedAt: null },
     });
 
     if (!prismaTraining) {
@@ -156,16 +156,19 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   async findByIdWithHierarchy(
     id: string,
   ): Promise<TrainingWithHierarchy | null> {
-    const prismaTraining = await this.prisma.training.findUnique({
-      where: { id },
+    const prismaTraining = await this.prisma.training.findFirst({
+      where: { id, deletedAt: null },
       include: {
         modules: {
+          where: { deletedAt: null },
           orderBy: { order: 'asc' },
           include: {
             subModules: {
+              where: { deletedAt: null },
               orderBy: { order: 'asc' },
               include: {
                 lessons: {
+                  where: { deletedAt: null },
                   orderBy: { order: 'asc' },
                 },
               },
@@ -185,16 +188,19 @@ export class TrainingRepository implements TrainingRepositoryInterface {
   async findBySlugWithHierarchy(
     slug: string,
   ): Promise<TrainingWithHierarchy | null> {
-    const prismaTraining = await this.prisma.training.findUnique({
-      where: { slug },
+    const prismaTraining = await this.prisma.training.findFirst({
+      where: { slug, deletedAt: null },
       include: {
         modules: {
+          where: { deletedAt: null },
           orderBy: { order: 'asc' },
           include: {
             subModules: {
+              where: { deletedAt: null },
               orderBy: { order: 'asc' },
               include: {
                 lessons: {
+                  where: { deletedAt: null },
                   orderBy: { order: 'asc' },
                 },
               },
@@ -213,7 +219,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
 
   async findAllPublished(): Promise<Training[]> {
     const prismaTrainings = await this.prisma.training.findMany({
-      where: { published: true },
+      where: { published: true, deletedAt: null },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -242,9 +248,47 @@ export class TrainingRepository implements TrainingRepositoryInterface {
     });
   }
 
+  async softDelete(id: string): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const now = new Date();
+
+      await tx.training.update({
+        where: { id },
+        data: { deletedAt: now },
+      });
+
+      const modules = await tx.module.findMany({
+        where: { trainingId: id, deletedAt: null },
+      });
+
+      for (const module of modules) {
+        await tx.module.update({
+          where: { id: module.id },
+          data: { deletedAt: now },
+        });
+
+        const subModules = await tx.subModule.findMany({
+          where: { moduleId: module.id, deletedAt: null },
+        });
+
+        for (const subModule of subModules) {
+          await tx.subModule.update({
+            where: { id: subModule.id },
+            data: { deletedAt: now },
+          });
+
+          await tx.lesson.updateMany({
+            where: { subModuleId: subModule.id, deletedAt: null },
+            data: { deletedAt: now },
+          });
+        }
+      }
+    });
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.training.count({
-      where: { id },
+      where: { id, deletedAt: null },
     });
     return count > 0;
   }
@@ -260,6 +304,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
       prismaTraining.imageUrl,
       prismaTraining.published,
       prismaTraining.order,
+      prismaTraining.deletedAt,
       prismaTraining.createdAt,
       prismaTraining.updatedAt,
     );
@@ -289,6 +334,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
         m.description,
         m.order,
         m.trainingId,
+        m.deletedAt,
         m.createdAt,
         m.updatedAt,
       ),
@@ -299,6 +345,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
           sm.description,
           sm.order,
           sm.moduleId,
+          sm.deletedAt,
           sm.createdAt,
           sm.updatedAt,
         ),
@@ -318,6 +365,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
     videoProvider: string;
     duration: number;
     subModuleId: string;
+    deletedAt: Date | null;
     createdAt: Date;
     updatedAt: Date;
   }): Lesson {
@@ -330,6 +378,7 @@ export class TrainingRepository implements TrainingRepositoryInterface {
       new VideoProvider(prismaLesson.videoProvider),
       prismaLesson.duration,
       prismaLesson.subModuleId,
+      prismaLesson.deletedAt,
       prismaLesson.createdAt,
       prismaLesson.updatedAt,
     );

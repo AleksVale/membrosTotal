@@ -85,15 +85,16 @@ model Verification {
 // ==============================
 
 model Training {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
-  description String?  @db.Text
-  slug        String   @unique
+  description String?   @db.Text
+  slug        String    @unique
   imageUrl    String?
-  published   Boolean  @default(false)
-  order       Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  published   Boolean   @default(false)
+  order       Int       @default(0)
+  deletedAt   DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
   modules     Module[]
   enrollments Enrollment[]
@@ -109,6 +110,7 @@ model Module {
   trainingId  String
   training    Training    @relation(fields: [trainingId], references: [id], onDelete: Cascade)
   subModules  SubModule[]
+  deletedAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -118,13 +120,14 @@ model Module {
 }
 
 model SubModule {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   title       String
   description String?
   order       Int
   moduleId    String
-  module      Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  module      Module    @relation(fields: [moduleId], references: [id], onDelete: Cascade)
   lessons     Lesson[]
+  deletedAt   DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -145,6 +148,7 @@ model Lesson {
   subModuleId   String
   subModule     SubModule      @relation(fields: [subModuleId], references: [id], onDelete: Cascade)
   userProgress  UserProgress[]
+  deletedAt     DateTime?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

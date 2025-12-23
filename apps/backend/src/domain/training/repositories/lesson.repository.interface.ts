@@ -16,6 +16,7 @@ export abstract class LessonRepositoryInterface {
   abstract findBySubModuleId(subModuleId: string): Promise<Lesson[]>;
   abstract update(id: string, lesson: Lesson): Promise<Lesson>;
   abstract delete(id: string): Promise<void>;
+  abstract softDelete(id: string): Promise<void>;
   abstract exists(id: string): Promise<boolean>;
   abstract existsByOrderAndSubModuleId(
     order: number,

@@ -1,37 +1,47 @@
 import {
-  Body,
-  Controller,
-  Get,
-  HttpCode,
-  HttpStatus,
-  Param,
-  Patch,
-  Post,
-  Query,
+    Body,
+    Controller,
+    Delete,
+    Get,
+    HttpCode,
+    HttpStatus,
+    Param,
+    Patch,
+    Post,
+    Query,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
-  ApiOperation,
-  ApiResponse,
-  ApiTags,
+    ApiBearerAuth,
+    ApiOperation,
+    ApiResponse,
+    ApiTags,
 } from '@nestjs/swagger';
 import { Roles, Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { CreateTrainingDto } from '../../../application/training/dto/create-training.dto';
 import { EnrollmentResponseDto } from '../../../application/training/dto/enrollment-response.dto';
 import {
-  ProgressResponseDto,
-  TrainingProgressResponseDto,
+    ProgressResponseDto,
+    TrainingProgressResponseDto,
 } from '../../../application/training/dto/progress-response.dto';
 import { TrainingResponseDto } from '../../../application/training/dto/training-response.dto';
+import { UpdateTrainingDto } from '../../../application/training/dto/update-training.dto';
 import { CreateTrainingUseCase } from '../../../application/training/use-cases/create-training.use-case';
 import { EnrollInTrainingUseCase } from '../../../application/training/use-cases/enroll-in-training.use-case';
 import { GetTrainingProgressUseCase } from '../../../application/training/use-cases/get-training-progress.use-case';
 import { GetTrainingUseCase } from '../../../application/training/use-cases/get-training.use-case';
 import { GetUserEnrollmentsUseCase } from '../../../application/training/use-cases/get-user-enrollments.use-case';
 import { ListTrainingsUseCase } from '../../../application/training/use-cases/list-trainings.use-case';
+import { SoftDeleteTrainingUseCase } from '../../../application/training/use-cases/soft-delete-training.use-case';
 import { UpdateLessonProgressUseCase } from '../../../application/training/use-cases/update-lesson-progress.use-case';
+import { UpdateTrainingUseCase } from '../../../application/training/use-cases/update-training.use-case';
+import {
+    ApiAdminOnlyResponses,
+    ApiBadRequestResponse,
+    ApiConflictResponse,
+} from '../../../common/decorators/api-responses.decorator';
 import { CreateTrainingRequestDto } from '../dto/create-training-request.dto';
 import { UpdateProgressRequestDto } from '../dto/update-progress-request.dto';
+import { UpdateTrainingRequestDto } from '../dto/update-training-request.dto';
 
 @ApiTags('Training')
 @Controller('trainings')
@@ -40,6 +50,8 @@ export class TrainingController {
     private readonly createTrainingUseCase: CreateTrainingUseCase,
     private readonly getTrainingUseCase: GetTrainingUseCase,
     private readonly listTrainingsUseCase: ListTrainingsUseCase,
+    private readonly updateTrainingUseCase: UpdateTrainingUseCase,
+    private readonly softDeleteTrainingUseCase: SoftDeleteTrainingUseCase,
     private readonly enrollInTrainingUseCase: EnrollInTrainingUseCase,
     private readonly getUserEnrollmentsUseCase: GetUserEnrollmentsUseCase,
     private readonly updateLessonProgressUseCase: UpdateLessonProgressUseCase,
@@ -137,6 +149,58 @@ export class TrainingController {
   ): Promise<TrainingResponseDto> {
     const include = includeHierarchy === 'true';
     return this.getTrainingUseCase.execute(id, include);
+  }
+
+  @Patch(':id')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update training (Admin only)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Training updated successfully',
+    type: TrainingResponseDto,
+  })
+  @ApiBadRequestResponse()
+  @ApiConflictResponse('Training with this slug already exists')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Training',
+    notFoundMessage: 'Training with id "xxx" not found',
+  })
+  async updateTraining(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateTrainingRequestDto,
+  ): Promise<TrainingResponseDto> {
+    const applicationDto = new UpdateTrainingDto({
+      title: updateDto.title,
+      description: updateDto.description,
+      slug: updateDto.slug,
+      imageUrl: updateDto.imageUrl,
+      published: updateDto.published,
+      order: updateDto.order,
+    });
+
+    return this.updateTrainingUseCase.execute(id, applicationDto);
+  }
+
+  @Delete(':id')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Soft delete training (Admin only)',
+    description:
+      'Soft deletes a training and all its modules, submodules, and lessons. Records are marked as deleted but not removed from the database.',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Training soft deleted successfully',
+  })
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Training',
+    notFoundMessage: 'Training with id "xxx" not found',
+  })
+  async softDeleteTraining(@Param('id') id: string): Promise<void> {
+    return this.softDeleteTrainingUseCase.execute(id);
   }
 
   @Post(':id/enroll')

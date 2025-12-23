@@ -30,8 +30,8 @@ export class LessonRepository implements LessonRepositoryInterface {
   }
 
   async findById(id: string): Promise<Lesson | null> {
-    const prismaLesson = await this.prisma.lesson.findUnique({
-      where: { id },
+    const prismaLesson = await this.prisma.lesson.findFirst({
+      where: { id, deletedAt: null },
     });
 
     if (!prismaLesson) {
@@ -43,7 +43,7 @@ export class LessonRepository implements LessonRepositoryInterface {
 
   async findBySubModuleId(subModuleId: string): Promise<Lesson[]> {
     const prismaLessons = await this.prisma.lesson.findMany({
-      where: { subModuleId },
+      where: { subModuleId, deletedAt: null },
       orderBy: { order: 'asc' },
     });
 
@@ -72,9 +72,16 @@ export class LessonRepository implements LessonRepositoryInterface {
     });
   }
 
+  async softDelete(id: string): Promise<void> {
+    await this.prisma.lesson.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.lesson.count({
-      where: { id },
+      where: { id, deletedAt: null },
     });
     return count > 0;
   }
@@ -87,6 +94,7 @@ export class LessonRepository implements LessonRepositoryInterface {
       where: {
         order,
         subModuleId,
+        deletedAt: null,
       },
     });
     return count > 0;
@@ -104,6 +112,7 @@ export class LessonRepository implements LessonRepositoryInterface {
       new VideoProvider(prismaLesson.videoProvider),
       prismaLesson.duration,
       prismaLesson.subModuleId,
+      prismaLesson.deletedAt,
       prismaLesson.createdAt,
       prismaLesson.updatedAt,
     );

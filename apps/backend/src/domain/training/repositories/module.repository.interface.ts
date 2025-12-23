@@ -13,6 +13,7 @@ export abstract class ModuleRepositoryInterface {
   abstract findByTrainingId(trainingId: string): Promise<Module[]>;
   abstract update(id: string, module: Module): Promise<Module>;
   abstract delete(id: string): Promise<void>;
+  abstract softDelete(id: string): Promise<void>;
   abstract exists(id: string): Promise<boolean>;
   abstract existsByOrderAndTrainingId(
     order: number,

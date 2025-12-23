@@ -25,8 +25,8 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
   }
 
   async findById(id: string): Promise<SubModule | null> {
-    const prismaSubModule = await this.prisma.subModule.findUnique({
-      where: { id },
+    const prismaSubModule = await this.prisma.subModule.findFirst({
+      where: { id, deletedAt: null },
     });
 
     if (!prismaSubModule) {
@@ -38,7 +38,7 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
 
   async findByModuleId(moduleId: string): Promise<SubModule[]> {
     const prismaSubModules = await this.prisma.subModule.findMany({
-      where: { moduleId },
+      where: { moduleId, deletedAt: null },
       orderBy: { order: 'asc' },
     });
 
@@ -64,9 +64,25 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
     });
   }
 
+  async softDelete(id: string): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const now = new Date();
+
+      await tx.subModule.update({
+        where: { id },
+        data: { deletedAt: now },
+      });
+
+      await tx.lesson.updateMany({
+        where: { subModuleId: id, deletedAt: null },
+        data: { deletedAt: now },
+      });
+    });
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.subModule.count({
-      where: { id },
+      where: { id, deletedAt: null },
     });
     return count > 0;
   }
@@ -79,6 +95,7 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
       where: {
         order,
         moduleId,
+        deletedAt: null,
       },
     });
     return count > 0;
@@ -93,6 +110,7 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
       prismaSubModule.description,
       prismaSubModule.order,
       prismaSubModule.moduleId,
+      prismaSubModule.deletedAt,
       prismaSubModule.createdAt,
       prismaSubModule.updatedAt,
     );

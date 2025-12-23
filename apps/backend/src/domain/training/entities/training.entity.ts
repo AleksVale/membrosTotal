@@ -7,6 +7,7 @@ export class Training {
     public readonly imageUrl: string | null,
     public readonly published: boolean,
     public readonly order: number,
+    public readonly deletedAt: Date | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -24,6 +25,7 @@ export class Training {
       this.imageUrl,
       true,
       this.order,
+      this.deletedAt,
       this.createdAt,
       new Date(),
     );
@@ -38,22 +40,28 @@ export class Training {
       this.imageUrl,
       false,
       this.order,
+      this.deletedAt,
       this.createdAt,
       new Date(),
     );
   }
 
-  update(updates: Partial<Pick<Training, 'title' | 'description' | 'imageUrl' | 'order'>>): Training {
+  update(updates: Partial<Pick<Training, 'title' | 'description' | 'imageUrl' | 'order' | 'published' | 'slug'>>): Training {
     return new Training(
       this.id,
       updates.title ?? this.title,
       updates.description ?? this.description,
-      this.slug,
+      updates.slug ?? this.slug,
       updates.imageUrl ?? this.imageUrl,
-      this.published,
+      updates.published ?? this.published,
       updates.order ?? this.order,
+      this.deletedAt,
       this.createdAt,
       new Date(),
     );
+  }
+
+  isDeleted(): boolean {
+    return this.deletedAt !== null;
   }
 }

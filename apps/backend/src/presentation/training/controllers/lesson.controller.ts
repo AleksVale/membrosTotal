@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import {
     ApiBearerAuth,
     ApiOperation,
@@ -8,15 +8,19 @@ import {
 import { Roles } from '@thallesp/nestjs-better-auth';
 import { CreateLessonDto } from '../../../application/training/dto/create-lesson.dto';
 import { LessonResponseDto } from '../../../application/training/dto/lesson-response.dto';
+import { UpdateLessonDto } from '../../../application/training/dto/update-lesson.dto';
 import { CreateLessonUseCase } from '../../../application/training/use-cases/create-lesson.use-case';
 import { GetLessonUseCase } from '../../../application/training/use-cases/get-lesson.use-case';
 import { GetLessonsBySubModuleUseCase } from '../../../application/training/use-cases/get-lessons-by-sub-module.use-case';
+import { SoftDeleteLessonUseCase } from '../../../application/training/use-cases/soft-delete-lesson.use-case';
+import { UpdateLessonUseCase } from '../../../application/training/use-cases/update-lesson.use-case';
 import {
     ApiAdminOnlyResponses,
     ApiBadRequestResponse,
     ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateLessonRequestDto } from '../dto/create-lesson-request.dto';
+import { UpdateLessonRequestDto } from '../dto/update-lesson-request.dto';
 
 @ApiTags('Training Lessons')
 @Controller()
@@ -25,6 +29,8 @@ export class LessonController {
     private readonly createLessonUseCase: CreateLessonUseCase,
     private readonly getLessonUseCase: GetLessonUseCase,
     private readonly getLessonsBySubModuleUseCase: GetLessonsBySubModuleUseCase,
+    private readonly updateLessonUseCase: UpdateLessonUseCase,
+    private readonly softDeleteLessonUseCase: SoftDeleteLessonUseCase,
   ) {}
 
   @Post('submodules/:subModuleId/lessons')
@@ -99,5 +105,59 @@ export class LessonController {
     @Param('subModuleId') subModuleId: string,
   ): Promise<LessonResponseDto[]> {
     return this.getLessonsBySubModuleUseCase.execute(subModuleId);
+  }
+
+  @Patch('lessons/:id')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({ summary: 'Update lesson (Admin only)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Lesson updated successfully',
+    type: LessonResponseDto,
+  })
+  @ApiBadRequestResponse()
+  @ApiConflictResponse(
+    'A lesson with this order already exists in this submodule',
+  )
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Lesson',
+    notFoundMessage: 'Lesson with id "xxx" not found',
+  })
+  async updateLesson(
+    @Param('id') id: string,
+    @Body() updateDto: UpdateLessonRequestDto,
+  ): Promise<LessonResponseDto> {
+    const applicationDto = new UpdateLessonDto({
+      title: updateDto.title,
+      description: updateDto.description,
+      order: updateDto.order,
+      videoUrl: updateDto.videoUrl,
+      videoProvider: updateDto.videoProvider,
+      duration: updateDto.duration,
+    });
+
+    return this.updateLessonUseCase.execute(id, applicationDto);
+  }
+
+  @Delete('lessons/:id')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({
+    summary: 'Soft delete lesson (Admin only)',
+    description:
+      'Soft deletes a lesson. The record is marked as deleted but not removed from the database.',
+  })
+  @ApiResponse({
+    status: 204,
+    description: 'Lesson soft deleted successfully',
+  })
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Lesson',
+    notFoundMessage: 'Lesson with id "xxx" not found',
+  })
+  async softDeleteLesson(@Param('id') id: string): Promise<void> {
+    return this.softDeleteLessonUseCase.execute(id);
   }
 }

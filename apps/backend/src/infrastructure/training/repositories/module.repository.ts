@@ -25,8 +25,8 @@ export class ModuleRepository implements ModuleRepositoryInterface {
   }
 
   async findById(id: string): Promise<Module | null> {
-    const prismaModule = await this.prisma.module.findUnique({
-      where: { id },
+    const prismaModule = await this.prisma.module.findFirst({
+      where: { id, deletedAt: null },
     });
 
     if (!prismaModule) {
@@ -38,7 +38,7 @@ export class ModuleRepository implements ModuleRepositoryInterface {
 
   async findByTrainingId(trainingId: string): Promise<Module[]> {
     const prismaModules = await this.prisma.module.findMany({
-      where: { trainingId },
+      where: { trainingId, deletedAt: null },
       orderBy: { order: 'asc' },
     });
 
@@ -64,9 +64,36 @@ export class ModuleRepository implements ModuleRepositoryInterface {
     });
   }
 
+  async softDelete(id: string): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const now = new Date();
+
+      await tx.module.update({
+        where: { id },
+        data: { deletedAt: now },
+      });
+
+      const subModules = await tx.subModule.findMany({
+        where: { moduleId: id, deletedAt: null },
+      });
+
+      for (const subModule of subModules) {
+        await tx.subModule.update({
+          where: { id: subModule.id },
+          data: { deletedAt: now },
+        });
+
+        await tx.lesson.updateMany({
+          where: { subModuleId: subModule.id, deletedAt: null },
+          data: { deletedAt: now },
+        });
+      }
+    });
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.module.count({
-      where: { id },
+      where: { id, deletedAt: null },
     });
     return count > 0;
   }
@@ -79,6 +106,7 @@ export class ModuleRepository implements ModuleRepositoryInterface {
       where: {
         order,
         trainingId,
+        deletedAt: null,
       },
     });
     return count > 0;
@@ -93,6 +121,7 @@ export class ModuleRepository implements ModuleRepositoryInterface {
       prismaModule.description,
       prismaModule.order,
       prismaModule.trainingId,
+      prismaModule.deletedAt,
       prismaModule.createdAt,
       prismaModule.updatedAt,
     );

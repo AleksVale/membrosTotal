@@ -15,6 +15,7 @@ import {
 import { SubModuleResponseDto } from '../../../application/training/dto/sub-module-response.dto';
 import { TrainingResponseDto } from '../../../application/training/dto/training-response.dto';
 import { GetEnrolledLessonProgressUseCase } from '../../../application/training/use-cases/get-enrolled-lesson-progress.use-case';
+import { GetEnrolledLessonUseCase } from '../../../application/training/use-cases/get-enrolled-lesson.use-case';
 import { GetEnrolledModuleSubModulesUseCase } from '../../../application/training/use-cases/get-enrolled-module-sub-modules.use-case';
 import { GetEnrolledSubModuleLessonsUseCase } from '../../../application/training/use-cases/get-enrolled-sub-module-lessons.use-case';
 import { GetEnrolledTrainingModulesUseCase } from '../../../application/training/use-cases/get-enrolled-training-modules.use-case';
@@ -38,6 +39,7 @@ export class CollaboratorTrainingController {
     private readonly getEnrolledTrainingModulesUseCase: GetEnrolledTrainingModulesUseCase,
     private readonly getEnrolledModuleSubModulesUseCase: GetEnrolledModuleSubModulesUseCase,
     private readonly getEnrolledSubModuleLessonsUseCase: GetEnrolledSubModuleLessonsUseCase,
+    private readonly getEnrolledLessonUseCase: GetEnrolledLessonUseCase,
     private readonly updateEnrolledLessonProgressUseCase: UpdateEnrolledLessonProgressUseCase,
     private readonly watchEnrolledLessonUseCase: WatchEnrolledLessonUseCase,
     private readonly getEnrolledLessonProgressUseCase: GetEnrolledLessonProgressUseCase,
@@ -147,6 +149,36 @@ export class CollaboratorTrainingController {
     return this.getEnrolledSubModuleLessonsUseCase.execute(
       session.user.id,
       subModuleId,
+    );
+  }
+
+  @Get('lessons/:lessonId')
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Get lesson details',
+    description:
+      'Get details for a specific lesson. User must be enrolled in the training containing this lesson, and training must be published.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lesson retrieved successfully',
+    type: LessonResponseDto,
+  })
+  @ApiUnauthorizedResponse()
+  @ApiForbiddenResponse(
+    'User is not enrolled in this training or training is not published',
+  )
+  @ApiNotFoundResponse(
+    'Lesson, SubModule, Module, or Training',
+    'Lesson with id "xxx" not found, SubModule not found, Module not found, or Training not found',
+  )
+  async getEnrolledLesson(
+    @Param('lessonId') lessonId: string,
+    @Session() session: UserSession,
+  ): Promise<LessonResponseDto> {
+    return this.getEnrolledLessonUseCase.execute(
+      session.user.id,
+      lessonId,
     );
   }
 

@@ -5,6 +5,7 @@ export class Module {
     public readonly description: string | null,
     public readonly order: number,
     public readonly trainingId: string,
+    public readonly deletedAt: Date | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -16,8 +17,13 @@ export class Module {
       updates.description ?? this.description,
       updates.order ?? this.order,
       this.trainingId,
+      this.deletedAt,
       this.createdAt,
       new Date(),
     );
+  }
+
+  isDeleted(): boolean {
+    return this.deletedAt !== null;
   }
 }

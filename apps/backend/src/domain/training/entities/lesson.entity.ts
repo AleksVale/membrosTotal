@@ -10,6 +10,7 @@ export class Lesson {
     public readonly videoProvider: VideoProvider,
     public readonly duration: number,
     public readonly subModuleId: string,
+    public readonly deletedAt: Date | null,
     public readonly createdAt: Date,
     public readonly updatedAt: Date,
   ) {}
@@ -36,6 +37,7 @@ export class Lesson {
       this.videoProvider,
       updates.duration ?? this.duration,
       this.subModuleId,
+      this.deletedAt,
       this.createdAt,
       new Date(),
     );
@@ -51,8 +53,13 @@ export class Lesson {
       provider,
       this.duration,
       this.subModuleId,
+      this.deletedAt,
       this.createdAt,
       new Date(),
     );
+  }
+
+  isDeleted(): boolean {
+    return this.deletedAt !== null;
   }
 }

@@ -5,6 +5,7 @@ import { CreateModuleUseCase } from './use-cases/create-module.use-case';
 import { CreateSubModuleUseCase } from './use-cases/create-sub-module.use-case';
 import { CreateTrainingUseCase } from './use-cases/create-training.use-case';
 import { EnrollInTrainingUseCase } from './use-cases/enroll-in-training.use-case';
+import { GetEnrolledTrainingModulesUseCase } from './use-cases/get-enrolled-training-modules.use-case';
 import { GetEnrolledTrainingsUseCase } from './use-cases/get-enrolled-trainings.use-case';
 import { GetLessonUseCase } from './use-cases/get-lesson.use-case';
 import { GetLessonsBySubModuleUseCase } from './use-cases/get-lessons-by-sub-module.use-case';
@@ -38,6 +39,7 @@ import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.
     GetLessonUseCase,
     GetLessonsBySubModuleUseCase,
     GetEnrolledTrainingsUseCase,
+    GetEnrolledTrainingModulesUseCase,
   ],
   exports: [
     CreateTrainingUseCase,
@@ -57,6 +59,7 @@ import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.
     GetLessonUseCase,
     GetLessonsBySubModuleUseCase,
     GetEnrolledTrainingsUseCase,
+    GetEnrolledTrainingModulesUseCase,
   ],
 })
 export class ApplicationTrainingModule {}

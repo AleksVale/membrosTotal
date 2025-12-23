@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ApplicationTrainingModule } from '../../application/training/training.module';
+import { CollaboratorTrainingController } from './controllers/collaborator-training.controller';
 import { LessonController } from './controllers/lesson.controller';
 import { ModuleController } from './controllers/module.controller';
 import { SubModuleController } from './controllers/sub-module.controller';
@@ -12,6 +13,7 @@ import { TrainingController } from './controllers/training.controller';
     ModuleController,
     SubModuleController,
     LessonController,
+    CollaboratorTrainingController,
   ],
 })
 export class PresentationTrainingModule {}

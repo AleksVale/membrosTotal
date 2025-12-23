@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from 'generated/prisma/client';
 import { Lesson } from '../../../domain/training/entities/lesson.entity';
 import {
-    CreateLessonData,
-    LessonRepositoryInterface,
+  CreateLessonData,
+  LessonRepositoryInterface,
 } from '../../../domain/training/repositories/lesson.repository.interface';
 import { VideoProvider } from '../../../domain/training/value-objects/video-provider.vo';
 import { PrismaService } from '../../../prisma/prisma.service';
@@ -76,6 +76,95 @@ export class LessonRepository implements LessonRepositoryInterface {
     await this.prisma.lesson.update({
       where: { id },
       data: { deletedAt: new Date() },
+    });
+  }
+
+  async reorder(id: string, newOrder: number): Promise<Lesson> {
+    return await this.prisma.$transaction(async (tx) => {
+      const item = await tx.lesson.findFirst({
+        where: { id, deletedAt: null },
+      });
+
+      if (!item) {
+        throw new Error(`Lesson with id "${id}" not found`);
+      }
+
+      const allItems = await tx.lesson.findMany({
+        where: { subModuleId: item.subModuleId, deletedAt: null },
+        orderBy: { order: 'asc' },
+      });
+
+      const currentIndex = allItems.findIndex((l) => l.id === id);
+      if (currentIndex === -1) {
+        throw new Error(`Lesson with id "${id}" not found`);
+      }
+
+      if (newOrder < 1 || newOrder > allItems.length) {
+        throw new Error(
+          `Invalid order position: ${newOrder}. Must be between 1 and ${allItems.length}`,
+        );
+      }
+
+      const targetIndex = newOrder - 1;
+
+      if (currentIndex === targetIndex) {
+        return this.toDomainEntity(item);
+      }
+
+      const reorderedItems = [...allItems];
+      const [movedItem] = reorderedItems.splice(currentIndex, 1);
+      reorderedItems.splice(targetIndex, 0, movedItem);
+
+      for (let i = 0; i < reorderedItems.length; i++) {
+        await tx.lesson.update({
+          where: { id: reorderedItems[i].id },
+          data: { order: i + 1 },
+        });
+      }
+
+      const updated = await tx.lesson.findUnique({
+        where: { id },
+      });
+
+      if (!updated) {
+        throw new Error(`Lesson with id "${id}" not found`);
+      }
+
+      return this.toDomainEntity(updated);
+    });
+  }
+
+  async swapOrders(id1: string, id2: string): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const item1 = await tx.lesson.findFirst({
+        where: { id: id1, deletedAt: null },
+      });
+      const item2 = await tx.lesson.findFirst({
+        where: { id: id2, deletedAt: null },
+      });
+
+      if (!item1) {
+        throw new Error(`Lesson with id "${id1}" not found`);
+      }
+      if (!item2) {
+        throw new Error(`Lesson with id "${id2}" not found`);
+      }
+
+      if (item1.subModuleId !== item2.subModuleId) {
+        throw new Error(
+          `Lessons must belong to the same submodule. Lesson ${id1} belongs to subModule ${item1.subModuleId}, lesson ${id2} belongs to subModule ${item2.subModuleId}`,
+        );
+      }
+
+      const tempOrder = item1.order;
+      await tx.lesson.update({
+        where: { id: id1 },
+        data: { order: item2.order },
+      });
+      await tx.lesson.update({
+        where: { id: id2 },
+        data: { order: tempOrder },
+      });
     });
   }
 

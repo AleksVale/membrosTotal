@@ -1,27 +1,27 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    HttpCode,
-    HttpStatus,
-    Param,
-    Patch,
-    Post,
-    Query,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  Query,
 } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { Roles, Session, UserSession } from '@thallesp/nestjs-better-auth';
 import { CreateTrainingDto } from '../../../application/training/dto/create-training.dto';
 import { EnrollmentResponseDto } from '../../../application/training/dto/enrollment-response.dto';
 import {
-    ProgressResponseDto,
-    TrainingProgressResponseDto,
+  ProgressResponseDto,
+  TrainingProgressResponseDto,
 } from '../../../application/training/dto/progress-response.dto';
 import { TrainingResponseDto } from '../../../application/training/dto/training-response.dto';
 import { UpdateTrainingDto } from '../../../application/training/dto/update-training.dto';
@@ -31,15 +31,19 @@ import { GetTrainingProgressUseCase } from '../../../application/training/use-ca
 import { GetTrainingUseCase } from '../../../application/training/use-cases/get-training.use-case';
 import { GetUserEnrollmentsUseCase } from '../../../application/training/use-cases/get-user-enrollments.use-case';
 import { ListTrainingsUseCase } from '../../../application/training/use-cases/list-trainings.use-case';
+import { ReorderTrainingUseCase } from '../../../application/training/use-cases/reorder-training.use-case';
 import { SoftDeleteTrainingUseCase } from '../../../application/training/use-cases/soft-delete-training.use-case';
+import { SwapTrainingOrdersUseCase } from '../../../application/training/use-cases/swap-training-orders.use-case';
 import { UpdateLessonProgressUseCase } from '../../../application/training/use-cases/update-lesson-progress.use-case';
 import { UpdateTrainingUseCase } from '../../../application/training/use-cases/update-training.use-case';
 import {
-    ApiAdminOnlyResponses,
-    ApiBadRequestResponse,
-    ApiConflictResponse,
+  ApiAdminOnlyResponses,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateTrainingRequestDto } from '../dto/create-training-request.dto';
+import { ReorderRequestDto } from '../dto/reorder-request.dto';
+import { SwapOrdersRequestDto } from '../dto/swap-orders-request.dto';
 import { UpdateProgressRequestDto } from '../dto/update-progress-request.dto';
 import { UpdateTrainingRequestDto } from '../dto/update-training-request.dto';
 
@@ -52,6 +56,8 @@ export class TrainingController {
     private readonly listTrainingsUseCase: ListTrainingsUseCase,
     private readonly updateTrainingUseCase: UpdateTrainingUseCase,
     private readonly softDeleteTrainingUseCase: SoftDeleteTrainingUseCase,
+    private readonly reorderTrainingUseCase: ReorderTrainingUseCase,
+    private readonly swapTrainingOrdersUseCase: SwapTrainingOrdersUseCase,
     private readonly enrollInTrainingUseCase: EnrollInTrainingUseCase,
     private readonly getUserEnrollmentsUseCase: GetUserEnrollmentsUseCase,
     private readonly updateLessonProgressUseCase: UpdateLessonProgressUseCase,
@@ -201,6 +207,54 @@ export class TrainingController {
   })
   async softDeleteTraining(@Param('id') id: string): Promise<void> {
     return this.softDeleteTrainingUseCase.execute(id);
+  }
+
+  @Patch(':id/reorder')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Reorder training (Admin only)',
+    description:
+      'Move a training to a specific order position. Other trainings will be shifted accordingly.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Training reordered successfully',
+    type: TrainingResponseDto,
+  })
+  @ApiBadRequestResponse('Invalid order position')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Training',
+    notFoundMessage: 'Training with id "xxx" not found',
+  })
+  async reorderTraining(
+    @Param('id') id: string,
+    @Body() reorderDto: ReorderRequestDto,
+  ): Promise<TrainingResponseDto> {
+    return this.reorderTrainingUseCase.execute(id, reorderDto.newOrder);
+  }
+
+  @Patch('swap-orders')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Swap training orders (Admin only)',
+    description: 'Swap the order positions of two trainings.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Training orders swapped successfully',
+    type: [TrainingResponseDto],
+  })
+  @ApiBadRequestResponse('Invalid training IDs')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Training',
+    notFoundMessage: 'Training with id "xxx" not found',
+  })
+  async swapTrainingOrders(
+    @Body() swapDto: SwapOrdersRequestDto,
+  ): Promise<[TrainingResponseDto, TrainingResponseDto]> {
+    return this.swapTrainingOrdersUseCase.execute(swapDto.id1, swapDto.id2);
   }
 
   @Post(':id/enroll')

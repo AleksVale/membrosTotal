@@ -58,5 +58,7 @@ export abstract class TrainingRepositoryInterface {
   abstract update(id: string, training: Training): Promise<Training>;
   abstract delete(id: string): Promise<void>;
   abstract softDelete(id: string): Promise<void>;
+  abstract reorder(id: string, newOrder: number): Promise<Training>;
+  abstract swapOrders(id1: string, id2: string): Promise<void>;
   abstract exists(id: string): Promise<boolean>;
 }

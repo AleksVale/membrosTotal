@@ -83,9 +83,57 @@ export class EnrollmentRepository implements EnrollmentRepositoryInterface {
     return count > 0;
   }
 
+  async findAll(): Promise<Enrollment[]> {
+    const prismaEnrollments = await this.prisma.enrollment.findMany({
+      orderBy: { enrolledAt: 'desc' },
+    });
+
+    return prismaEnrollments.map((e) => this.toDomainEntity(e));
+  }
+
   async delete(id: string): Promise<void> {
     await this.prisma.enrollment.delete({
       where: { id },
+    });
+  }
+
+  async deleteByUserAndTraining(
+    userId: string,
+    trainingId: string,
+  ): Promise<void> {
+    await this.prisma.enrollment.deleteMany({
+      where: {
+        userId,
+        trainingId,
+      },
+    });
+  }
+
+  async bulkCreate(data: CreateEnrollmentData[]): Promise<Enrollment[]> {
+    return await this.prisma.$transaction(async (tx) => {
+      const created = await Promise.all(
+        data.map((item) =>
+          tx.enrollment.create({
+            data: {
+              userId: item.userId,
+              trainingId: item.trainingId,
+              enrolledAt: item.enrolledAt,
+            },
+          }),
+        ),
+      );
+
+      return created.map((e) => this.toDomainEntity(e));
+    });
+  }
+
+  async bulkDelete(ids: string[]): Promise<void> {
+    await this.prisma.enrollment.deleteMany({
+      where: {
+        id: {
+          in: ids,
+        },
+      },
     });
   }
 

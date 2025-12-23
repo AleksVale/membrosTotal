@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -12,7 +22,9 @@ import { UpdateModuleDto } from '../../../application/training/dto/update-module
 import { CreateModuleUseCase } from '../../../application/training/use-cases/create-module.use-case';
 import { GetModuleUseCase } from '../../../application/training/use-cases/get-module.use-case';
 import { GetModulesByTrainingUseCase } from '../../../application/training/use-cases/get-modules-by-training.use-case';
+import { ReorderModuleUseCase } from '../../../application/training/use-cases/reorder-module.use-case';
 import { SoftDeleteModuleUseCase } from '../../../application/training/use-cases/soft-delete-module.use-case';
+import { SwapModuleOrdersUseCase } from '../../../application/training/use-cases/swap-module-orders.use-case';
 import { UpdateModuleUseCase } from '../../../application/training/use-cases/update-module.use-case';
 import {
   ApiAdminOnlyResponses,
@@ -20,6 +32,8 @@ import {
   ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateModuleRequestDto } from '../dto/create-module-request.dto';
+import { ReorderRequestDto } from '../dto/reorder-request.dto';
+import { SwapOrdersRequestDto } from '../dto/swap-orders-request.dto';
 import { UpdateModuleRequestDto } from '../dto/update-module-request.dto';
 
 @ApiTags('Training Modules')
@@ -31,6 +45,8 @@ export class ModuleController {
     private readonly getModulesByTrainingUseCase: GetModulesByTrainingUseCase,
     private readonly updateModuleUseCase: UpdateModuleUseCase,
     private readonly softDeleteModuleUseCase: SoftDeleteModuleUseCase,
+    private readonly reorderModuleUseCase: ReorderModuleUseCase,
+    private readonly swapModuleOrdersUseCase: SwapModuleOrdersUseCase,
   ) {}
 
   @Post('trainings/:trainingId/modules')
@@ -151,5 +167,55 @@ export class ModuleController {
   })
   async softDeleteModule(@Param('id') id: string): Promise<void> {
     return this.softDeleteModuleUseCase.execute(id);
+  }
+
+  @Patch('modules/:id/reorder')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Reorder module (Admin only)',
+    description:
+      'Move a module to a specific order position within its training. Other modules in the same training will be shifted accordingly.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Module reordered successfully',
+    type: ModuleResponseDto,
+  })
+  @ApiBadRequestResponse('Invalid order position')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Module',
+    notFoundMessage: 'Module with id "xxx" not found',
+  })
+  async reorderModule(
+    @Param('id') id: string,
+    @Body() reorderDto: ReorderRequestDto,
+  ): Promise<ModuleResponseDto> {
+    return this.reorderModuleUseCase.execute(id, reorderDto.newOrder);
+  }
+
+  @Patch('modules/swap-orders')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Swap module orders (Admin only)',
+    description:
+      'Swap the order positions of two modules. Modules must belong to the same training.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Module orders swapped successfully',
+    type: [ModuleResponseDto],
+  })
+  @ApiBadRequestResponse('Invalid module IDs')
+  @ApiConflictResponse('Modules must belong to the same training')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Module',
+    notFoundMessage: 'Module with id "xxx" not found',
+  })
+  async swapModuleOrders(
+    @Body() swapDto: SwapOrdersRequestDto,
+  ): Promise<[ModuleResponseDto, ModuleResponseDto]> {
+    return this.swapModuleOrdersUseCase.execute(swapDto.id1, swapDto.id2);
   }
 }

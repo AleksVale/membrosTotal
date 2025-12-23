@@ -1,9 +1,19 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
 import {
-    ApiBearerAuth,
-    ApiOperation,
-    ApiResponse,
-    ApiTags,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
 } from '@nestjs/swagger';
 import { Roles } from '@thallesp/nestjs-better-auth';
 import { CreateLessonDto } from '../../../application/training/dto/create-lesson.dto';
@@ -12,14 +22,18 @@ import { UpdateLessonDto } from '../../../application/training/dto/update-lesson
 import { CreateLessonUseCase } from '../../../application/training/use-cases/create-lesson.use-case';
 import { GetLessonUseCase } from '../../../application/training/use-cases/get-lesson.use-case';
 import { GetLessonsBySubModuleUseCase } from '../../../application/training/use-cases/get-lessons-by-sub-module.use-case';
+import { ReorderLessonUseCase } from '../../../application/training/use-cases/reorder-lesson.use-case';
 import { SoftDeleteLessonUseCase } from '../../../application/training/use-cases/soft-delete-lesson.use-case';
+import { SwapLessonOrdersUseCase } from '../../../application/training/use-cases/swap-lesson-orders.use-case';
 import { UpdateLessonUseCase } from '../../../application/training/use-cases/update-lesson.use-case';
 import {
-    ApiAdminOnlyResponses,
-    ApiBadRequestResponse,
-    ApiConflictResponse,
+  ApiAdminOnlyResponses,
+  ApiBadRequestResponse,
+  ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateLessonRequestDto } from '../dto/create-lesson-request.dto';
+import { ReorderRequestDto } from '../dto/reorder-request.dto';
+import { SwapOrdersRequestDto } from '../dto/swap-orders-request.dto';
 import { UpdateLessonRequestDto } from '../dto/update-lesson-request.dto';
 
 @ApiTags('Training Lessons')
@@ -31,6 +45,8 @@ export class LessonController {
     private readonly getLessonsBySubModuleUseCase: GetLessonsBySubModuleUseCase,
     private readonly updateLessonUseCase: UpdateLessonUseCase,
     private readonly softDeleteLessonUseCase: SoftDeleteLessonUseCase,
+    private readonly reorderLessonUseCase: ReorderLessonUseCase,
+    private readonly swapLessonOrdersUseCase: SwapLessonOrdersUseCase,
   ) {}
 
   @Post('submodules/:subModuleId/lessons')
@@ -159,5 +175,55 @@ export class LessonController {
   })
   async softDeleteLesson(@Param('id') id: string): Promise<void> {
     return this.softDeleteLessonUseCase.execute(id);
+  }
+
+  @Patch('lessons/:id/reorder')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Reorder lesson (Admin only)',
+    description:
+      'Move a lesson to a specific order position within its submodule. Other lessons in the same submodule will be shifted accordingly.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lesson reordered successfully',
+    type: LessonResponseDto,
+  })
+  @ApiBadRequestResponse('Invalid order position')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Lesson',
+    notFoundMessage: 'Lesson with id "xxx" not found',
+  })
+  async reorderLesson(
+    @Param('id') id: string,
+    @Body() reorderDto: ReorderRequestDto,
+  ): Promise<LessonResponseDto> {
+    return this.reorderLessonUseCase.execute(id, reorderDto.newOrder);
+  }
+
+  @Patch('lessons/swap-orders')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Swap lesson orders (Admin only)',
+    description:
+      'Swap the order positions of two lessons. Lessons must belong to the same submodule.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Lesson orders swapped successfully',
+    type: [LessonResponseDto],
+  })
+  @ApiBadRequestResponse('Invalid lesson IDs')
+  @ApiConflictResponse('Lessons must belong to the same submodule')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Lesson',
+    notFoundMessage: 'Lesson with id "xxx" not found',
+  })
+  async swapLessonOrders(
+    @Body() swapDto: SwapOrdersRequestDto,
+  ): Promise<[LessonResponseDto, LessonResponseDto]> {
+    return this.swapLessonOrdersUseCase.execute(swapDto.id1, swapDto.id2);
   }
 }

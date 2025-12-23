@@ -1,4 +1,14 @@
-import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -12,7 +22,9 @@ import { UpdateSubModuleDto } from '../../../application/training/dto/update-sub
 import { CreateSubModuleUseCase } from '../../../application/training/use-cases/create-sub-module.use-case';
 import { GetSubModuleUseCase } from '../../../application/training/use-cases/get-sub-module.use-case';
 import { GetSubModulesByModuleUseCase } from '../../../application/training/use-cases/get-sub-modules-by-module.use-case';
+import { ReorderSubModuleUseCase } from '../../../application/training/use-cases/reorder-sub-module.use-case';
 import { SoftDeleteSubModuleUseCase } from '../../../application/training/use-cases/soft-delete-sub-module.use-case';
+import { SwapSubModuleOrdersUseCase } from '../../../application/training/use-cases/swap-sub-module-orders.use-case';
 import { UpdateSubModuleUseCase } from '../../../application/training/use-cases/update-sub-module.use-case';
 import {
   ApiAdminOnlyResponses,
@@ -20,6 +32,8 @@ import {
   ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateSubModuleRequestDto } from '../dto/create-sub-module-request.dto';
+import { ReorderRequestDto } from '../dto/reorder-request.dto';
+import { SwapOrdersRequestDto } from '../dto/swap-orders-request.dto';
 import { UpdateSubModuleRequestDto } from '../dto/update-sub-module-request.dto';
 
 @ApiTags('Training SubModules')
@@ -31,6 +45,8 @@ export class SubModuleController {
     private readonly getSubModulesByModuleUseCase: GetSubModulesByModuleUseCase,
     private readonly updateSubModuleUseCase: UpdateSubModuleUseCase,
     private readonly softDeleteSubModuleUseCase: SoftDeleteSubModuleUseCase,
+    private readonly reorderSubModuleUseCase: ReorderSubModuleUseCase,
+    private readonly swapSubModuleOrdersUseCase: SwapSubModuleOrdersUseCase,
   ) {}
 
   @Post('modules/:moduleId/submodules')
@@ -153,5 +169,55 @@ export class SubModuleController {
   })
   async softDeleteSubModule(@Param('id') id: string): Promise<void> {
     return this.softDeleteSubModuleUseCase.execute(id);
+  }
+
+  @Patch('submodules/:id/reorder')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Reorder submodule (Admin only)',
+    description:
+      'Move a submodule to a specific order position within its module. Other submodules in the same module will be shifted accordingly.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'SubModule reordered successfully',
+    type: SubModuleResponseDto,
+  })
+  @ApiBadRequestResponse('Invalid order position')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'SubModule',
+    notFoundMessage: 'SubModule with id "xxx" not found',
+  })
+  async reorderSubModule(
+    @Param('id') id: string,
+    @Body() reorderDto: ReorderRequestDto,
+  ): Promise<SubModuleResponseDto> {
+    return this.reorderSubModuleUseCase.execute(id, reorderDto.newOrder);
+  }
+
+  @Patch('submodules/swap-orders')
+  @Roles(['admin'])
+  @ApiBearerAuth('JWT-auth')
+  @ApiOperation({
+    summary: 'Swap submodule orders (Admin only)',
+    description:
+      'Swap the order positions of two submodules. Submodules must belong to the same module.',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'SubModule orders swapped successfully',
+    type: [SubModuleResponseDto],
+  })
+  @ApiBadRequestResponse('Invalid submodule IDs')
+  @ApiConflictResponse('SubModules must belong to the same module')
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'SubModule',
+    notFoundMessage: 'SubModule with id "xxx" not found',
+  })
+  async swapSubModuleOrders(
+    @Body() swapDto: SwapOrdersRequestDto,
+  ): Promise<[SubModuleResponseDto, SubModuleResponseDto]> {
+    return this.swapSubModuleOrdersUseCase.execute(swapDto.id1, swapDto.id2);
   }
 }

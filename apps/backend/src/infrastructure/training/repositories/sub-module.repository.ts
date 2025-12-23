@@ -80,6 +80,95 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
     });
   }
 
+  async reorder(id: string, newOrder: number): Promise<SubModule> {
+    return await this.prisma.$transaction(async (tx) => {
+      const item = await tx.subModule.findFirst({
+        where: { id, deletedAt: null },
+      });
+
+      if (!item) {
+        throw new Error(`SubModule with id "${id}" not found`);
+      }
+
+      const allItems = await tx.subModule.findMany({
+        where: { moduleId: item.moduleId, deletedAt: null },
+        orderBy: { order: 'asc' },
+      });
+
+      const currentIndex = allItems.findIndex((sm) => sm.id === id);
+      if (currentIndex === -1) {
+        throw new Error(`SubModule with id "${id}" not found`);
+      }
+
+      if (newOrder < 1 || newOrder > allItems.length) {
+        throw new Error(
+          `Invalid order position: ${newOrder}. Must be between 1 and ${allItems.length}`,
+        );
+      }
+
+      const targetIndex = newOrder - 1;
+
+      if (currentIndex === targetIndex) {
+        return this.toDomainEntity(item);
+      }
+
+      const reorderedItems = [...allItems];
+      const [movedItem] = reorderedItems.splice(currentIndex, 1);
+      reorderedItems.splice(targetIndex, 0, movedItem);
+
+      for (let i = 0; i < reorderedItems.length; i++) {
+        await tx.subModule.update({
+          where: { id: reorderedItems[i].id },
+          data: { order: i + 1 },
+        });
+      }
+
+      const updated = await tx.subModule.findUnique({
+        where: { id },
+      });
+
+      if (!updated) {
+        throw new Error(`SubModule with id "${id}" not found`);
+      }
+
+      return this.toDomainEntity(updated);
+    });
+  }
+
+  async swapOrders(id1: string, id2: string): Promise<void> {
+    await this.prisma.$transaction(async (tx) => {
+      const item1 = await tx.subModule.findFirst({
+        where: { id: id1, deletedAt: null },
+      });
+      const item2 = await tx.subModule.findFirst({
+        where: { id: id2, deletedAt: null },
+      });
+
+      if (!item1) {
+        throw new Error(`SubModule with id "${id1}" not found`);
+      }
+      if (!item2) {
+        throw new Error(`SubModule with id "${id2}" not found`);
+      }
+
+      if (item1.moduleId !== item2.moduleId) {
+        throw new Error(
+          `SubModules must belong to the same module. SubModule ${id1} belongs to module ${item1.moduleId}, subModule ${id2} belongs to module ${item2.moduleId}`,
+        );
+      }
+
+      const tempOrder = item1.order;
+      await tx.subModule.update({
+        where: { id: id1 },
+        data: { order: item2.order },
+      });
+      await tx.subModule.update({
+        where: { id: id2 },
+        data: { order: tempOrder },
+      });
+    });
+  }
+
   async exists(id: string): Promise<boolean> {
     const count = await this.prisma.subModule.count({
       where: { id, deletedAt: null },

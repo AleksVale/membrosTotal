@@ -11,6 +11,10 @@ import { ModuleResponseDto } from '../../../application/training/dto/module-resp
 import { CreateModuleUseCase } from '../../../application/training/use-cases/create-module.use-case';
 import { GetModuleUseCase } from '../../../application/training/use-cases/get-module.use-case';
 import { GetModulesByTrainingUseCase } from '../../../application/training/use-cases/get-modules-by-training.use-case';
+import {
+  ApiAdminOnlyResponses,
+  ApiBadRequestResponse,
+} from '../../../common/decorators/api-responses.decorator';
 import { CreateModuleRequestDto } from '../dto/create-module-request.dto';
 
 @ApiTags('Training Modules')
@@ -31,53 +35,10 @@ export class ModuleController {
     description: 'Module created successfully',
     type: ModuleResponseDto,
   })
-  @ApiResponse({
-    status: 400,
-    description: 'Bad request - validation error',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 400 },
-        message: { type: 'array', items: { type: 'string' } },
-        error: { type: 'string', example: 'Bad Request' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - Authentication required',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 401 },
-        message: { type: 'string', example: 'Unauthorized' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - Admin access required',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 403 },
-        message: { type: 'string', example: 'Forbidden resource' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Training not found',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 404 },
-        message: {
-          type: 'string',
-          example: 'Training with id "xxx" not found',
-        },
-      },
-    },
+  @ApiBadRequestResponse()
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Training',
+    notFoundMessage: 'Training with id "xxx" not found',
   })
   async createModule(
     @Param('trainingId') trainingId: string,
@@ -102,38 +63,9 @@ export class ModuleController {
     description: 'Module retrieved successfully',
     type: ModuleResponseDto,
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - Authentication required',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 401 },
-        message: { type: 'string', example: 'Unauthorized' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - Admin access required',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 403 },
-        message: { type: 'string', example: 'Forbidden resource' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Module not found',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 404 },
-        message: { type: 'string', example: 'Module with id "xxx" not found' },
-      },
-    },
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Module',
+    notFoundMessage: 'Module with id "xxx" not found',
   })
   async getModule(@Param('id') id: string): Promise<ModuleResponseDto> {
     return this.getModuleUseCase.execute(id);
@@ -150,41 +82,9 @@ export class ModuleController {
     description: 'Modules retrieved successfully',
     type: [ModuleResponseDto],
   })
-  @ApiResponse({
-    status: 401,
-    description: 'Unauthorized - Authentication required',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 401 },
-        message: { type: 'string', example: 'Unauthorized' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 403,
-    description: 'Forbidden - Admin access required',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 403 },
-        message: { type: 'string', example: 'Forbidden resource' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: 404,
-    description: 'Training not found',
-    schema: {
-      type: 'object',
-      properties: {
-        statusCode: { type: 'number', example: 404 },
-        message: {
-          type: 'string',
-          example: 'Training with id "xxx" not found',
-        },
-      },
-    },
+  @ApiAdminOnlyResponses({
+    notFoundResource: 'Training',
+    notFoundMessage: 'Training with id "xxx" not found',
   })
   async getModulesByTraining(
     @Param('trainingId') trainingId: string,

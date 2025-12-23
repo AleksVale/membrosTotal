@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common';
 import { InfrastructureTrainingModule } from '../../infrastructure/training/training.module';
 import { CreateModuleUseCase } from './use-cases/create-module.use-case';
+import { CreateSubModuleUseCase } from './use-cases/create-sub-module.use-case';
 import { CreateTrainingUseCase } from './use-cases/create-training.use-case';
 import { EnrollInTrainingUseCase } from './use-cases/enroll-in-training.use-case';
 import { GetModuleUseCase } from './use-cases/get-module.use-case';
 import { GetModulesByTrainingUseCase } from './use-cases/get-modules-by-training.use-case';
+import { GetSubModuleUseCase } from './use-cases/get-sub-module.use-case';
+import { GetSubModulesByModuleUseCase } from './use-cases/get-sub-modules-by-module.use-case';
 import { GetTrainingProgressUseCase } from './use-cases/get-training-progress.use-case';
 import { GetTrainingUseCase } from './use-cases/get-training.use-case';
 import { GetUserEnrollmentsUseCase } from './use-cases/get-user-enrollments.use-case';
@@ -24,6 +27,9 @@ import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.
     CreateModuleUseCase,
     GetModuleUseCase,
     GetModulesByTrainingUseCase,
+    CreateSubModuleUseCase,
+    GetSubModuleUseCase,
+    GetSubModulesByModuleUseCase,
   ],
   exports: [
     CreateTrainingUseCase,
@@ -36,6 +42,9 @@ import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.
     CreateModuleUseCase,
     GetModuleUseCase,
     GetModulesByTrainingUseCase,
+    CreateSubModuleUseCase,
+    GetSubModuleUseCase,
+    GetSubModulesByModuleUseCase,
   ],
 })
 export class ApplicationTrainingModule {}

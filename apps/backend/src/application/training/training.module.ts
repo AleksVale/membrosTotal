@@ -5,9 +5,11 @@ import { CreateModuleUseCase } from './use-cases/create-module.use-case';
 import { CreateSubModuleUseCase } from './use-cases/create-sub-module.use-case';
 import { CreateTrainingUseCase } from './use-cases/create-training.use-case';
 import { EnrollInTrainingUseCase } from './use-cases/enroll-in-training.use-case';
+import { GetEnrolledLessonProgressUseCase } from './use-cases/get-enrolled-lesson-progress.use-case';
 import { GetEnrolledModuleSubModulesUseCase } from './use-cases/get-enrolled-module-sub-modules.use-case';
 import { GetEnrolledSubModuleLessonsUseCase } from './use-cases/get-enrolled-sub-module-lessons.use-case';
 import { GetEnrolledTrainingModulesUseCase } from './use-cases/get-enrolled-training-modules.use-case';
+import { GetEnrolledTrainingProgressUseCase } from './use-cases/get-enrolled-training-progress.use-case';
 import { GetEnrolledTrainingsUseCase } from './use-cases/get-enrolled-trainings.use-case';
 import { GetLessonUseCase } from './use-cases/get-lesson.use-case';
 import { GetLessonsBySubModuleUseCase } from './use-cases/get-lessons-by-sub-module.use-case';
@@ -19,7 +21,9 @@ import { GetTrainingProgressUseCase } from './use-cases/get-training-progress.us
 import { GetTrainingUseCase } from './use-cases/get-training.use-case';
 import { GetUserEnrollmentsUseCase } from './use-cases/get-user-enrollments.use-case';
 import { ListTrainingsUseCase } from './use-cases/list-trainings.use-case';
+import { UpdateEnrolledLessonProgressUseCase } from './use-cases/update-enrolled-lesson-progress.use-case';
 import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.use-case';
+import { WatchEnrolledLessonUseCase } from './use-cases/watch-enrolled-lesson.use-case';
 
 @Module({
   imports: [InfrastructureTrainingModule],
@@ -44,6 +48,10 @@ import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.
     GetEnrolledTrainingModulesUseCase,
     GetEnrolledModuleSubModulesUseCase,
     GetEnrolledSubModuleLessonsUseCase,
+    UpdateEnrolledLessonProgressUseCase,
+    WatchEnrolledLessonUseCase,
+    GetEnrolledLessonProgressUseCase,
+    GetEnrolledTrainingProgressUseCase,
   ],
   exports: [
     CreateTrainingUseCase,
@@ -66,6 +74,10 @@ import { UpdateLessonProgressUseCase } from './use-cases/update-lesson-progress.
     GetEnrolledTrainingModulesUseCase,
     GetEnrolledModuleSubModulesUseCase,
     GetEnrolledSubModuleLessonsUseCase,
+    UpdateEnrolledLessonProgressUseCase,
+    WatchEnrolledLessonUseCase,
+    GetEnrolledLessonProgressUseCase,
+    GetEnrolledTrainingProgressUseCase,
   ],
 })
 export class ApplicationTrainingModule {}

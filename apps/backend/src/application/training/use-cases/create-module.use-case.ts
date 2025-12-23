@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { ModuleRepositoryInterface } from '../../../domain/training/repositories/module.repository.interface';
 import { TrainingRepositoryInterface } from '../../../domain/training/repositories/training.repository.interface';
 import { CreateModuleDto } from '../dto/create-module.dto';
@@ -18,6 +22,16 @@ export class CreateModuleUseCase {
     const training = await this.trainingRepository.findById(trainingId);
     if (!training) {
       throw new NotFoundException(`Training with id "${trainingId}" not found`);
+    }
+
+    const orderExists = await this.moduleRepository.existsByOrderAndTrainingId(
+      createDto.order,
+      trainingId,
+    );
+    if (orderExists) {
+      throw new ConflictException(
+        `A module with order ${createDto.order} already exists in this training`,
+      );
     }
 
     const module = await this.moduleRepository.create({

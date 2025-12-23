@@ -71,6 +71,19 @@ export class SubModuleRepository implements SubModuleRepositoryInterface {
     return count > 0;
   }
 
+  async existsByOrderAndModuleId(
+    order: number,
+    moduleId: string,
+  ): Promise<boolean> {
+    const count = await this.prisma.subModule.count({
+      where: {
+        order,
+        moduleId,
+      },
+    });
+    return count > 0;
+  }
+
   private toDomainEntity(
     prismaSubModule: Prisma.SubModuleGetPayload<Record<string, never>>,
   ): SubModule {

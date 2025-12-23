@@ -14,4 +14,8 @@ export abstract class SubModuleRepositoryInterface {
   abstract update(id: string, subModule: SubModule): Promise<SubModule>;
   abstract delete(id: string): Promise<void>;
   abstract exists(id: string): Promise<boolean>;
+  abstract existsByOrderAndModuleId(
+    order: number,
+    moduleId: string,
+  ): Promise<boolean>;
 }

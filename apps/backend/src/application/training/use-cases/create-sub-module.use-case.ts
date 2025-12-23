@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
 import { ModuleRepositoryInterface } from '../../../domain/training/repositories/module.repository.interface';
 import { SubModuleRepositoryInterface } from '../../../domain/training/repositories/sub-module.repository.interface';
 import { CreateSubModuleDto } from '../dto/create-sub-module.dto';
@@ -18,6 +22,17 @@ export class CreateSubModuleUseCase {
     const module = await this.moduleRepository.findById(moduleId);
     if (!module) {
       throw new NotFoundException(`Module with id "${moduleId}" not found`);
+    }
+
+    const orderExists =
+      await this.subModuleRepository.existsByOrderAndModuleId(
+        createDto.order,
+        moduleId,
+      );
+    if (orderExists) {
+      throw new ConflictException(
+        `A submodule with order ${createDto.order} already exists in this module`,
+      );
     }
 
     const subModule = await this.subModuleRepository.create({

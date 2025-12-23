@@ -14,6 +14,7 @@ import { GetSubModulesByModuleUseCase } from '../../../application/training/use-
 import {
   ApiAdminOnlyResponses,
   ApiBadRequestResponse,
+  ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateSubModuleRequestDto } from '../dto/create-sub-module-request.dto';
 
@@ -38,6 +39,9 @@ export class SubModuleController {
     type: SubModuleResponseDto,
   })
   @ApiBadRequestResponse()
+  @ApiConflictResponse(
+    'A submodule with this order already exists in this module',
+  )
   @ApiAdminOnlyResponses({
     notFoundResource: 'Module',
     notFoundMessage: 'Module with id "xxx" not found',

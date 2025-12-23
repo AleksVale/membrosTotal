@@ -71,6 +71,19 @@ export class ModuleRepository implements ModuleRepositoryInterface {
     return count > 0;
   }
 
+  async existsByOrderAndTrainingId(
+    order: number,
+    trainingId: string,
+  ): Promise<boolean> {
+    const count = await this.prisma.module.count({
+      where: {
+        order,
+        trainingId,
+      },
+    });
+    return count > 0;
+  }
+
   private toDomainEntity(
     prismaModule: Prisma.ModuleGetPayload<Record<string, never>>,
   ): Module {

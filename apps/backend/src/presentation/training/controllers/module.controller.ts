@@ -14,6 +14,7 @@ import { GetModulesByTrainingUseCase } from '../../../application/training/use-c
 import {
   ApiAdminOnlyResponses,
   ApiBadRequestResponse,
+  ApiConflictResponse,
 } from '../../../common/decorators/api-responses.decorator';
 import { CreateModuleRequestDto } from '../dto/create-module-request.dto';
 
@@ -36,6 +37,9 @@ export class ModuleController {
     type: ModuleResponseDto,
   })
   @ApiBadRequestResponse()
+  @ApiConflictResponse(
+    'A module with this order already exists in this training',
+  )
   @ApiAdminOnlyResponses({
     notFoundResource: 'Training',
     notFoundMessage: 'Training with id "xxx" not found',

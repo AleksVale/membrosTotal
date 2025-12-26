@@ -13,6 +13,11 @@ const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 export const auth = betterAuth({
+  baseURL:
+    process.env.BETTER_AUTH_URL ||
+    process.env.FRONTEND_URL ||
+    'http://localhost:3000',
+  trustedOrigins: [process.env.FRONTEND_URL || 'http://localhost:3000'],
   database: prismaAdapter(prisma, {
     provider: 'postgresql',
   }),
@@ -21,8 +26,8 @@ export const auth = betterAuth({
       role: {
         type: 'string',
         required: false,
-        defaultValue: 'collaborator', // Default role for new users (admin can be assigned programmatically)
-        input: false, // Don't allow user to set their own role during sign up
+        defaultValue: 'collaborator',
+        input: false,
       },
     },
   },
